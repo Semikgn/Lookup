@@ -19,7 +19,9 @@ from openai import OpenAI
 # Rol -> tercih sırası. Baştaki model yoksa listede geriye düşülür.
 MODEL_TERCIHLERI: dict[str, list[str]] = {
     "hizli": ["qwen2.5-0.5b"],
-    "genel": ["qwen3-4b", "qwen3-1.7b", "qwen2.5-1.5b", "qwen2.5-0.5b"],
+    # qwen3-4b bu donanımda (7.7 GB RAM) çalışıyor ama soru başına 80-140 sn
+    # sürüyor ve sistemi disk takasına sokuyor; o yüzden 1.7b önde.
+    "genel": ["qwen3-1.7b", "qwen3-4b", "qwen2.5-1.5b", "qwen2.5-0.5b"],
     "kod": ["qwen2.5-coder-1.5b", "qwen2.5-coder-0.5b", "qwen2.5-0.5b"],
     "embedding": ["qwen3-embedding-0.6b"],
 }
@@ -182,6 +184,19 @@ def chat_tamamla(
     endpoint = endpoint or endpoint_bul()
     secenekler.setdefault("max_tokens", 512)
     secenekler.setdefault("temperature", 0.2)
+
+    # qwen3 chat modelleri varsayılan olarak <think> bloğuyla düşünür; CPU'da bu,
+    # token bütçesini ve süreyi yutuyor. Soft-switch ile kapat.
+    if "qwen3" in model_id and "embedding" not in model_id:
+        mesajlar = list(mesajlar)
+        if mesajlar and mesajlar[0].get("role") == "system":
+            mesajlar[0] = {
+                "role": "system",
+                "content": mesajlar[0]["content"] + " /no_think",
+            }
+        else:
+            mesajlar.insert(0, {"role": "system", "content": "/no_think"})
+
     oai = istemci(endpoint)
     try:
         yanit = oai.chat.completions.create(

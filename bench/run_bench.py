@@ -25,8 +25,26 @@ from core.retriever import Retriever
 BENCH_KLASORU = Path(__file__).resolve().parent
 TESTSET_YOLU = BENCH_KLASORU / "testset.tr.json"
 LEADERBOARD_YOLU = BENCH_KLASORU / "leaderboard.json"
+ARA_YOLU = BENCH_KLASORU / ".bench_ara.json"  # soru bazlı checkpoint
 
-VARSAYILAN_MODELLER = ["qwen2.5-0.5b", "qwen2.5-coder-1.5b", "qwen3-4b"]
+
+def _ara_oku() -> dict:
+    if ARA_YOLU.exists():
+        try:
+            return json.loads(ARA_YOLU.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            pass
+    return {}
+
+
+def _ara_yaz(ara: dict) -> None:
+    ARA_YOLU.write_text(
+        json.dumps(ara, ensure_ascii=False, indent=1), encoding="utf-8"
+    )
+
+# qwen3-4b bilerek listede yok: bu donanımda soru başına 80-140 sn sürüyor.
+# İstersen elle skorla: python -m bench.run_bench --modeller qwen3-4b
+VARSAYILAN_MODELLER = ["qwen2.5-0.5b", "qwen2.5-coder-1.5b", "qwen3-1.7b"]
 
 GENEL_SISTEM = (
     "Sen Türkçe konuşan yardımcı bir asistansın. Kısa ve net cevap ver."
@@ -67,27 +85,46 @@ def soruyu_calistir(
 
 
 def modeli_skorla(
-    model_alias: str, sorular: list[dict], retriever: Retriever, endpoint: str
-) -> dict:
+    model_alias: str, sorular: list[dict], retriever: Retriever, endpoint: str,
+    limit: int | None = None,
+) -> dict | None:
+    """Modeli skorlar. `limit` verilirse bu koşuda en fazla o kadar soru işler;
+    model bitmediyse None döndürür (sonraki koşu checkpoint'ten devam eder)."""
     print(f"\n=== {model_alias} ===")
-    # Isınma: model yüklensin, ilk isteğin yükleme süresi ölçüme karışmasın.
-    foundry.sohbet("Merhaba", rol=model_alias, endpoint=endpoint, max_tokens=8)
+    ara = _ara_oku()
+    model_ara: dict = ara.setdefault(model_alias, {})
+    bekleyen = [s for s in sorular if s["id"] not in model_ara]
+    if limit:
+        bekleyen = bekleyen[:limit]
 
-    kategoriler: dict[str, dict] = {}
-    for soru in sorular:
+    if bekleyen:
+        # Isınma: model yüklensin, ilk isteğin yükleme süresi ölçüme karışmasın.
+        foundry.sohbet("Merhaba", rol=model_alias, endpoint=endpoint, max_tokens=8)
+
+    for soru in bekleyen:
         try:
             dogru, sure, _ = soruyu_calistir(soru, model_alias, retriever, endpoint)
         except Exception as hata:
             print(f"  [{soru['id']}] HATA: {hata}")
             dogru, sure = False, 0.0
+        model_ara[soru["id"]] = {"dogru": dogru, "sure": round(sure, 2)}
+        _ara_yaz(ara)  # kesinti olursa bu sorudan devam edilir
+        print(f"  [{soru['id']}] {'✓' if dogru else '✗'} ({sure:.1f} sn)")
+
+    if len(model_ara) < len(sorular):
+        print(f"  ... kısmi koşu: {len(model_ara)}/{len(sorular)} tamam, devam için tekrar çalıştır")
+        return None
+
+    kategoriler: dict[str, dict] = {}
+    for soru in sorular:
+        kayit = model_ara[soru["id"]]
         k = kategoriler.setdefault(
             soru["kategori"], {"dogru": 0, "toplam": 0, "sureler": []}
         )
         k["toplam"] += 1
-        k["dogru"] += int(dogru)
-        if sure:
-            k["sureler"].append(sure)
-        print(f"  [{soru['id']}] {'✓' if dogru else '✗'} ({sure:.1f} sn)")
+        k["dogru"] += int(kayit["dogru"])
+        if kayit["sure"]:
+            k["sureler"].append(kayit["sure"])
 
     ozet = {}
     for ad, k in kategoriler.items():
@@ -135,6 +172,10 @@ def main() -> int:
         "--modeller", nargs="+", default=VARSAYILAN_MODELLER,
         help="Skorlanacak model alias'ları",
     )
+    ayristirici.add_argument(
+        "--limit", type=int, default=None,
+        help="Bu koşuda işlenecek en fazla soru sayısı (kısmi koşu)",
+    )
     args = ayristirici.parse_args()
 
     sorular = json.loads(TESTSET_YOLU.read_text(encoding="utf-8"))["sorular"]
@@ -147,12 +188,28 @@ def main() -> int:
         "testset": TESTSET_YOLU.name,
         "modeller": {},
     }
+    # Önceki (kısmi) sonuçlar varsa üzerine ekle: kesintiden devam edilebilsin.
+    if LEADERBOARD_YOLU.exists():
+        try:
+            eski = json.loads(LEADERBOARD_YOLU.read_text(encoding="utf-8"))
+            leaderboard["modeller"].update(eski.get("modeller", {}))
+        except (OSError, json.JSONDecodeError):
+            pass
+
     for alias in args.modeller:
         if alias not in yuklu:
             print(f"[atla] {alias} indirilmemiş (foundry model download {alias})")
             continue
-        leaderboard["modeller"][alias] = modeli_skorla(
-            alias, sorular, retriever, endpoint
+        if alias in leaderboard["modeller"]:
+            print(f"[atla] {alias} zaten skorlanmış (yeniden ölçmek için leaderboard.json'dan sil)")
+            continue
+        sonuc = modeli_skorla(alias, sorular, retriever, endpoint, limit=args.limit)
+        if sonuc is None:
+            continue  # kısmi koşu: model bitmedi, leaderboard'a yazma
+        leaderboard["modeller"][alias] = sonuc
+        # Her model bitince diske yaz: kesinti olursa emek boşa gitmesin.
+        LEADERBOARD_YOLU.write_text(
+            json.dumps(leaderboard, ensure_ascii=False, indent=2), encoding="utf-8"
         )
         # Sıradaki modele RAM açmak için bu modeli bellekten çıkar.
         try:
@@ -160,9 +217,6 @@ def main() -> int:
         except Exception:
             pass
 
-    LEADERBOARD_YOLU.write_text(
-        json.dumps(leaderboard, ensure_ascii=False, indent=2), encoding="utf-8"
-    )
     print(f"\nLeaderboard yazıldı: {LEADERBOARD_YOLU}")
     tablo_yazdir(leaderboard)
     return 0
