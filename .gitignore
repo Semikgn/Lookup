@@ -3,3 +3,4 @@
 .env
 *.db
 .venv/
+bench/.bench_ara.json
