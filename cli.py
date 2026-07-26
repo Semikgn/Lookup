@@ -27,15 +27,28 @@ def main() -> int:
         "--rol", default="genel", choices=["hizli", "genel", "kod"],
         help="Model rolü (varsayılan: genel)",
     )
+    ayristirici.add_argument(
+        "--rag", action="store_true",
+        help="Cevabı data/ dokümanlarından RAG ile üret",
+    )
     args = ayristirici.parse_args()
 
     endpoint = foundry.endpoint_bul()
     model = foundry.model_coz(args.rol, endpoint)
     print(f"[endpoint] {endpoint}")
-    print(f"[model]    {model} (rol: {args.rol})")
+    print(f"[model]    {model} (rol: {args.rol}{', RAG' if args.rag else ''})")
 
     baslangic = time.perf_counter()
-    cevap = foundry.sohbet(args.soru, rol=args.rol, sistem=VARSAYILAN_SISTEM, endpoint=endpoint)
+    if args.rag:
+        from core import rag
+        sonuc = rag.cevapla(args.soru, rol=args.rol, endpoint=endpoint)
+        cevap = sonuc.cevap
+        for p in sonuc.parcalar:
+            print(f"[bağlam]   {p.kaynak} / parça {p.sira} (benzerlik {p.skor:.2f})")
+    else:
+        cevap = foundry.sohbet(
+            args.soru, rol=args.rol, sistem=VARSAYILAN_SISTEM, endpoint=endpoint
+        )
     sure = time.perf_counter() - baslangic
 
     print(f"\n{cevap.strip()}\n")

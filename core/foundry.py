@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import shutil
 import subprocess
 import urllib.request
@@ -26,6 +27,14 @@ MODEL_TERCIHLERI: dict[str, list[str]] = {
 
 class FoundryHatasi(RuntimeError):
     """Foundry Local servisine erişilemediğinde fırlatılır."""
+
+
+def _calistir(komut: list[str], timeout: int) -> subprocess.CompletedProcess:
+    """foundry CLI'ını Windows kod sayfasına takılmadan (UTF-8) çalıştırır."""
+    return subprocess.run(
+        komut, capture_output=True, text=True,
+        encoding="utf-8", errors="replace", timeout=timeout,
+    )
 
 
 def _foundry_cli() -> str:
@@ -48,17 +57,11 @@ def endpoint_bul() -> str:
         return os.environ["FOUNDRY_ENDPOINT"].rstrip("/")
 
     cli = _foundry_cli()
-    durum = subprocess.run(
-        [cli, "server", "status", "-o", "json"],
-        capture_output=True, text=True, timeout=60,
-    )
+    durum = _calistir([cli, "server", "status", "-o", "json"], timeout=60)
     bilgi = _json_ayikla(durum.stdout)
     if not (bilgi and bilgi.get("running") and bilgi.get("webUrls")):
-        subprocess.run([cli, "server", "start"], capture_output=True, text=True, timeout=300)
-        durum = subprocess.run(
-            [cli, "server", "status", "-o", "json"],
-            capture_output=True, text=True, timeout=60,
-        )
+        _calistir([cli, "server", "start"], timeout=300)
+        durum = _calistir([cli, "server", "status", "-o", "json"], timeout=60)
         bilgi = _json_ayikla(durum.stdout)
     if not (bilgi and bilgi.get("webUrls")):
         raise FoundryHatasi(
@@ -108,10 +111,90 @@ def model_coz(rol_veya_alias: str, endpoint: str | None = None) -> str:
     )
 
 
+def model_yukle(alias: str) -> None:
+    """Modeli belleğe yükler (embedding modelleri otomatik yüklenmediği için gerekli)."""
+    sonuc = _calistir([_foundry_cli(), "model", "load", alias], timeout=600)
+    if sonuc.returncode != 0:
+        raise FoundryHatasi(f"'{alias}' yüklenemedi: {sonuc.stderr or sonuc.stdout}")
+
+
+def model_bosalt(alias: str) -> None:
+    """Modeli bellekten çıkarır (sınırlı RAM'de model değiştirirken gerekli)."""
+    _calistir([_foundry_cli(), "model", "unload", alias], timeout=120)
+
+
+def dusunce_temizle(metin: str) -> str:
+    """qwen3 gibi modellerin <think>...</think> bloklarını cevaptan ayıklar."""
+    temiz = re.sub(r"<think>.*?</think>", "", metin, flags=re.DOTALL)
+    # Kapanmamış think bloğu (max_tokens'a takılmış) varsa tamamen at.
+    temiz = re.sub(r"<think>.*", "", temiz, flags=re.DOTALL)
+    return temiz.strip()
+
+
+def goml(metinler: list[str], endpoint: str | None = None) -> list[list[float]]:
+    """Metin listesini embedding vektörlerine dönüştürür.
+
+    Sunucu toplu (liste) girişi kabul etmezse tek tek gönderime düşer.
+    """
+    endpoint = endpoint or endpoint_bul()
+    model = model_coz("embedding", endpoint)
+    oai = istemci(endpoint)
+    try:
+        yanit = oai.embeddings.create(model=model, input=metinler)
+        return [v.embedding for v in yanit.data]
+    except Exception as hata:
+        if "not loaded" in str(hata):
+            model_yukle("qwen3-embedding-0.6b")
+            yanit = oai.embeddings.create(model=model, input=metinler)
+            return [v.embedding for v in yanit.data]
+        # Toplu giriş desteklenmiyorsa tek tek dene.
+        return [
+            oai.embeddings.create(model=model, input=m).data[0].embedding
+            for m in metinler
+        ]
+
+
 def istemci(endpoint: str | None = None) -> OpenAI:
     """Foundry Local'e bağlı OpenAI istemcisi (anahtar gerekmez)."""
     endpoint = endpoint or endpoint_bul()
     return OpenAI(base_url=f"{endpoint}/v1", api_key="lokal")
+
+
+def alias_bul(model_id: str, endpoint: str | None = None) -> str:
+    """Gerçek model id'sinden katalog alias'ını bulur (yoksa id'yi döndürür)."""
+    for alias, mid in yuklu_modeller(endpoint).items():
+        if mid == model_id:
+            return alias
+    return model_id
+
+
+def chat_tamamla(
+    model_id: str,
+    mesajlar: list[dict],
+    endpoint: str | None = None,
+    **secenekler,
+) -> str:
+    """Chat isteği atar; model bellekte değilse yükleyip bir kez daha dener.
+
+    Bu Foundry sürümünde modeller API isteğiyle otomatik YÜKLENMİYOR;
+    önce `foundry model load` gerekiyor.
+    """
+    endpoint = endpoint or endpoint_bul()
+    secenekler.setdefault("max_tokens", 512)
+    secenekler.setdefault("temperature", 0.2)
+    oai = istemci(endpoint)
+    try:
+        yanit = oai.chat.completions.create(
+            model=model_id, messages=mesajlar, **secenekler
+        )
+    except Exception as hata:
+        if "not loaded" not in str(hata):
+            raise
+        model_yukle(alias_bul(model_id, endpoint))
+        yanit = oai.chat.completions.create(
+            model=model_id, messages=mesajlar, **secenekler
+        )
+    return dusunce_temizle(yanit.choices[0].message.content or "")
 
 
 def sohbet(
@@ -128,7 +211,4 @@ def sohbet(
     if sistem:
         mesajlar.append({"role": "system", "content": sistem})
     mesajlar.append({"role": "user", "content": soru})
-    yanit = istemci(endpoint).chat.completions.create(
-        model=model, messages=mesajlar, **secenekler
-    )
-    return yanit.choices[0].message.content or ""
+    return chat_tamamla(model, mesajlar, endpoint, **secenekler)
