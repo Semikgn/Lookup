@@ -1,12 +1,15 @@
-# 🧭 RAG Router TR — v2
+# Lookup
 
-Tamamen **çevrimdışı** çalışan, Türkçe'ye optimize edilmiş RAG asistanı.
-Microsoft Azure Foundry Local yaz okulu projesi.
+**İnternete değil, belgelere sor.** Tamamen çevrimdışı, Türkçe'ye optimize
+edilmiş doküman asistanı. Microsoft Azure Foundry Local yaz okulu projesi.
+İsim, `nslookup`'a ve sözlükteki "lookup"a aynı anda göz kırpar; her cevap
+`127.0.0.1`'den döner.
 
-v2'de proje yeniden merkezlendi: runtime model router'ı kaldırıldı. Omurga artık
-**tek iyi model + Türkçe-özel hibrit retrieval + bunu sayıyla kanıtlayan
-değerlendirme**. Model seçimi çalışan bir katman değil, bir kereye mahsus ölçümle
-verilmiş ve belgelenmiş bir karar (aşağıda).
+> Projenin eski adı **RAG Router TR** idi. v2'de runtime model router'ı
+> kaldırıldı ve proje yeniden markalandı. Omurga artık **tek iyi model +
+> Türkçe-özel hibrit retrieval + bunu sayıyla kanıtlayan değerlendirme**.
+> Model seçimi çalışan bir katman değil, bir kereye mahsus ölçümle verilmiş
+> ve belgelenmiş bir karar (aşağıda).
 
 ## Sonuçlar (asıl koz)
 

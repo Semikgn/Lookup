@@ -1,4 +1,7 @@
-# RAG Router TR v2 — Sunum Taslağı (5-7 dk)
+# Lookup — Sunum Taslağı (5-7 dk)
+
+> İsim: DNS `lookup` + sözlük "lookup" çift anlamı. Eski ad (RAG Router TR)
+> v2'deki router sökümüyle emekli oldu; slogan: "İnternete değil, belgelere sor."
 
 ## 1. Problem (1 slayt)
 - Bulut LLM'leri: internet şart, veri dışarıda, maliyetli.
