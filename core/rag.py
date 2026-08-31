@@ -39,7 +39,8 @@ def baglam_kur(parcalar: list[Parca]) -> str:
 SOHBET_META_DESENLERI = [
     r"az önce", r"\bdemin\b", r"ne sordum", r"ne demiştim", r"ne dedim",
     r"nereden anladın", r"önceki (soru|mesaj|cevab)", r"hangi soruyu",
-    r"sohbet(i|in) özetle",
+    r"sohbet(i|in) özetle", r"tekrar (açıkla|anlat|söyle)", r"\bneymiş\b",
+    r"bir daha (açıkla|anlat|söyle)",
 ]
 
 SOHBET_SISTEM_PROMPTU = (
