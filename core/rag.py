@@ -129,19 +129,10 @@ def cevapla(
 
     from core.retriever import RED_MESAJI
     if retriever.reddedilmeli(parcalar):
-        # Sohbet geçmişi varsa soru sohbetin kendisi hakkında olabilir
-        # ("az önce ne sordum"); dokümansız, geçmişe dayalı cevap dene.
-        if gecmis:
-            icerik = f"Sohbet geçmişi:\n{_gecmis_metni(gecmis)}\n\nSoru: {soru}"
-            cevap = foundry.chat_tamamla(
-                model,
-                [{"role": "system", "content": SOHBET_SISTEM_PROMPTU},
-                 {"role": "user", "content": icerik}],
-                endpoint,
-                max_tokens=160,
-            )
-            return RagCevabi(cevap=cevap, model=model, parcalar=[], reddedildi=False)
-        # Domain-dışı ve geçmiş yok: modele sorup uydurtma.
+        # Konu dışı: modele sorup uydurtma. (Sohbet-meta sorular buraya hiç
+        # gelmez; yukarıdaki desen listesi retrieval'dan önce yakalar. Reddedilen
+        # soruyu "geçmişe dayanarak cevapla" diye modele vermek denendi ve
+        # kaldırıldı: küçük model talimatı ezip uyduruyor — DNSLİ pasta vakası.)
         return RagCevabi(
             cevap=RED_MESAJI, model="(model çağrılmadı)",
             parcalar=parcalar, reddedildi=True,
