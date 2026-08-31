@@ -23,7 +23,7 @@
   "dokümanlarda bulunamadı" (eşikler ölçümle kalibre: domain-içi taban 0.51,
   domain-dışı tavan 0.39).
 
-## 4. Before/after — ASIL KOZ (1 slayt, tabloyu göster)
+## 4. Before/after: en güçlü sonuç (1 slayt, tabloyu göster)
 | | hit@1 | hit@3 | red |
 |---|---|---|---|
 | düz kosinüs | %83.3 | %96.7 | 5/5 |

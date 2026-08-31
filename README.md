@@ -11,27 +11,28 @@ edilmiş doküman asistanı. Microsoft Azure Foundry Local yaz okulu projesi.
 > Model seçimi çalışan bir katman değil, bir kereye mahsus ölçümle verilmiş
 > ve belgelenmiş bir karar (aşağıda).
 
-## Sonuçlar (asıl koz)
+## Sonuçlar
 
-### Retrieval: düz kosinüs → Türkçe hibrit (before/after)
+### Retrieval: düz kosinüs ile Türkçe hibrit karşılaştırması
 
 | Mod | hit@1 | hit@3 | Domain-dışı red |
 |---|---|---|---|
 | düz kosinüs (v1) | %83.3 | %96.7 (29/30) | 5/5 |
 | **hibrit (v2)** | **%90.0** | **%100 (30/30)** | **5/5** |
 
-Hibrit = anlamsal kosinüs (0.70) + BM25 (0.22) + terim kapsama (0.08), sinyaller
-sorgu başına min-max normalize. Türkçe tarafı: İ/ı-duyarlı küçültme, stopword
-ayıklama ve hafif stemming (snowballstemmer) — sondan eklemeli dilde
-"yönlendiricinin" ↔ "yönlendirici" eşleşmesini BM25'e kazandırıyor. Hibritin
-kurtardığı tipik vaka: Türkçe soruyla İngilizce dokümandaki `ip link` komutu —
-embedding diller arası köprüyü kuramadı, tam-terim eşleşmesi kurdu.
+Hibrit skor üç sinyalin karışımıdır: anlamsal kosinüs (0.70), BM25 (0.22) ve
+terim kapsama (0.08). Sinyaller sorgu başına min-max normalize edilir. Türkçe
+tarafında İ/ı-duyarlı küçültme, stopword ayıklama ve hafif stemming
+(snowballstemmer) var; sondan eklemeli dilde "yönlendiricinin" ile
+"yönlendirici" ancak bu sayede eşleşiyor. Hibritin kurtardığı tipik vaka,
+Türkçe soruyla İngilizce dokümandaki `ip link` komutunu bulmak oldu: embedding
+diller arası köprüyü kuramadı, tam-terim eşleşmesi kurdu.
 
-### Model seçimi (bir kez, ölçümle — 30 RAG + 5 red Türkçe soru)
+### Model seçimi (bir kez, ölçümle: 30 RAG + 5 konu dışı Türkçe soru)
 
 | Model | RAG doğruluk | Medyan süre | Sonuç |
 |---|---|---|---|
-| **qwen2.5-coder-1.5b** | **%76.7** | **42 sn** | 🔒 **kilitli model** |
+| **qwen2.5-coder-1.5b** | **%76.7** | **42 sn** | **seçilen model** |
 | qwen3-1.7b (/no_think) | %73.3 | 111 sn | yedek (kilitli model diskte yoksa) |
 | phi-4-mini | 5/5 (kısmi) | 135 sn | elendi: 7.7 GB RAM'de swap + süreç ölümleri |
 | qwen3-4b | 6/6 (kısmi, v1) | ~100 sn | elendi: aynı donanım sorunu |
@@ -42,12 +43,14 @@ donanımda (7.7 GB RAM, GPU yok) cevap başına 68-179 sn sürdü ve koşular
 tekrar tekrar süreç ölümüyle kesildi. Karar gereçleriyle birlikte
 `bench/leaderboard.json` içinde.
 
-### Domain-dışı reddi
+### Konu dışı soruların reddi
 
-En iyi parçanın ham kosinüsü < 0.45 VE terim kapsaması < 0.40 ise soru modele
-hiç gitmez; "Bu bilgi mevcut dokümanlarda bulunamadı." dönülür. Eşikler ölçümle
-kalibre edildi: domain-içi soruların kosinüs tabanı 0.51, domain-dışıların
-tavanı 0.39. 5/5 red doğruluğu.
+Arama sinyalleri yeterince güçlü değilse soru modele hiç gitmez; kullanıcıya
+"Bu bilgi mevcut dokümanlarda bulunamadı." dönülür. Karar, ham kosinüs ve terim
+kapsaması üzerinde iki kademeli bir sınırla verilir (`core/retriever.py`
+içindeki `REDDET_KURALLARI`). Eşikler test setindeki 5 konu dışı soru ve gerçek
+kullanım vakalarıyla kalibre edildi; konu dışı reddi 5/5, konu içi 30 sorunun
+hiçbiri yanlışlıkla reddedilmiyor.
 
 ## Korpus
 
@@ -89,26 +92,30 @@ Bundan sonrası tamamen çevrimdışıdır: WiFi kapalıyken tüm istekler
 ## Mimari
 
 ```
-Soru ─► hibrit retrieval ──► skor >= eşik ─► top-3 parça + Türkçe prompt ─► qwen2.5-coder-1.5b
+Soru ─► hibrit retrieval ──► skor >= eşik ─► en iyi parçalar + Türkçe prompt ─► qwen2.5-coder-1.5b
         (kosinüs+BM25+kapsama,│
          Türkçe stemming)     └► skor < eşik ─► "Bu bilgi mevcut dokümanlarda bulunamadı."
 ```
 
-- **Depo:** SQLite (BLOB vektörler) + NumPy; BM25 bellekte. Vektör DB bilinçli yok.
-- **Değerlendirme:** `bench/testset.tr.json` — 30 RAG (altın doküman etiketli,
-  hit@k) + 5 domain-dışı; `bench/run_bench.py` soru bazlı checkpoint + `--limit`
-  ile kesintiye dayanıklı.
-- **Foundry Local notları:** modeller API'de otomatik yüklenmez ("not loaded"
-  yakala → `foundry model load` → tekrar dene); qwen3 ailesinde `/no_think`
-  şart (yoksa düşünme tokenları CPU'da 40-90 sn yer).
-- **Üretim kalitesi/hızı:** küçük modellerin cümle-tekrar döngüsü çıktı
-  katmanında kırılır (Jaccard ≥ 0.7 tekrar ayıklama, `core/foundry.py`);
-  `frequency_penalty` denendi ve geri alındı — bu sunucu/model ikilisinde
-  döngüyü paraphrase'e çevirip kötüleştirdi. max_tokens 256, temperature 0.2.
-- **Latency (CPU'da ~10-20 sn/cevap):** prefill ana kalem olduğundan bağlam
-  parçaları prompt'a girerken soru kökleriyle örtüşen cümleler seçilerek
-  ~600 karaktere kırpılır (kör baş-kırpma değil; saf lexical seçim),
-  varsayılan k=2. Ölçüm: 31.8 sn → 17.1 sn (DNS), 38.9 → 16.7 (RAID).
+- **Depo:** SQLite (BLOB vektörler) + NumPy; BM25 bellekte. Harici vektör
+  veritabanı bilinçli olarak kullanılmadı: bu ölçekte kaba kuvvet arama
+  milisaniyeler sürüyor.
+- **Değerlendirme:** `bench/testset.tr.json` içinde altın doküman etiketli
+  30 RAG sorusu ve 5 konu dışı soru var. `bench/run_bench.py` soru bazlı
+  checkpoint tutar ve `--limit` ile dilim dilim koşulabilir, kesinti emek
+  kaybettirmez.
+- **Foundry Local notları:** modeller API isteğiyle kendiliğinden yüklenmez;
+  kod "not loaded" hatasını yakalayıp `foundry model load` çalıştırır ve isteği
+  bir kez yineler. qwen3 ailesinde `/no_think` gerekir, yoksa düşünme tokenları
+  CPU'da soru başına 40-90 saniye yer.
+- **Üretim kalitesi:** küçük modellerin cümle tekrarı döngüsü çıktı katmanında
+  kırılır (Jaccard benzerliğiyle tekrar ayıklama, `core/foundry.py`).
+  `frequency_penalty` denendi ve geri alındı; bu sunucu/model ikilisinde
+  döngüyü çözmek yerine kötüleştirdi. max_tokens 256, temperature 0.2.
+- **Hız (CPU'da cevap başına ~10-20 saniye):** sürenin ana kalemi prompt'un
+  okunması (prefill). Bu yüzden bağlam parçaları prompt'a girerken soru
+  kökleriyle örtüşen cümleler seçilerek ~600 karaktere indirilir ve varsayılan
+  k=2'dir. Örnek ölçüm: DNS sorusu 31.8 saniyeden 17.1 saniyeye indi.
 
 ## Proje yapısı
 
