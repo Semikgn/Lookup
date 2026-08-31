@@ -115,6 +115,23 @@ def cevapla(
     # Sohbet-meta soru: dokümanlara hiç gitme, geçmişten cevapla.
     kucuk = soru.casefold()
     if any(re.search(d, kucuk) for d in SOHBET_META_DESENLERI):
+        # Son soru/cevap hatırlatma: modele HİÇ gitme, şablonla cevapla.
+        # (1.5B model şahıs eklerini karıştırıyordu: "sana şunu sordum" gibi.)
+        son = gecmis[-1] if gecmis else None
+        if re.search(r"ne sordum|ne demiştim|ne dedim|hangi soruyu", kucuk):
+            cevap = (
+                f'Az önce bana şunu sordun: "{son["soru"]}"' if son
+                else "Henüz bir şey sormadın."
+            )
+            return RagCevabi(cevap=cevap, model="(şablon)", parcalar=[], reddedildi=False)
+        if re.search(r"ne dedin|ne cevap verdin", kucuk):
+            cevap = (
+                f'Son cevabım şuydu: "{son["cevap"]}"' if son
+                else "Henüz bir şey söylemedim."
+            )
+            return RagCevabi(cevap=cevap, model="(şablon)", parcalar=[], reddedildi=False)
+
+        # Kalan meta sorular (özet, "nereden anladın" vb.) modele gider.
         icerik = (
             f"Sohbet geçmişi:\n{_gecmis_metni(gecmis) or '(henüz mesaj yok)'}"
             f"\n\nSoru: {soru}"
