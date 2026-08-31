@@ -1,0 +1,33 @@
+# Yönlendirme
+
+Routing, farklı networklerin birbirleriyle haberleşmek için hangi yolu kullanması gerektiğinin hesaplanması ya da seçilmesi işlemidir. Routing işlemini Router(yönlendirici) lar yapar.
+Router lar paketleri IP paket başlığında bulunan hedef adres bilgisini kullanarak diğer Router lara gönderir. Her bir Router dan geçen paket in time to live (yaşam süresi) i 1 azaltılır. Time to live 8 bit ile ifade edilir bu da time to live en fazla 255 değerini alabiliyor demektir. Time to live i 0 olan paket routing edilmez ve yok sayılır.
+Routerlar Routing işlemini Routing Table(Yönlendirme Tablosu) lardan aldığı bilgilere göre hesaplarlar.
+
+
+== Routing Türleri ==
+
+
+=== Static Routing ===
+Static Routing Routing Table a yönetici tarafından el ile giriş yapılmasıdır.
+
+Static Routing in avantajları
+Router ın CPU su hesaplama yapmakla uğraşmaz.
+Manuel olarak giriş yapıldığından diğer router lar ile ilgilenmez.
+Güvenliklidir çünkü bilgi girişi yönetici tarafından yapılmaktadır.
+Static Routing in Dezavantajları
+Yeni bir network ün sisteme eklenmesi yönetici tarafından manuel olarak yapılmalıdır.
+Static olarak yapılan route işleminde yedekleme yapılmaz.
+
+
+=== Dynamic Routing ===
+Static Route taki sorun ağın büyümesidir. Ağ büyürse router ların manue olarak eklenmesi gerekir.
+Dynamic Routing de routing table lar dinamik oluşturulur.
+Administrative Distance router ın hedef router a ulaşması için katetmesi gereken yoların bir haritasını çıkarır.
+Administrative Distance ler 0 dan 255 e kadar numaralar alırlar numarası en düşük olan yol hedef router a ulaşmak için kullanılır.
+
+Dynamic Routing Protokolleri
+(RIP) Routing Information Protocol
+(IGRP) Interior Gateway Routing Protocol
+(EIGRP) Enhanced Interior Gateway Routing Protocol
+(OSPF) Open Shortest Path First

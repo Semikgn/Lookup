@@ -1,0 +1,128 @@
+# IP adresi
+
+IP adresi (İngilizce: Internet Protocol address), interneti ya da TCP/IP protokolünü kullanan diğer paket anahtarlamalı ağlara bağlı cihazların, ağ üzerinden birbirleri ile veri alışverişi yapmak için kullandıkları adres.
+
+İnternet'e bağlanan her cihaza, İnternet Servis Sağlayıcısı tarafından bir "public" IP adresi atanır ve internete bağlı cihazlar birbirleriyle bu "public" IP adresleri üzerinden ulaşırlar. IP adresine sahip iki farklı cihaz aynı ağda olmadıkları durumlarda, yönlendiriciler (router) ya da yönlendirme (routing) özelliği olan cihazlar vasıtası ile birbirleri ile iletişim kurarlar.
+IP adresleri şu anda yaygın kullanımda olan IPv4 adresleri 32 bit boyutunda olup, noktalarla ayrılmış 4 adet onluk düzendeki sayılarla gösterilirler. Örneğin: 192.168.10.5 (Bu örnekte verilen IP adresi özel (private) IP adresi olarak tanımlanır ve sadece yerel ağlarda iletişim sağlayabilir. Diğer ağlar ile iletişim sağlanabilmesi için cihazın genel (public) IP adresine sahip olması gerekmektedir.)
+Bazı internet sayfalarına, o sayfaların IP adresleri ile de bağlanılabilir. Ancak bu IP adreslerinin hangi sayfalara ait olduklarını bilebilmek pratikte çok mümkün olmadığından IP adreslerine karşılık gelen bir alan adı sistemi kullanılmaktadır. Alan Adı Sunucuları'ndan  (DNS -Domain Name System) oluşan hiyerarşik bir sistem, hangi alan adının hangi IP adresine karşılık geldiği bilgisini eşler.
+Yönlendiriciler IP paketleri iletme görevlerini IP paket başlıklarında yer alan IP adreslerine göre gerçekleştirirler. IP'nin ilk büyük versiyonu İnternet Protokolü Sürüm 4'tür. IPv4 internette baskın olan bir protokoldür. Onun halefi İnternet Protokolü Sürüm 6 (IPv6)'dır. IPv6, internete bağlanan cihaz sayısının artmasından ve bu cihazlara yetecek sayıda IP adresi verilmesini sağlama zorunluluğundan ortaya çıkmıştır.
+
+
+=== Datagram Yapısı ===
+Her datagramın iki bileşeni vardır. Bir başlık ve bir yük. Yük, taşınan veridir.
+
+
+=== IP Adresleme ve Yönlendirme ===
+IP adresleme IP adreslerinin atamasını ve ilişkili parametrelerin arabirimlerini barındırmayı gerektirir. Adres uzayı ağlara ve alt ağlara ayrılır, ağın tanımını ve yönlendirme öneklerini içerir. IP yönlendirme bütün ana bilgisayarlardan olduğu gibi yönlendiriciler tarafından da gerçekleştirilir ve asıl işlevi ağ sınırları boyunca paketleri ulaştırmaktır.
+
+
+=== Güvenilirlik ===
+İnternet protokollerinin tasarımı uçtan uca prensibine dayanır. Ağ altyapısı tek bir ağ elemanı veya iletim ortamı da doğal olarak güvenilmez olarak kabul edilir ve linkleri ve düğümleri kullanılabilirliği açısından dinamik varsayar. Ağın durumunu devam ettiren veya izini süren hiçbir merkezi izleme veya performans ölçüm kolaylığı yoktur. Ağ karmaşıklığını azaltma yararına, ağda istihbarat bilerek çoğunlukla veri aktarımı uç düğümleri yer almaktadır. İletim yolundaki yönlendiriciler paketleri direkt olarak sonraki bilinen ve varış adresinin girişi ile eşleşen ulaşılabilir geçide doğru yönlendirir.
+Bu tasarımın bir sonucu olarak, İnternet Protokolü sadece en iyi çaba teslim sağlar ve hizmet güvenilmez olarak karakterize edilir. Ağ mimari dili, bu iletim bağlantı yönelimli modlarda aksine bir bağlantısız protokoldür.
+İnternet Protokolü Sürüm 4 (IPv4) başlığında, başlığın hatasız gönderilmiş olmasını sağlamak için "header checksum" isimli bir sağlama alanı içermektedir.
+IPv4 protokolüne bir destek protokolü olması amacıyla geliştirilmiş olan İnternet Denetim İletisi Protokolü (ICMP) gönderilen paketlerin hedefe ulaşıp ulaşmadıklarına dair bazı geri bildirimler sağlamaktadır.
+
+
+== Dinamik ve statik adresler ==
+İnternete bağlanan kullanıcının dış dünyaya bağlantı sağladığı gerçek IP adresi çoğu zaman dinamiktir. Kullanıcının hizmet aldığı internet servis sağlayıcı, kullanıcıya o an boşta bulunan bir IP adresini verir. Bu yüzden internete her bağlantı yapıldığı zaman kullanıcıların dış dünyaya açıldıkları gerçek IP adresi değişebilmektedir.
+Statik IP adresleri olan bilgisayarların adresleri değişmez. Sunucu görevi gören bilgisayarlar için tercih edilir.
+
+
+== IP adresi sınıfları ==
+Kullanım alanlarına göre IP Adresleri sınıflandırılır. A sınıfı 1-127, B sınıfı 128-191, C sınıfı 192-223, D sınıfı 224-239, E sınıfı 240-255.
+Örneğin;
+
+A Sınıfı IP Adresleri  001.aaa.bbb.ccc  / 127.aaa.bbb.ccc
+B Sınıfı IP Adresleri  128.aaa.bbb.ccc / 191.aaa.bbb.ccc
+C Sınıfı IP Adresleri  192.aaa.bbb.ccc - 223.aaa.bbb.ccc
+D Sınıfı IP Adresleri  224.aaa.bbb.ccc - 239.aaa.bbb.ccc
+E Sınıfı IP Adresleri  240.aaa.bbb.ccc - 255.aaa.bbb.ccc aralığındadır.
+
+
+== IP adresinden konak adres nasıl elde edilir? ==
+A Sınıfı IP Adresinin ilk okteti ağ adresini (network address), kalan oktetler ise konak adresini (host address) verir. Örneğin IP adresini a.b.c.d şeklinde gösterirsek burada a ağ adresini, kalan b.c.d ise konak adresi gösterir.
+B Sınıfı IP Adresinin ilk iki okteti ağ adresini, kalan oktetler ise konak adresini verir.
+C Sınıfı IP Adresinin ilk üç okteti ağ adresini, kalan oktetler ise konak adresini verir.
+
+
+=== Özel IP adresleri ===
+Aşağıda yer alan üç IP adres bloku yerel alan ağlarında kullanılmak üzere ayrılmıştır.
+
+10.0.0.0    - 10.255.255.255  (10.0.0.0/8 - 10.0.0.0 maske 255.0.0.0)
+172.16.0.0  - 172.31.255.255  (172.16.0.0/12 - 172.16.0.0 maske 255.240.0.0)
+192.168.0.0 - 192.168.255.255 (192.168.0.0/16 - 192.168.0.0 maske 255.255.0.0)
+Bu IP adres blokları yerel alan ağlarında kullanılmak üzere tahsis edilmiştir (Dünya üzerinde tekil değildirler) ve geniş alan ağlarında internet servis sağlayıcılar tarafından yönlendirilmezler. Bu nedenle bu IP ağlarından internete çıkarken gerçek IP adreslerine NAT yapılır.
+
+
+== IPv4 Başlığının Alanları ==
+
+Version
+Internet Header Length (IHL)
+Type Of Service (TOS)
+Total Length (TL)
+Identification
+Flags
+Fragment Offset
+Time To Live (TTL)
+Protocol
+Header Checksum
+Source Address
+Destination Address
+Options
+Data
+
+
+=== Version ===
+Versiyon ya da sürüm (İngilizce: version), kullanılan IP versiyonunu gösterir. Uzunluğu dört bittir.
+
+
+=== Internet Header Length (IHL) ===
+IP başlığın uzunluğunu gösterir ile ilgilidir. Uzunluğu dört bittir.
+
+
+=== Type Of Service (TOS) ===
+Uzunluğu bir bayttır.
+
+
+=== Total Length (TL) ===
+Uzunluğu iki bayttır.
+
+
+=== Identification ===
+Uzunluğu iki bayttır.
+
+
+=== Flags ===
+Uzunluğu üç bittir.
+
+
+=== Time To Live (TTL) ===
+Uzunluğu bir bayttır.
+
+
+=== Protocol ===
+Uzunluğu bir bayttır.
+
+
+=== Header Checksum ===
+Uzunluğu iki bayttır.
+
+
+=== Source Address ===
+Uzunluğu dört bayttır.
+
+
+=== Destination Address ===
+Uzunluğu dört bayttır.
+
+
+=== Options ===
+
+
+=== Data ===
+
+
+== IPv4 ve IPv6 ==
+IPv4'ün adres uzayı, IPv6'ya göre daha dardır. IPv4 adres uzayında (232) adet, IPv6 adres uzayında ise (2128) adet adres bulunmaktadır. Ayrıca IPv4 başlık formatı (İngilizce: header format), IPv6 formatına göre daha basit yapıdadır. IPv4 başlık boyutu 20 bayttan iken, IPv6 başlık boyutu sabit olarak 40 bayttır.
+IPv4 başlığının 12 alanının 6'sı IPv6 da yoktur. Bu alanların kaldırılması, IPv6'nın daha kolay işlenmesini sağlamıştır. Ayrıca IPv6 üzerindeki otomatik konfigürasyon özelleği internet üzerindeki adres yönetimini kolaylaştırır.
+IPv6'da NAT’a (İngilizce: Network Address Translation) duyulan ihtiyaç azalmıştır. Kullanılabilecek adres sayısının artması, NAT'ta gerçekleştirilen özel IP adreslerinin (private IP address), genel IP adreslerine (public IP address) dönüştürülmesi ihtiyacını büyük oranda ortadan kaldırabilecektir.

@@ -1,0 +1,182 @@
+# DHCP
+
+DHCP (İngilizce Dynamic Host Configuration Protocol), (Türkçe Dinamik Ana Bilgisayar Yapılandırma Protokolü) ağda bulunan her bir bilgisayarın IP adresi, alt ağ maskesi, varsayılan ağ geçidi ve DNS sunucuları gibi ağ bağlantısı ayarlarının otomatik olarak atamasını sağlar. Bu sayede ağ yöneticileri, ağdaki her bir bilgisayarın IP adresi ve diğer ağ bağlantısı ayarlarını elle girerek zaman kaybetmek yerine, DHCP sunucusu üzerinden bu bilgileri otomatik olarak atayarak daha verimli ve güvenilir  bir ağ yönetimi yapabilirler. Bu sayede sistem yönetim işlemi de kolaylaşmış olur. Ayrıca UDP, TCP'ye dayalı herhangi bir iletişim protokolünün ve DNS, NTP gibi ağ hizmetlerinin kullanımına olanak sağlar.[1] 
+
+
+== DHCP' nin Tarihçesi ==
+Dinamik Ana Bilgisayar Yapılandırma Protokolü (DHCP) ilk olarak Ekim 1993'te RFC 1531'de bir ağ istemcisi tarafından bir bilgisayardan IP adresi almak için kullanılan bir ağ protokolü olan Önyükleme Protokolünün (BOOTP) bir uzantısı olarak standart izleme protokolü olarak tanımlandı. BOOTP'yi genişletmekteki amaç, BOOTP'nin her istemci için yapılandırma bilgisi eklemek için elle müdahale gerektirmesi ve kullanılan IP adreslerini geri almak için bir mekanizma sağlamamasıydı. Birçoğu, popülerlik kazandıkça protokolü açıklığa kavuşturmak için çalıştı ve 1997'de RFC 2131 piyasaya sürüldü ve IPv4 ağları için standart olmaya devam ediyor. IPv6 protokolünü desteklemek için DHCPv6 tanıtıldı ve RFC 3315'te belgelendi.[2]
+Dört yıl sonra, RFC 3396, RFC 4361, RFC 5494 ve RFC 6842'deki güncellemelerle 2021'den itibaren IPv4 ağları için standardın çekirdeği olmaya devam eden RFC 2131 tarafından DHCPINFORM mesaj türü [3]  ve diğer küçük değişiklikler eklendi .[4]
+Bugün, neredeyse tüm modern bilgisayar ağları DHCP'yi kullanmaktadır. DHCP'nin geliştirilmesi, ağ yönetimini daha kolay ve daha verimli hale getirmiş ve büyük ölçüde ağ hizmetleri için ayrılan zamandan tasarruf sağlamıştır.
+
+
+== DHCP'nin BOOTP veya RARP’tan farkı ==
+DHCP, BOOTP ve RARP'ye benzer, ancak bu eski protokollere göre bazı önemli geliştirmeler sunar.
+Hem BOOTP hem de RARP, bir ağdaki aygıtlara IP adresleri gibi ağ yapılandırma bilgileri sağlamak için tasarlanmıştır. Ancak, büyük ağlarda yönetilmelerini zorlaştıran MAC adreslerinin IP adreslerine statik eşlenmesi ihtiyacı gibi bazı sınırlamaları vardı.
+DHCP, bu sınırlamaları gidermek ve ağ yapılandırma bilgilerini yönetmek için daha esnek ve ölçeklenebilir bir çözüm sağlamak üzere tasarlanmıştır. IP adreslerinin dinamik olarak atanmasına ve yeniden kullanılmasına izin veren DHCP kiralama kavramını tanıttı ve varsayılan ağ geçidi ve DNS sunucusu gibi ek ağ yapılandırma seçenekleri için destek ekledi.
+Genel olarak DHCP, ağ yapılandırma bilgilerini yönetmek için daha fazla esneklik ve ölçeklenebilirlik sunan BOOTP ve RARP'nin güncellenmiş ve geliştirilmiş bir sürümüdür diyebiliriz.
+
+
+== DHCP'nin Kullanım Amaçları ==
+DHCP (Dynamic Host Configuration Protocol), bir ağ içerisinde IP adreslerinin dağıtım için hızlı, otomatik ve merkezi yönetim imkanı sunan bir protokoldür. DHCP ayrıca, cihazdaki varsayılan ağ geçidi ve DNS sunucusu bilgilerini alt ağlara bölmek için de kullanılır.[5]
+
+
+=== DHCP (Dynamic Host Configuration Protocol) protokolünün kullanım amaçları şunlardır ===
+Ağ Güvenliği: DHCP, ağa bağlanan cihazların doğrulanmasına yardımcı olan bir mekanizma içerir. DHCP sunucusu, yalnızca doğrulanmış cihazların ağa bağlanmasına izin verir. Bu sayede ağ güvenliği sağlanmış olur
+Merkezi Yönetim: DHCP sunucusu, ağda bulunan cihazların IP adresi, varsayılan ağ geçidi, alt ağ maskesi ve DNS sunucu adresleri gibi ağ bağlantısı ayarlarını merkezi olarak yönetir. Bu, ağ yöneticilerinin ağda bulunan tüm cihazların ayarlarını tek tek değiştirmek yerine, DHCP sunucusu üzerinden tek bir noktadan yönetmelerine olanak tanır.[6]
+Ağ Verimliliği Arttırma: DHCP, IP adresi atamalarının manuel olarak yapılmaması sayesinde ağdaki verimliliği arttırır, insanların yapabileceği olası hatalar engellenmiş olur
+IP Adresi Geri Dönüşümü: DHCP sunucusu, ağdaki cihazların IP adreslerini dinamik olarak yönettiği için, bir cihaz ağdan ayrıldığında veya IP adresi değiştirdiğinde, bu IP adresi otomatik olarak yeniden kullanıma olanak tanır.
+Kolay Ağ Yapılandırılması: DHCP, ağ yöneticilerinin ağ yapılandırmasını kolaylaştırır ve yeni cihazların ağa kolayca eklenmesini sağlar. DHCP sunucusu, yeni cihazların otomatik olarak IP adresi ve diğer ağ ayarlarını almasını sağlar. Bu sayede zaman ve güvenirlik garanti edilir.
+Ağ Paylaşımı: DHCP, evlerde veya küçük işletmelerde kullanılan internet paylaşımı cihazları için de kullanılır. DHCP sunucusu, ağdaki tüm cihazlara otomatik olarak IP adresi atar ve internet bağlantısını paylaşır.
+
+
+=== DHCP Hangi Sistemlerde Bulunur ===
+DHCP sunucusu, Switch, XDSL Modem, Firewall Cihazlar, Linux İşletim Sistemi ve Windows İşletim Sistemi gibi pek çok cihaz ve sistemde DHCP sunucuları mevcuttur.
+
+
+== DHCP’nin Avantajları ==
+Disksiz iş istasyonları: DHCP, ilk olarak diske sahip olmayan bilgisayarlara IP bilgilerini sunmak için tasarlanmıştı. Bu tür iş istasyonları üzerinde herhangi bir yedekleme aracı olmadığı için açılış esnasında ağ IP verilerinin aktarılması gerekliydi. Açılış sırasında ilk olarak gereksinim duyulan veri ise, sizin de kolayca bulabileceğiniz gibi, basit bir IP'dir. Bu bilgi alındığı anda (Linux kullanılması durumunda) çekirdek disksiz makineye kolaylıkla transfer edilebilir.
+Ağda taşınabilir bilgisayarların varlığı: Bir dizüstü bilgisayarı sıklıkla yanınızda gezdiriyorsanız, bu bilgisayarı her götürdüğünüz yerde ağ bilgilerini değiştirmenin ne kadar can sıkıcı olduğunu biliyorsunuzdur. DHCP ' nin kullanıldığı ağlarda, otomatik olarak alınan bu bilgiler her yeni ağa bağlandığınız zaman güncellenir ve elle işlem yaparak zaman kaybetmeniz engellenir. DHCP, IP adresleri, alt ağ maskeleri, varsayılan ağ geçitleri ve diğer ağ yapılandırma bilgileri gibi ağ yapılandırma bilgilerini otomatik olarak atar. Bu ağ yöneticilerinin her bir cihaz için IP adresi ayarlama ihtiyacını ortadan kaldırır ve ağ yapılandırmasını daha verimli ve kolay hale getirir.
+DNS yönetiminin kolaylaşması: DHCP sayesinde IP adreslerinin statik olarak tanımlanması engellenir ve IP adreslerini dinamik olarak atar. Bu ağ yöneticilerinin her bir cihaz için ayrı IP adresi ayarlamasına gerek kalmadan bir IP adresinin birden fazla cihaz tarafından kullanılmasını mümkün kılar. Bu da IP adresleri arasındaki atıl kapasiteyi azaltır ve IP adreslerinin daha etkin bir şekilde kullanılmasını sağlar. Sabit IP verilmesi halinde çok dikkat isteyen bu işlem, DHCP yardımıyla gereksiz hale gelir.
+On bilgisayarlı bir yere sistem kurduğumuzu düşünelim. Kullanıcılar hem kendi aralarında haberleşecekler, hem de internette gezip, e-posta alıp verecekler. Bunun için belli bir IP bloğu tanımlayıp, DHCP üzerinden bilgisayarlara dağıtacağız. İsterseniz şimdi bilgisayarlar için tanımlayacağımız parametreleri bir gözden geçirelim.
+
+Her makinenin birbirinden farklı IP adresi olması gereklidir. Hiçbir IP birbiriyle çakışmamalıdır.
+Her Ethernet kartına ait belli bir ağ maskesi bulunmalı ve aynı alt ağ üzerinde bu ağ maskelerinin aynı olması gereklidir.
+Eğer sistemin İnternete bağlantısı var ise İnternet'e bağlanacak olan bilgisayarların geçit (gateway) IP adresinin bulunması şarttır.
+Son olarak en az bir, tercihen iki DNS IP adresinin de önceden belirlenmiş olması gereklidir.
+Yukarıdaki listeye bakarak geleneksel yöntemler ile (DHCP kullanılmadığı zaman) en az 4 değerin her bilgisayar için girilmesi gerektiğini de hemen söyleyebiliriz. Eğer 20 makinelik bir ağınız var ise, her bilgisayarı teker teker girip toplam 80 numarayı yazmak zorundasınız. Eğer benzeri bir işlemi daha geniş bir ağda (250 bilgisayar) yapmak isterseniz, gerisini siz düşünün.
+
+
+== DHCP'nin Dezavantajları ==
+
+
+=== İstemci Bağımlılığı ===
+DHCP, ağdaki istemcilerin ağ yapılandırmasını otomatik olarak atar. Ancak bir istemcinin DHCP sunucusuna bağlı olması gereklidir. DHCP sunucusu kapanırsa veya kullanılamaz hale gelirse, DHCP istemcileri IP adreslerini veya diğer ağ yapılandırma bilgilerini alamaz. Bu, ağda bağlantı sorunlarına neden olabilir.
+
+
+=== Ağ Trafik Yükü ===
+DHCP kiralamaları genellikle belirli bir süre için atanır ve sonrasında sona erer. Bir DHCP istemcisi kirasını süresi dolmadan yenilemezse IP adresini ve diğer ağ yapılandırma bilgilerini kaybeder. IP adresi atama süreci birkaç saniye sürebilir. Bu, ağda çok sayıda cihaz olduğunda ve cihazların IP adresi kiralama sürecini sürekli olarak yenilemesi gerektiğinde ağda yavaşlama sorunlarına neden olabilir. Bu özellikle ağa çok sayıda cihazın bağlandığı büyük ağlar için geçerlidir.
+
+
+=== Güvenlik Riskleri ===
+DHCP herhangi bir yerleşik güvenlik önlemi sağlamaz. Ağa bağlanan herhangi bir cihaza otomatik olarak IP adresi atayabilir, bu da kötü niyetli kullanıcıların ağa kolayca girmesine ve ağa saldırı düzenlemesine olanak tanır. DHCP sunucusunun güvenlik açıkları, ağa zarar verebilecek saldırılara açık bir kapı açabilir.
+
+
+== DHCP’nin Çalışma Prensipleri ==
+
+
+=== DHCP discover ===
+Bilgisayar ilk defa açıldığında öncelikle tüm ağa DHCPDISCOVER mesajını yollar.Bu mesajın içeriği “Sistemde herhangi bir DHCP sunucu bulunuyor mu? Eğer var ise bir IP adresi istiyorum” olarak özetlenebilir.
+Kuşkusuz ağa gönderilen DHCP istek paketini merak ediyorsunuzdur.İstekte bulunulan IP adresi, MAC adresi ya da paketi gönderen makinenin IP adresi bilinmediğinden, paketin içeriği aşağıdaki şekilde oluşacaktır:
+
+Hedef IP adresi (Bilinmiyor): 255.255.255.255 (broadcast)
+Hedef MAC adresi (Bilinmiyor): FF.FF.FF.FF.FF.FF (broadcast)
+Kaynak IP Adresi (Bilinmiyor): 0.0.0.0
+Kaynak MAC Adresi:: 00-A0-CC-66-73-1F (Kendi kartımızın MAC adresini bilmek kadar doğal bir şey olamaz)
+
+
+=== DHCP offer ===
+DHCP istemci tarafından sisteme atılan yayın paketi (broadcast packet) DHCP sunucu tarafından alınır. IP veritabanı sorgulanır, istemciye verilecek IP adresi ve kira süresi belirlenir. Sunucudan çıkan isteğin onaylanması için istemciye bu belirlenen bilgiler geri yollanır.
+Sistemde birden fazla DHCP sunucu bulunabilir. Bu durumda istemci ağa bir istek gönderdiği zaman en hızlı DHCP offer mesajı yollayanın IP bilgilerini benimseyecek ve bu tanımlarla ağa bağlanacaktır.
+
+Hedef IP adresi (Henüz onaylanmadı): 0.0.0.0
+Hedef MAC adresi (Biliniyor, istemci makine):00-A0-CC-66-73-1F
+Kaynak IP Adresi (Biliniyor, DHCP sunucu): 10.0.0.1
+Kaynak MAC Adresi (Biliniyor, DHCP sunucum):00-A0-C0-B6-12-6F
+
+
+=== DHCP request ===
+DHCP OFFER mesajını alan DHCP istemci kendisine tahsis edilmiş IP adresini kiraladığına dair sunucuya bir yayın mesajı yollar, eğer DHCP istemci birden fazla DHCP OFFER mesajı almış ise ikinci bir broadcast mesajı daha yollar ve diğer DHCP sunuculara teşekkür edip artık bir IP adresine sahip olduğunu belirtir.
+
+
+=== DHCP acknowledgement ===
+DHCP Request mesajını alana DHCP server artık DHCP istemci için gerekli kayıtları gerçekleştirip ona gerekli olan IP, ağ maskesi, DNS adres veya adreslerini yollayacaktır.
+Gelelim kiralama olayına. Bazı programcılar, yarattıkları her şeye istatistikler doğrultusunda eklentiler yapmaya bayılıyorlar. Nitekim DHCP sunucuyu da yaratırken istemcilere verilecek IP adreslerinin kiralanması gerektiğini düşünmüşler, aynen ev sahibi ve kiracılarda olduğu gibi. Belli parametreleri verdikten sonra geri kalan işin tamamını sunucu ile istemci kendi arasında halledecektir.
+
+
+=== DHCP Information ===
+Bir DHCP istemcisi, orijinal DHCPOFFER ile gönderilen sunucudan daha fazla bilgi isteyebilir. İstemci ayrıca belirli bir uygulama için tekrar verileri talep edebilir. Örneğin, tarayıcılar, WPAD yoluyla web proxy ayarlarını almak için DHCP Bilgilendirmesini kullanır.
+
+
+=== DHCP Releasing ===
+İstemci, DHCP bilgilerini ağdan ayrılmak için serbest bırakmak ya da IP adresini değiştirmek isterse DHCP sunucusuna bir istek gönderir ve istemci, IP adresini devre dışı bırakır.Devre dışı bırakılan IP adresi, sunucu IP havuzuna geri döner. Yapının dinamikliği buradan anlaşılabilir, havuza geri dönen IP adresi tekrar tekrar kullanılabilir durumdadır. İstemci aygıtlar genellikle kullanıcıların kendilerini ağdan ne zaman çıkarabileceklerini bilmediklerinden, protokol DHCP Sürümünün gönderilmesini zorunlu kılmaz.
+
+
+=== DHCP Decline ===
+İstemci, sunucunun ACK(acknowledgement) mesajı ile gönderdi IP adresinde bir hata olduğunu düşünüyorsa bu IP adresini decline mesajı ile reddeder ve sunucudan yeni bir IP adresi talep eder.
+
+
+=== DHCP No Acknowledgement (NAK) ===
+Sunucu, bilgileri gönderemezse veya istemciden hatalı bir istek alırsa bu mesaj ile istemciyi bloklamak ve sürecin yeniden başlamasını sağlar.İstemcinin yeniden bir talepte bulunmasını sağlamak içindir.
+
+
+=== İstemci yapılandırma parametreleri ===
+Bir DHCP sunucusu, istemciye isteğe bağlı yapılandırma parametreleri sağlayabilir. RFC 2132, İnternet Tahsisli Numaralar Kurumu (IANA) - DHCP ve BOOTP PARAMETRELERİ tarafından tanımlanan mevcut DHCP seçeneklerini açıklar.
+Bir DHCP istemcisi, bir DHCP sunucusu tarafından sağlanan parametreleri seçebilir, değiştirebilir ve üzerine yazabilir. Unix benzeri sistemlerde, bu istemci düzeyinde iyileştirme, genellikle /etc/dhclient.conf yapılandırma dosyasındaki değerlere göre gerçekleşir.
+
+
+== DHCP Sunucusu Nasıl Çalışır ==
+Tanımlanan gereksinimlerden sonra DHCP sunucusu ağınıza dahil olan her cihaz için benzersiz bir ip adresi atanır. Bu ip adresi atamasından sonra ağınızdaki cihaz diğer cihazlarla iletişime geçer veya internete bağlanabilir.
+Ağınıza dahil olan bir cihaz ilk olarak DHCP sunucusunun iletmiş olduğu istek mesajını alır. Bu istek mesajları DHCP sunucusu tarafından tüm ağa Broadcast yapılarak sürekli olarak iletilmektedir. DHCP sunucusunun iletmiş olduğu mesajı alan cihaz, ağa dahil olmak için DHCP havuzundan bir ip adresi alması gereklidir. Bu ip adresi DHCP sunucusu tarafından istemciye iletilir.
+Öneriyi kabul eden istemci (ağa dahil olmak isteyen cihaz) DHCP sunucusuna istek mesajını göndererek ip adresini kabul eder. Ardından istemci cihaz DHCP sunucusunun iletmiş olduğu ip adresi ile ağınıza dahil olmuş olacaktır.
+
+
+=== DHCP ile IP Adresi Verilmesi ===
+Bir Linux makinesi bir DHCP sunucu veya DHCP istemci olarak çalışabilir. Linux'ta öntanımlı olarak gelen servisler arasından sadece DHCP'nin yapılandırma dosyaları yoktur ve elle yaratılmaları gerekmektedir. Üzerinde çalışacağımız iki önemli dosya vardır:
+
+-dhcp.conf: Tüm ayarlamalar bu dosya sayesinde gerçekleşir.
+-dhcpd.leases: Kiralanan IP adres verilerini tutmakla yükümlüdür.
+Bu dosyaları n touch komutu kullanılabilir. dhcpd.conf dosyası /etc dizininde,dhcpd.leases ise /var/lib/dhcp dizinlerinin altında yaratılmalıdır.
+
+Burada dikkat edeceğimiz nokta, dhcpd.leases dosyasının hiçbir zaman elle düzenlenmemesi gerektiğidir. Ancak, bazen ağdaki değişiklikler nedeniyle DHCP yenileme sürecinin manuel olarak yapılması gerekebilir. Bu durumda, kullanıcılar ağ bağlantılarını kesip yeniden bağlanarak DHCP yenileme sürecini başlatabilirler.
+Şimdi aşağıdaki satırları teker teker /etc/dhcpd.conf dosyasına girin. Söz konusu satırlarla ilgili açıklamalar her satırın altında bulunmaktadır. Yapılandırma dosyası içinde okunurluğu artırmak için sekme ve boşluk karakteri kullanılabilir.
+
+default-lease-time parametresi, DHCP istemcilere verilecek IP adreslerinin kira süresini belirtir. DHCP Lease Time, ağlarınızdaki DHCP yapılandırmanızın çok önemli bir parçasıdır. Bu değer saniye cinsindendir, örnekte 10 dakikalık kiralama süresi verilmiştir. Bu süre aslına bakarsanız oldukça kısa ve sistemde gereksiz trafik yaratabilir. Dilerseniz bu işlem için bu süre daha fazla olabilir. (Örneğin 3 veya 5 günlük gibi).
+
+default-lease-time değerindeki süre dahilinde kira yenilenmemiş ise DHCP istemciye max-lease-time değeri boyunce süre tanınır. Kira süresi dolmadan önce istemcinin normal olarak sunucuyla adres kirası atamasını yenilemesi gerekir. Bir kiranın süresi dolarsa veya sunucudan silinirse, kiranın etkinliği sona erer. Bir kiranın süresinin ne zaman dolacağını ve istemcinin kirayı sunucuyla hangi sıklıkta yenilemesi gerektiğini, kiranın süresi belirler.  Eğer yenilenmezse ne olur derseniz, basit: Kendinizi kapı önünde bulursunuz.
+
+DHCP istemcilerin dahil olacağı alt ağ maskesi(subnet) belirtilir.
+
+DHCP istemcilere dahil oldukları ağın yayın(broadcast) adresini verir.
+
+Eğer sistemde bir gateway(geçit) veya router(yönlendirici) var ise DHCP istemcilere bunların IP adresleri belirtilir.
+
+Eğer sistemde bir veya birden fazla WINS server var ise DHCP istemcilere bunların IP adresleri belirtilir.
+
+DHCP istemcilerin kullanması gereken DNS sunucuların IP adresleri domain-name-servers ile belirtilir. Eğer birden fazla IP adresi verilecekse aralarında virgül bulunmalıdır.
+
+DHCP istemcilerin bulunacağı, dahil olacağı etki alanı belirtilir.
+
+DHCP sunucunun hangi IP ağı üzerinden IP adresi dağıtacağı belirtilir. Alt ağ (Subnet) paramatresinin bulunduğu satırın sonunda, bu IP adresine ait olan diğer parametrelerin belirtilmesi amacıyla parantez açılmıştır. Parantez kapatılana kadar söz konusu IP adresi için DHCP sunucunun diğer parametreleri tanımlanır.
+
+DHCP sunucunun hangi IP adresi aralığında IP dağıtacağı belirtilir.
+
+Yukarıda parantezi kapattık.
+DHCP kullandığınız bir sistemde, bazı durumlarda ağda öyle makineler bulunabilir ki bunlara her zaman aynı IP adresleri verilmelidir.Örnek olarak sistemdeki DNS sunucu, web sunucu, veritabanı sunucu için kullanılan makinelerin IP adreslerinin değişmesi halinde her şey karmakarışık olabilir.Zira bu sunucuların kullandığı IP adresleri yanlışlıkla DHCP sunucu ile başka makineler için tanımlanabilir.
+
+
+=== Bir Makineye Statik IP Verilmesi ===
+Ağda öyle makineler vardır ki bunların mutlaka her zaman aynı IP adresine ihtiyaçları olur. Örneğin sistemde DNS sunucu, web sunucu, veritabanı sunucu, hatta başka bir DHCP sunucu varsa bu gibi durumlarda seçebileceğimiz iki seçenek var. Birincisi; bu tip işlevleri olan makinelere IP adreslerini statik girmek, diğeri de aşağıdaki gibi bir yol izlemek.
+
+Yukarıda verdiğiniz IP, dağıttığınız IP aralığı içinde olsa dahi normal bir bilgisayara kesinlikle verilmez, belirtilen MAC adresine sahip ethernet kartının bulunduğu makine için ayrılır. Yukarıda host ile başlayan satırın hemen sonundaki argelinux1 ismi makinenin tam adını karşılamayabilir. Önemli olan ethernet MAC adresinin tutmasıdır.
+Linux altında "ifconfig" ethernet kartı bilgilerinin yanında MAC adresini de veriyordu.
+DHCP sunucuyu çalıştırmak için isterseniz /etc/init.d dizinine geçip ./dhcpd start komutunu verebilir veya herhangi bir dizindeyken aşağıdaki satırı uygulayabilirsiniz.
+
+Her açılışta DHCP sunucunun çalışmasını istiyorsanız ntsysv komutunu çalıştırıp DHCP kutucuğunu işaretlemeniz yeterli olacaktır.Ya da /etc/init.d dizinindeki rc.local dosyası sonuna /etc/init.d/dhcpd start satırını ekleyerek de bu işlem gerçekleştirilebilir.İlk yöntem standart yöntemlerin dışına çıkılmaması açısından daha uygundur.
+
+
+== Lease Renewall (Kira Yenileme) İşlemleri [7] ==
+1 – Restart A – Bilgisayarımız her kapatılıp, açılmasında kira süresi uzatılır. Bu paket Unicast olarak gönderilir.
+B – Ortamdaki DHCP Server’a cihaz tarafından ulaşılamaması durumunda, cihaz otomatik olarak Gateway’e ping atar ve Gatewayden gelen cevap ile kiralama süresinden kalan günlere devam eder. Ancak Gateway de cevap vermezse IP adresi otomatik olarak APIPA’ya düşer.
+
+C – DHCP tarafından verilen ip adresi kira süresi bittikten sonra aktif olmazsa aktif ip listesine düşecek ve tekrar kiralanabilir durumda olacaktır. Bu ip adresi farklı bir bilgisayar tarafından alınır ve eski sahibi tarafından tekrar talep edilmesi durumunda DCHP Server eski clienta NOACK mesajı dönecektir ve client tekrar yeni bir ip adresi talebinde ( request() )bulunacaktır. Boşta olması durumunda ACK mesajı döner ve tekrar aynı bilgisayara ip adresi atanır.2 – No Restart – Bu tür cihazlarda kira süresinin %50 si kadar kullanılması durumunda Clientdan DHCP’ye tekrar request yollanır. Sunucumuz ayakta olması durumunda ACK alır ve Kira süresi tekrar uzatılır.
+– %50’lik kısımda DCHP den cevap alamazsa %75’lik kısma kadar kullanmaya devam eder ve ardından tekrar DHCP’ye request yollar. Ayakta olması durumunda ACK alacaktır.
+
+– %75’lik kısımdan sonra DHCP hala ayakta değilse %87,5’lık kira süresine kadar cihaz kullanmaya tekrar devam eder ve son şans olarak tekrar request yollar. Cevap alması durumunda ACK ile kira süresini yeniler ancak cevap alamazsa kira süresinin bitime kadar kullanmaya devam eder ve sonunda Client APIPA’ya düşecektir.
+
+
+=== Birden Fazla Ethernet Kartı İle Çalışmak ===
+DHCP kurulu bir Linux sistemde, eğer birden fazla ethernet kartı varsa, sadece tek bir ethernet kartının IP dağıtımı yapmasını istediğiniz durumlar olabilir.özellikle aynı makinede birden fazla sevis çalıştıran firmalarda tek Linux sunucuya squid proxy, güvenlik duvarı, e-posta sunucusu, DHCP sunucusu vb. aktarıldığı zaman bu durum ortaya çıkar.Zira genellikle çalışan iki ethernet kartı vardır, ancak sadece birisinin etkin olması istenir.
+Bu durumda işimizi kolaylaştıran bir parametre bizim için Dhcpd programına eth0 parametresini eklerseniz sadece eth0 üzerinden gelen istekler dinlenecektir. Benzer şekilde eth0 yerine eth1 yazmanız durumunda dinlenecek ethernet kartı eth1 olacaktır.
+Öyleyse dhcp programını çalıştıran /etc başlangıç betiklerini değiştirmemiz gereklidir. /etc/init.d/dhcp dosyasının bir kısmını inceleyelim:
+
+Yapılması gereken işlem, “ daemon /usr/sbin/dhcpd” satırını “ daemon /usr/dhcpd eth0” olarak değiştirmek.DHCP servisinin yeniden başlatmanız halinde artık sadece eth0 üzerinden gelen istekler cevaplanacaktır.

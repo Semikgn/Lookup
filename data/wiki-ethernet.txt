@@ -1,0 +1,424 @@
+# Ethernet
+
+Ethernet, kablolu veri ağları için yazılım (protokoller, vb.) ve donanım (kablolar, dağıtıcılar, ağ kartları, vb.) belirleyen, başlangıçta yerel alan ağları (LAN'lar) için tasarlanmış olan ve bu nedenle LAN teknolojisi olarak da adlandırılan bir teknolojidir. Bir yerel alan ağına (LAN) bağlı cihazlar (bilgisayarlar, yazıcılar, vb.) arasında veriyorum  şeklinde veri alışverişini mümkün kılar.
+Kavram,"ether" kelimesinden türetilmiştir. OSI ağ modelinin fiziksel katmanı için veri bağlantısı katmanı/ ortam erişim kontrolü (İngilizce: Media access control) üzerinden kablosuz ağ (İngilizce: Wireless local areal network) yoluyla bir dizi kablolama ve sinyalleşme düzeni ve ortak bir adresleme şekli tanımlar.
+Ethernet IEEE 802.3 olarak standartlaştırılmıştır. Uç sistemleri ağa bağlamakta kullanılan bükülü tel çifti ve düzenek kurulumunda kullanılan fiberoptik kablolama yöntemlerinin birleşimi kullanılan en yaygın kablolu yerel ağ teknolojisidir. Token Ring, FDDI ve ARCNET gibi diğer muadil ağ teknolojilerinin yerini büyük ölçüde alarak 1980'li yıllardan itibaren kullanılmaktadır.  
+
+
+== Tarihçe ==
+Ethernet ilk olarak 1973-1975 yılları arasında Xerox PARC tarafından geliştirildi. 1975 yılında Xerox Robert Metcalfe, David Boggs, Chuck Thacker ve Butler Lampson adına bir patent başvurusunda bulundu (ABD patent 4.063.220: Multipoint data communication system (with collision detection)). 1976'da, sistemin PARC'da kullanıma girmesinin ardından Metcalfe ve Boggs taslak bir metin yayımladılar.
+Bu metinde tanımlanan deneysel Ethernet 3 Mbit/s hızındaydı ve 8-bit kaynak ve hedef adresi alanlarını içermekteydi, yani ilk Ethernet adresleri bugün kullanılan MAC adresleri değildi. Yazılım konvansiyonuna göre kaynak ve hedef adresi alanlarından sonra gelen 16 bit paket tipi alanıydı, ancak, metinde söylendiği gibi "farklı protokoller ayrık paket tipi kümeleri kullanabilmekteydi", dolayısıyla bunlar Ethernet'in bugünkü halindeki, kullanılmakta olan protokolü tanımlayan paket tiplerinden ziyade belirlenen protokolün içerdiği paket tipleriydi.
+Metcalfe 1979 yılında Xerox'tan ayrılarak kişisel bilgisayarların ve yerel alan ağlarının kullanımını yaygınlaştırmak amacıyla 3Com'un kurucu ortağı oldu. DEC, Intel ve Xerox 'u etherneti "Digital/Intel/Xerox" 'tan gelen DIX standardı olarak teşvik etmek için birlikte çalışmaya ikna etti. Bu standartta 48-bit kaynak ve hedef adresi alanları ile evrensel bir 16-bit paket tipi alanı olan 10 Mbit/s hızında bir Ethernet tanımlanmıştır. Standartın ilk taslağı 30 Eylül 1980'de IEEE tarafından yayınlandı. Standart Token Ring ve Token Bus adlı mevcut iki tescilli standarta rakip olmuştur. Ethernet CSMA/CD standardının finalizasyonunda IEEE içindeki zor karar süreci ve IBM tarafından desteklenen rakip Token Ring taslağından kaynaklanan gecikmelerin üstesinden gelmede CSMA/CD standardının ECMA, IEC ve ISO gibi diğer standarlaştırma kuruluşları içinde desteklenmesi önemli bir faktördü. Tescilli sistemler kısa süre içinde ethernet ürünlerinin istilası ile büyük ölçüde pazar kaybettiler. 3COM bu süreci destekleyen başlıca firma olmuştur. 1981'de 3COM ilk 10 Mbit/s Ethernet adaptörünü üretti. Bunu kısa süre sonra Digital Equipment'in unibus ethernet adaptörü izledi.
+Bükülü Tel Çifti ethernet sistemleri geliştirilmesine 1980'li yılların ortalarında StarLAN adıyla başlanmış ancak sonrasında geniş ölçüde 10BASE-T olarak adlandırılmıştır. İlk ethernet sistemleri zırhsız bükülü tel çifti ile birleştirilen dağıtım soketleri ile sunulduğu için eşeksenli kablonun yerini almış, daha sonra CSMA/CD yapısı yerine daha yüksek performans sağlayan anahtarlamalı full duplex yapısı kullanılmıştır.
+
+
+== Standartlaştırma ==
+
+Teknik kabiliyetlerine rağmen Ethernet'in başarısı hızlı standartlaştırılmasına bağlıydı. Bunun için Uluslararası Elektrik ve Elektronik Mühendisleri Enstitüsü (İngilizce: Institute of Electrical and Electronics Engineers (IEEE)), Avrupa Bilgisayar Üreticileri Birliği(İngilizce: European Computer Manufacturers Association (ECMA)), Uluslararası Elektroteknik Komisyonu (İngilizce: International Electrotechnical Commission (IEC)) ve Uluslararası Standartlaştırma Kurumu (İngilizce: International Organization for Standardization (ISO)) içinde koordineli çalışmalar yürütülmesi gerekliydi.
+Şubat 1980'de IEEE Yerel Ağların (LAN) standartlaştırılması için IEEE 802 adında bir proje başlattı.
+DEC'ten Gary Robinson, Intel'den Phil Arst ve Xerox'tan Bob Printis "Blue Book" olarak bilinen LAN spesifikasyonu olmaya aday ilk CSMA/CD spesifikasyonunu yayınladı. IEEE üyeliği öğrenciler de dahil tüm profesyonellere açık olduğundan bu yeni teknoloji üzerine sayısız yorum geldi.
+CSMA/CD'nin yanı sıra IBM tarafından desteklenen Token Ring ve General Motors tarafından seçilmiş daha sonrasında desteklenmiş olan Token Bus'ta LAN standardı olmaya aday teknolojilerdi. IEEE'nin tek bir standart ile yola devam etmek istemesi ve her üç tasarımın arkasında kuvvetli firmaların bulunması LAN standardı üzerinde gerekli uzlaşmanın sağlanmasını büyük ölçüde geciktirdi.
+Ethernet kampında, bu Xerox Star işlemcisi ve 3COM'un Ethernet LAN ürünlerinin pazara sürülmesinde risk oluşturmaktaydı. Kafalarında bu iş kaygıları ile David Liddle(GM Xerox Office Systems) ve Bob Metcalfe (3Com) Siemens Private Networks 'ten Fritz Röscheisen'in gelişen ofis iletişim pazarında işbirliği önerisini kuvvetle desteklediler, böylece Ethernet'in uluslararası standart haline gelmesi için Siemens 'in desteğini arkalarına aldılar (10 Nisan 1981). IEEE 802'deki Siemens temsilcisi Ingrid Fromm Avrupa standardizasyon kuruluşu ECMA içinde ECMA TC24 (Yerel Ağlar) adında bir iş grubu kurarak Ethernet'e IEEE dışında geniş bir destek sağladı. Mart 1982 gibi kısa bir sürede ECMA TC24 üye şirketleri IEEE 802 taslağına dayanan bir CSMA/CD standardı üzerinde kendi aralarında uzlaşmaya vardılar. ECMA'nın hızlı hareket etmesi IEEE içindeki farklı görüşlerin birleşmesini ve 1982 yılı sonuna doğru IEEE 802.3 CSMA/CD 'nin onaylanmasını sağladı.
+Ethernet'in uluslararası standart olarak kabulü de Fromm'un IEC TC83 ve ISO TC97SC6 arasındaki diplomatik çalışmaları sayesinde gerçekleşti ve ISO/IEEE 802/3 Uluslararası Standartı 1984 yılında onaylandı.
+
+
+== Genel tanım ==
+
+Ethernet ilk olarak ortak bir eşeksenli kablo üzerinden birbirine bağlanan bilgisayarların yayın iletimi yöntemiyle haberleşmesi fikrine dayalıydı. Kullanılan yöntemler kısmen radyo sistemlerine benzemekteydi, ancak, kablolu bir yayın iletimi sistemindeki çakışmaları saptamanın radyo yayınına kıyasla çok daha kolay olması gibi temel farklılıklar da mevcuttu. "Ethernet" adı iletişim kanalını oluşturan ortak kablonun ether 'e benzetilmesinden gelmekteydi.
+Ethernet bu öncel ve göreceli olarak basit kavramdan, günümüzdeki pek çok LAN altyapısını oluşturan karmaşık ağ teknolojisi yapısına evrimleşmiştir. Eşmerkezli kablolamanın yerini düşük kurulum masrafı, yüksek güvenilirlik, noktadan-noktaya ağ yönetimi ve arıza bulma kolaylıkları gibi avantajlar sebebiyle Ethernet hub 'lar ile birleştirilmiş noktadan-noktaya bağlantılar ve/veya ağ anahtarları almıştır.
+StarLAN Ethernet'in eşmerkezli kablolama yapısından hub ile yönlendirilen bükülü tel çifti ağ yapısına evrimleşmesindeki ilk adımdır. Bükülü tel çifti kablolamanın gelişi kurulum masraflarını eski Ethernet teknolojileri de dahil olmak üzere benzer teknolojilere kıyasla dramatik olarak düşürmüştür. 
+Ethernet istasyonları birbirlerine donanım katmanı üzerinden veri bloklarından oluşan ve ayrı ayrı gönderilip alınan veri paketleri göndererek haberleşir. Diğer IEEE 802 LAN'larda olduğu gibi her Ethernet istasyonunun paket gönderme ve alma adreslerini belirleyen 48-bitlik kendine özgü MAC adresleri vardır. Ağ bağdaştırıcı kartları (İngilizce: Network Interface Card (NIC)) ya da çipleri normalde diğer Ethernet istasyonlarına gönderilen paketleri kabul etmezler. Bağdaştırıcılar genellikle kendine özgü tek bir global adrese sahip olarak gelir ancak kart değiştirildiğinde adres çakışması olmaması ya da yerel yönetim ağları içinde kullanıldıklarında bu adres değiştirilebilir.
+10 Mbit/s hızındaki eşmerkezli kablodan 1 Gbit/s hızındaki noktadan-noktaya bağlantıya kadar tüm Ethernet türevleri aynı veri çerçevesi formatını (dolayısıyla üst katmanlarda aynı arayüzü) kullandıklarından kolaylıkla birbirlerine bağlanabilirler.
+Ethernetin çok yaygın olması, donanım maliyetinin giderek düşmesi ve bükülü tel çifti Ethernet arayüzünün fazla yer kaplamaması nedeniyle pek çok üretici PC anakartlarına Ethernet arayüzü koymakta, böylelikle ayrı bir ağ bağdaştırıcı kartına gerek kalmamaktadır.
+
+
+== Birden fazla istemciyi destekleme ==
+
+
+=== CSMA/CD paylaşımlı ortam Ethernet ===
+Ethernet başlarda paylaşım ortamı olarak eşeksenli kablo (İngilizce: coaxial cable) kullanmıştır. Bağlı bilgisayarların iletişim kanalını kullanma kuralları "Çakışma Saptamalı Çoklu Taşıyıcı Erişimi"(İngilizce: Carrier Sense Multiple Access with Collision Detection(CSMA/CD)) olarak adlandırılan yöntemle belirlenmiştir. Bu yöntem rakip Token Ring ya da Token Bus teknolojilerine göre daha basitti. Herhangi bir bilgisayar veri göndermek istediğinde aşağıdaki algoritmayı kullanmaktaydı:
+
+
+==== Temel prosedür ====
+Veri çerçevesi gönderilmeye hazır.
+İletim ortamı boşta mı? Değilse boşaldıktan sonra iki çerçeve arası bekleme süresince bekle (10 Mbit/s Ethernet için 9.6 µs)
+Göndermeye başla.
+Çakışma var mı? Eğer varsa çakışma saptama prosedürü'ne git.
+Yeniden gönderme sayaçlarını sıfırla ve iletimi sonlandır.
+
+
+==== Çakışma saptama prosedürü ====
+Tüm alıcıların çakışmayı saptaması için maximum paket zamanı boyunca iletimi sürdür (karıştırma sinyali).
+Yeniden gönderme sayacını arttır.
+Maksimum gönderme denemesi sayısına ulaşıldı mı? Eğer ulaşıldıysa göndermeyi yarıda kes.
+Çakışma sayısı ile orantılı geri çekilme süresini hesapla ve bekle.
+Temel prosedürün 1 no'lu adımına geri dön.
+Bu yöntem bir yemek masasındaki tüm konukların müşterek bir ortamı kullanarak (hava) birbirleriyle konuşmasına benzetilebilir. Konuşmaya başlamadan önce her konuk kibarca o anda konuşmakta olan konuğun sözünün bitmesini bekler. Eğer iki kişi aynı anda konuşmaya başlarlarsa her ikisi de durur ve rastgele bir süre beklerler (Ethernet'te bu süre mikrosaniye mertebesindedir). Her ikisinin de rastgele bir süre beklemelerinden amaçlanan aynı anda tekrar konuşmaya başlamayıp tekrar çakışmamalarıdır.Birden fazla başarısız gönderme girişimi olması durumunda "Kırpılmış ikilik üstel geri çekilme" algoritması ile hesaplanan ve katlanarak artan geri çekilme süreleri kullanılır.
+"Bağlantı Ünitesi Arayüzü" (İngilizce: Attachment Unit Interface (AUI)) alıcı-vericisi bilgisayarların sırayla kabloya erişimini sağlamaktaydı (daha sonraları thin Ethernet 'in çıkmasıyla alıcı-vericiler ağ bağdaştırıcının içine entegre edildi. Pasif kablolama küçük Ethernet ağları için yüksek seviyede güvenilir olmakla birlikte tek bir noktadaki kablo hasarı ya da arızalı bir konnektör bütün bir Ethernet alanını kullanılamaz hale getirebileceği için büyük ve genişletilmiş ağlarda pek de günenilir değildi. Çok noktalı ağlarda ise bazı nodların düzgün çalışmasına rağmen diğerlerinin elektriksel bir hata yüzünden düzgün çalışmamasından kaynaklanan çözülmesi oldukça zor arıza karakteristikleri olabilmekteydi.
+Bütün iletişim tek bir kablo üzerinden gerçekleştiği için bir bilgisayar tarafından gönderilen bilgi belirli bir noktaya hedeflenmiş olsa dahi ağa bağlı tüm bilgisayarlarca alınmaktadır. Ağ bağdaştırıcı kartı yalnızca kendisine gönderilen paketleri yakaladığında bağlı olduğu CPU 'ya kesme gönderir, gelen her pakette CPU 'ya kesme göndermek için özel bir moda geçirilmediği sürece kendisine gönderilmeyen paketleri dikkate almaz. "Biri konuşur, herkes dinler" şeklindeki bu özellik paylaşımlı ortam kullanan Ethernet için bir güvenlik zaafı oluşturur. Zira Ethernet ağındaki herhangi bir nod isterse tüm ağ trafiğine kulak misafiri olabilmektedir. Ayrıca tek bir ortak kablo kullanımı da bant genişliğinin paylaşıldığı anlamına geldiğinden, örneğin enerji kesilip geri gelmesi gibi durumlarda tüm Ethernet nodları yeniden başlayacağından ağ trafiğinin son derece yavaşlamasına neden olabilmektedir.
+
+
+=== Tekrarlayıcı ve hub'lar ===
+
+İşaretin bozulması ve zamanlama sınırlamaları yüzünden eşmerkezli kablolama kullanan Ethernet alanları için, kullanılan ortama bağımlı olarak boyut sınırlamaları vardır. Örneğin, 10BASE5 eşmerkezli kabloların uzunluğu 500 metreyi (1,640 ft) geçemez. Ayrıca pek çok yüksek hızlı veriyolu'nda olduğu gibi Ethernet alanları da empedans uyumluluğu için her iki uçta birer direnç ile sonlandırılmalıdır. Eşmerkezli kablo kullanan Ethernet için kablonun her iki ucuna 50 Ohm(Ω) 'luk bir sonlandırma direnci konulur. Bu sonlandırma direnci tipik olarak BNC ya da N tipi erkek bir konnektörün içine yerleştirilir ve veriyolu üzerindeki son cihaza, eğer vampir tapası kullanılıyorsa son cihazdan sonraki kablonun ucuna iliştirilir. Eğer sonlandırma yapılmazsa ya da kabloda bir kırık olursa veriyolu üzerindeki alternatif akım işareti ağın sonuna ulaştığında sönümlenmek yerine yansır. Bu yansıyan işaretin bir çakışmadan ayırt edilmesi imkânsız olduğundan veriyolu üzerinde hiçbir iletişim gerçekleştirilemez.
+Ethernet tekrarlayıcı kullanarak daha uzun kablolama yapmak mümkündür. Tekrarlayıcılar bir Ethernet kablosundan aldığı zayıflamış işareti yükselterek diğer kabloya gönderirler. Eğer bir çakışma saptanırsa tekrarlayıcı çakışmanın diğer cihazlar tarafından da saptanmasını garantilemek için ağ üzerindeki tüm veri giriş/çıkış noktalarına bir karıştırma işareti yollar. İki sunucu arasında üçüne bağlı cihazlar olabilen en fazla beş adet Ethernet bölümü olabilecek şekilde tekrarlayıcılar kullanılarak bağlantı yapılabilir. Tekrarlayıcılar sürekli çakışmaları algılayarak doğru sonlandırılmamış bağlantıları ağın diğer bölümlerinden ayırabilirler. Dolayısıyla kablo kırıklarından kaynaklanan problemleri hafifletirler: Herhangi bir eşmerkezli Ethernet kablosu kırıldığında, bu bölümdeki cihazlar çalışmaya devam edemeyecek, ancak tekrarlayıcılar sayesinde diğer ağ bölümleri çalışmaya devam edebilecektir. Ancak arızalı bölümün ağ yapılandırmasındaki konumu yüzünden diğer ağ bölümleri önemli sunuculara erişemeyeceğinden bu kullanım çok da etkin olmayabilir.
+Kullanıcılar yıldız ağ topolojisinde kablolamanın, öncelikli olarak sadece yıldız bağlantı noktasındaki hataların kötü bir ağ bölümlemesi ortaya çıkarması gibi avantajlarını keşfettiler ve üreticiler de yıldız noktasında daha az tekrarlayıcı gereksinimi oluşturacak çok portlu tekrarlayıcılar üretmeye başladılar. Çok portlu Ethernet tekrarlayıcılar "Ethernet Hub" olarak adlandırılmaya başlandı. Digital Equipment Corporation DEC ve SynOptics gibi ağ sistemleri üreticileri pek çok 10BASE2 eşmerkezli alanı birbirine bağlayan hub'lar ürettiler. Ayrıca çok portlu alıcı-göndericiler ya da "fan-out" 'lar da bulunmaktaydı. Bunlar birbirlerine ve/veya eşmerkezli omurgaya bağlanabilmekteydi. DEC'in DELNI 'si bilinen erken dönem cihazlardan biridir. Bu cihazlar AUI bağlantılı birden fazla sunucunun 
+aynı alıcı-göndericiyi paylaşmasına imkân veriyordu. Aynı zamanda eşmerkezli kablo kullanmaksızın küçük çaplı ayrık Ethernet bölümleri oluşturulmasına da olanak sağlamaktaydılar.
+
+StarLAN ile başlayıp 10BASE-T ile devam eden Zırhsız bükülü tel çifti kablo üzeri Ethernet (İngilizce: Ethernet on unshielded twisted-pair cables (UTP)) yalnızca noktadan-noktaya bağlantılar için tasarlanmış olup tüm sonlandırma cihazların içine yerleştirilmişti. Bu durum hub'ları büyük ağları birbirine bağlayan özelleşmiş bir cihaz olmaktan çıkarıp ikiden fazla ağ aygıtından oluşan her bükülü tel çifti ağının kullanmak zorunda olduğu bir cihaz haline getirdi. Bu durumdan kaynaklanan ağaç yapısı bir uç noktada ya da kablosundaki arızanın ağ üzerindeki diğer aygıtları etkilemesini engelleyerek Ethernet ağlarını daha güvenilir kılmıştır. Yine de bir hub ya da hublar arası bir nakil hattı arızası pek çok kullanıcıyı etkileyebilmektedir. Ayrıca bükülü tel sistemlerin noktadan-noktaya olması ve sonlandırma donanımının cihaz içinde bulunması bir port için gerekli boş panel alanını ciddi oranda küçülterek pek çok porta sahip hub'ların tasarımına ve Ethernet'in bilgisayar anakartlarına entegre edilmesine olanak sağlamaktadır.
+Fiziksel yıdız topolojisine rağmen hub'lı Ethernet ağları hâlen minimal hub aktivitesi ve paket çakışmaları için çakışma güçlendirme sinyali ile yarı-duplex ve CSMA/CD kullanmaktadırlar. Her paket hub üzerindeki her bir port'a gönderilir, dolayısıyla bant genişliği ve güvenlik problemleri ile ilgilenilmez. Hub'ın toplam çıktısı tek bir bağlantınınki ile sınırlıdır ve tüm bağlantılar aynı hızda çalışmak zorundadır.
+Çakışmalar doğaları gereği çıktıyı düşürürler. Pek çok sunucunun çok sayıda kısa veri çerçevesi göndermeye çalıştığı en kötü koşulda çakışmalar çıktıyı dramatik olarak düşürebilir. Ancak 1980 yılında Xerox tarafından yayınlanan bir rapor 20 hızlı uç noktanın aynı Ethernet bölümünde farklı boyuttaki paketleri mümkün olduğunca hızlı göndermeye çalıştığı bir senaryonun sonuçlarını özetlemektedir. Sonuçlar 64 Bayt'lık en küçük Ethernet çerçevelerinde dahi ağdaki çıktı standardının %90 olduğunu ortaya koymaktadır. Bu oran ağa eklenen her yeni ağ aygıtının andaç beklemelerinden dolayı ciddi çıktı azalmasından muzdarip olan token ring, token bus gibi andaç geçirmeli ağlar ile kıyaslanabilir.
+Modelleme nominal kapasitenin 40%'ı gibi yüklenmelerin çakışma tabanlı ağları kararsız hale getirebileceğini gösterdiğinden bu rapor tartışmalıdır. İlk dönemlerde pek çok araştırmacı CSMA/CD protokolünün inceliklerine hakim olmadıklarından gerçek Ethernet'ten farklı (kötü anlamda) ağ modellemeleri yapmışlardır.
+
+
+=== Eşikler ve anahtarlama ===
+Tekrarlayıcılar kablo kırıkları gibi Ethernet alanlarıyla ilgili bazı sıkıntıları gidermekle beraber yine de tüm trafiği tüm ethernet aygıtlarına yönlendirmekteydiler. Bu durum bir Ethernet ağının en fazla kaç makine tarafından kullanılabileceğini pratik olarak kısıtlamaktaydı. Ayrıca tüm ağ bir çakışma ortamı idi, tüm sunucular ağ üzerinde herhangi bir noktadaki çakışmaları algılayabilmek zorunda idi ve en uzak iki nokta arasındaki tekrarlayıcı sayısı sınırlıydı. Son olarak da tekrarlayıcılarla birbirlerine bağlanan Ethernet alanları aynı hızda çalışmak zorundaydı, dolayısıyla aşamalı olarak geliştirme yapmak imkânsızdı.
+Bu sorunları gidermek için donanım katmanını soyutlayarak veri bağlantısı katmanında iletişime olanak veren eşikleme geliştirildi. Eşikleme sayesinde bir Ethernet alanından diğerine sadece doğru biçimlendirilmiş paketler yönlendirilmekte, çakışmalar ve hatalı paketler tecrit edilmektedir. Eşikler MAC adresleri 'ni izleyerek ağ aygıtlarının nerelerde olduklarını tespit etmekte ve hedef adresi doğru istikamette konumlandıramadıklarında alanlar arasında paket yönlendirmeye izin vermemektedirler.
+Farklı Ethernet alanlarına bağlı ağ aygıtlarından oluşan mimari oluşturulmadan önce eşikler (ve ağ dağıtıcıları) hemen hemen hub'lar ile aynı işlevi görmekte, yani tüm trafiği alanlar arasında yönlendirmekteydi. Sadece eşikler her port ile ilintili adresleri bildikleri için ağ trafiğini sadece gerekli olan alanlara yönlendirerek genel performansı yükseltmekteydiler. Yayın (İngilizce: Broadcast) trafiği hâlen tüm ağ alanlarına yönlendirilmektedir. Eşikler aynı zamanda Yüksek Hızlı Ethernet ile birlikte önem kazanan iki sunucu arasındaki toplam alan sınırlamasını kaldırmış ve farklı hızlardaki alanların birbirlerine bağlanabilmesini sağlamıştır.
+İlk eşikler CPU üzerinde çalışan bir yazılım ile her paketi tek tek incelemekteydi ve bazıları trafik yönlendirmede özellikle de aynı anda pek çok porta servis verdiklerinde hublara oranla çok daha yavaştı. Bu durum kısmen, Ethernet paketlerinin bir arabelleğe alınması, hedef adresinin bilinen MAC adresleri tablosuyla karşılaştırılıp paketin başka bir alana yönlendirilip yönlendirilmemesi kararının verilmesi gerektiğinden kaynaklanmaktaydı.
+1989 yılında Kalpana firması ilk Ethernet ağ dağıtıcılarını EtherSwitch adıyla piyasaya sürdü. Bu cihaz mevcut Ethernet ağ dağıtıcılarından farklı olarak çalışmakta ve gelen paketin başka bir alana yönlendirip yönlendirilmeyeceğine karar vermek için sadece başlık kısmına bakmaktaydı. Bu yöntem paket yönlendirmedeki gecikmeyi ve ağ aygıtındaki işlem gereksinimini en aza indirerek ağ performansında ciddi iyileşme sağlamaktaydı. Bu yöntemin önemli bir dezavantajı paket içindeki başlık kısmından sonra gelen bölümde bir hata olması durumunda paketin doğru paket gibi algılanıp yönlendirilmesidir, dolayısıyla doğru çalışmayan bir istasyon hâlen tüm ağı karıştırabilmektedir. Buna çözüm olarak "yükle-ve-yolla"(İngilizce: store-and-forward) anahtarlama yöntemi geliştirildi. Bu yöntemde paketler bütün olarak arabelleğe alınıp sağlama toplamına bakılmakta ve yollanmaktadır. Bu yöntem orijinal eşikleme yaklaşımına bir çeşit geri dönüş olmakla birlikte uygulamaya yönelik ve daha güçlü işlemcilerin avantajlarından faydalanılmaktadır. Dolayısıyla artık, eşikleme, paketlerin tam kablo hızında yollanmasına olanak verecek şekilde donanımsal olarak yapılmaktadır. "Dağıtıcı" terimi 802.3 standardında geçmemekte olup ağ aygıtı üreticileri tarafından kullanılan bir adlandırmadır.
+Paketler genelde yalnızca hedeflenen port'a ulaştırıldığından anahtarlamalı Ethernet paket trafiği paylaşımlı ortam Ethernet'e oranla biraz daha az umuma açıktır. Buna rağmen ARP spoofing ya da MAC flooding gibi yöntemlerle kolaylıkla çökertilebileceğinden hâlen güvensiz bir ağ teknolojisi olarak değerlendirilmelidir. Bant genişliği avantajları, ağ aygıtlarının birbirinden biraz daha fazla soyutlanmış olması, farklı hızdaki ağ aygıtlarını kolaylıkla bir araya getirilebilmesi ve anahtarlamasız Ethernet'teki zincirleme sınırlamalarının elimine edilmiş olması gibi artıları anahtarlamalı Ethernet'i en yaygın ağ teknolojisi durumuna getirmiştir.
+Bükülü tel çifti ya da fiber bağlantılı bir alan her iki ucu da bir hub'a bağlanmadan kullanıldığında bu alanda tam çift yönlü(İngilizce: full-duplex) Ethernet kullanılabilir. Tam çift yönlü modda her iki ağ aygıtı herhangi bir çakışma olmaksızın aynı anda birbirlerine veri gönderip alabilirler. Bu yöntem kullanılan veri bağlantısının bant genişliğini iki katına çıkarır ve zaman zaman "iki kat bağlantı hızı" (örnek: 200 Mbit/s) olarak da lanse edilmektedir. Ancak bu terminoloji yanlıştır, zira performans ancak her iki yönde giden paketleri birebir olduğunda tam olarak ikiye katlanabilecektir ki bu da pratikte pek mümkün olmamaktadır. Çakışma alanının ortadan kaldırılması aynı zamanda-bazı fiber Ethernet türevlerinde çok belirgin olduğu üzere-bağlantının bant genişliğinin tamamen kullanılabilmesi ve alan mesafesinin çakışma önleme donanımları gereksinimi ile sınırlı olmaması anlamına gelmektedir.
+
+
+=== Dual hızlı hub'lar ===
+Yüksek Hızlı Ethernet 'in ilk zamanlarında Ethernet Ağ Anahtarları göreceli olarak pahalı cihazlardı. Hub'ların sıkıntısı ağa herhangi bir 10BASE-T ağ aygıtı bağlanması durumunda tüm ağın 10 Mbit/s hızında çalışması zorunluluğuydu. Bu nedenle Dual hızlı hub olarak bilinen, işlevsellik olarak ağ anahtarı ile hub için bir ortayol sayılabilecek cihazlar geliştirildi. Bu cihazlarda 10BASE-T (10 Mbit/s) ve 100BASE-T (100 Mbit/s) Ethernet alanlarını birbirinden ayıran iki noktalı dahili bir anahtar mevcuttu. Cihaz tipik olarak ikiden fazla fiziksel ağ bağlantısına sahipti. Herhangi bir ağ bağlantısına bağlı olan bir istasyon aktif hale geçince cihaz bunu uygun olarak ya 10BASE-T alanına ya da 100BASE-T alanına bağlamaktaydı. Bu cihazlar sayesinde 10BASE-T 'den 100BASE-T ağlarına geçiş süreci "ya hepsi ya da hiçbiri" yöntemiyle yapılmaktan kurtulmuş oldu. BU cihazlar hub olarak değerlendirilirler, çünkü aynı hızda bağlanan cihazlar arasındaki ağ trafiğini anahtarlamazlar.
+
+
+=== Daha gelişmiş ağlar ===
+Anahtarlamalı basit Ethernet ağlarının hub tabanlı Ethernet ile bir miktar gelişme olmasına rağmen yine de bazı sıkıntıları vardır, bunlar özetle:
+
+Tek noktadaki bir arızadan kaynaklanan sorunlar. Ağ üzerindeki herhangi bir bağlantıda oluşabilecek bir arızada bazı ağ aygıtları diğerleriyle haberleşemeyebilir ve eğer arızalı bağlantı merkezi bir konumda olursa pek çok kullanıcı istedikleri sunuculara bağlanamayabilir.
+Ağ anahtarları ya da sunucular, hedeflemedikleri halde herhangi bir makineye veri göndermesi için kandırılabilir.
+Kasti, kazara ya da ağ boyutunun bir yan etkisi olarak ağa gönderilen yayın trafiği düşük hızda çalışan bağlantı ya da sistemlerde aşırı yüklenmeye neden olabilir.
+Herhangi bir sunucu kendisiyle aynı ya da daha düşük hızda çalışan sunuculara servis vermeyi reddederek ağ üzerinde aşırı yüklenmeye neden olabilir.
+Ağ büyüdükçe normal yayın trafiği bant genişliğini gittikçe daha fazla harcar.
+Eğer ağ anahtarları multicast uyumlu değilse multicast trafiği bir port ile ilişkilendirmemiş MAC adresine yönlendirildiğinden broadcast trafiği olarak değerlendirilecektir.
+Eğer ağ anahtarları ağ boyutu ya da kasıtlı bir saldırı yüzünden kaydedebileceklerinden fazla MAC adresi tespit ederse bazı adresler kaçınılmaz olarak düşecek ve bu adreslere yönlendirilen veri akışı broadcast trafiği olarak değerlendirilecektir.
+Tek bir bağlantıya yöneltilen yüksek miktarda veriden kaynaklanan bant genişliği tıkanması.
+Bazı ağ anahtarları bu sorunların üstesinden gelmek için çeşitli yöntemler sunmaktadır:
+
+Spanning-tree protokolü: Ağdaki aktif bağlantıları kullanımda tutarken yedek bağlantılara izin vermek için.
+Saldırılar çoklukla iki ağ anahtarı arasındaki bağlantıdan ziyade portlara yönlendirildiğinden çeşitli port koruma özellikleri.
+Aynı fiziksel altyapıyı kullanan farklı kullanıcı gruplarını birbirinden ayırmak için Sanal Ağlar.
+Sanal Ağlar arası hızlı anahtarlama yapabilen çok katmanlı ağ anahtarları.
+Aşırı yüklenmiş bağlantılara ilave bant genişliği sağlamak ve bir çeşit bağlantı yedeklemesi sunmak içim bağlantı kümeleri oluşturmak.
+
+
+== Autonegotiation ve çift yönlülük uygunsuzluğu ==
+8P8C modüler konnektör yapısının (RJ45 ile karıştırılmamalıdır) kullanıldığı bükülü tel çifti Ethernet sistemleri için 10BASE-T yarı çift yönlü, 10BASE-T tam çift yönlü, 100BASE-TX yarı çift yönlü,... gibi çok farklı alternatif iletişim modları mevcuttur ve ağ aygıtlarının büyük çoğunluğu da farklı iletişim modlarıyla uyumludur. 1995 yılında birbirine bağlı iki ağ arayüzünün karşılıklı uzlaşma (İngilizce: Autonegotiation) ile en uygun iletişim modunu belirlemesine olanak veren IEEE 802.3u (100baseTX) standardı yayımlanmıştır. Bu sistem tüm cihazların autonegotiate edecek şekilde ayarlandığı ağ yapılarında başarıyla çalışmaktadır.
+Autonegotiation standardında hızı algılamak için bir mekanizma olmasına rağmen Ethernet çiftinin çift yönlü iletişim ayarlaması için autonegotiation kullanılmamaktadır. Normal koşullarda, autonegotiate eden bir ağ aygıtının karşıdaki eşi autonegotiation yapmayan ve sadece yarı çift yönlü iletişim modunu destekleyen bir hub olacağından ağ aygıtları karşıdaki eşin negotiate etmediği durumlarda varsayılan ayar olan yarı çift yönlü moda geçerler. Karşıdaki cihaz eğer yarı çift yönlü modda çalışıyorsa bu kombinasyon düzgün çalışır, ancak karşıdaki cihaz eğer tam çift yönlü modda çalışıyorsa bir çift yönlülük uygunsuzluğu durumu oluşur. Bu durum ağın çalışmasını engellemez ancak nominal hızından çok daha yavaş çalışıp çakışmaların artmasına sebep olur. Bu durumu engellenmek için ağın bir ucundaki cihazın tam çift yönlü modda çalışıp diğerinin autonegotiate yapmasına izin verilmez.
+Müşterek çalışabilme sorunları yüzünden bazı ağ yöneticileri ağ aygıtlarının çalışma modlarını elle sabit ayarlara getirmektedir. Oluşması muhtemel bir durum, bir ağ aygıtının autonegotiate yapamayıp herhangi bir varsayılan moda ayarlanmasıdır. Bu çoğunlukla çift yönlülük ayarlarında uygunsuzluğa neden olur. Özel olarak bir tanesi autonegotiation yapan, diğeri ise sabit olarak tam çift yönlü modda çalışan iki ağ aygıtı birbirine bağlandığında autonegotiation işlemi başarısız olup varsayılan mod olarak yarı çift yönlü mod kullanılacağından çift yönlülük uygunsuzluğu oluşur. Bu durumda tam çift yönlü modda çalışan ağ aygıtı aynı anda hem alma hem de gönderme yapacağından yarı çift yönlü modda çalışan ağ aygıtı göndermekte olduğu Ethernet çerçevesini iptal eder. Yarı çift yönlü modda çalışan ağ aygıtı bir Ethernet çerçevesi almaya hazır durumda olmadığından çakışma işareti gönderir, geri çekilme süresi boyunca gönderimler durdurulur. Paketler tekrar gönderilmeye başladığında aynı durum tekrarlanır ve geri çekilme süreleri gitgide uzar. En sonunda yeterli bekleme süresi tesadüfi olarak gerçekleşir ve paketler gönderilir ama bu durum da ağın aşırı yüklenmesine ve pek çok çakışma oluşmasına neden olur.
+Bekleme süreleri yüzünden çift yönlülük uygunsuzluğunun etkisi tamamen devre dışı değil ancak son derece yavaş bir ağ işlevselliği olmaktadır. Düşük trafikli bağlantılarda bu tolere edilebilir ancak bant genişiliği yüksek transferlerde çok ciddi olarak sorun yaratır, hatta iletişimin tamamen kesilmesine neden olabilir.
+10/100 Mbit/s'te autonegotiation gerekli olmamakla birlikte IEEE 802.3u tarafından varsayılan uygulama olarak önerilmektedir. Ancak 1000baseT aygıtların zamanlayıcı kaynağını belirlemek için autonegotiation yapması gereklidir. Her ağ noktasında autonegotiation'ın etkinleştirilmesi 10/100Mbit/s'ten 1000baseT anahtar ve LAN'a geçişi kolaylaştırır.
+Donanım katmanının tüm işlevselliği (hız, çift yönlülük, zamanlayıcı kaynağı ve akış denetimi) autonegotiation ile denetlendiğinden tüm aygıtlarda etkinleştirilmesinde bir sakınca yoktur. Örneğin tek hızlı bir bağlantı için negotiation'u etkinleştirip sadece tek hız için negotiate edilebilinir. Autonegotiation etkin olmayan eski metot anahtar ve LAN kartları tarafından artık kullanılmamaktadır.
+
+
+== Donanım Katmanı ==
+İlk Ethernet ağlarında (10BASE5) CSMA/CD paylaşım ortamı olarak vampir tapası ile birlikte kalın sarı kablolama kullanılmaktaydı. Sonrasında 10BASE2 Ethernet'te CSMA/CD paylaşım ortamı olarak daha ince eşmerkezli kablolama ve BNC konnektörler kullanılmıştır. Daha yeni olan StarLAN 1BASE5 ve 10BASE-T Ethernet'te 8P8C modüler konnektör ile Ethernet hub 'lara bağlanılan eşmerkezli kablolama kullanılmıştır.
+Halihazırda, kullanılan fiziksel ortam ve hız yönünden farklılıklar gösteren pek çok Ethernet türü vardır. En yaygın olarak kullanılan türler 10BASE-T, 100BASE-TX ve 1000BASE-T 'dir. Her üçünde de 8P8C modüler konnektör kullanılır. Sırasıyla 10 Mbit/s, 100 Mbit/s, and 1 Gbit/s veri hızlarında çalışmaktadırlar. Ancak her birinin çalışabilmesi için farklı kablolama grektiğinden kurulumcular sunuculara yapılan kısa bağlantılar haricinde 1000BASE-T yi kullanmaktan uzak durmaktadırlar.
+Fiberoptik daha çok yapısal kablolama uygulamalarında kullanılmaktadır. Bu tip Ethernet kurumsal veri merkezi uygulamalarında çoklukla kullanılmakla birlikte maliyet ve kullanım kolaylığı yönünden son kullanıcı uygulamalarında tercih edilmemektedir. Performans, elektriksel yalıtım ve bazı versiyonlarında onlarca km'ye varan mesafe avantajları vardır. Sürekli daha hızlı yeni fiber Ethernet versiyonları çıkmaktadır. 10 gigabit Ethernet kurumsal uygulamalarda ve taşıyıcı ağlarda giderek daha yaygınlaşmaktadır, ayrıca 40 Gbit/s Ethernet ve 100 Gbit/s Ethernet geliştirilmeye başlanılmıştır. Robert Metcalfe 2015 yılı itibarıyla ticari terabit Ethernet uygulamalarının başlayacağına inandığını, terabit Ethernet standardına ulaşmak için mevcut Ethernet standartlarının iptal olabileceğini belirtmiştir.
+Kablo üzerindetaşınan bir veri paketine "çerçeve (frame)" denilmektedir. Gerçek fiziksel ortamda görüntülenen bir çerçeve diğer verilerin yanı sıra "Giriş (Preamble)" ve "Çerçeve Başlangıç Sınırlayıcı (Start Frame Delimiter)" alanlarını içermelidir. Bu alanlar tüm fiziki donanımlar için gereklidir. Bu alanlardaki bitler ağ aygıtı tarafından işlemciye aktarılmadan önce çıkartıldığından paket izleme programları tarafından görülmezler. CRC32 bitleri ise genellikle aygıt sürücü yazılımı tarafından çerçeveden ayrılırlar.
+Aşağıdaki tablo 1500 baytlık maksimum iletim birimi için gönderildiği haliyle, bütün bir Ethernet çerçevesini göstermektedir. Daha yüksek hızlı bazı gigabit Ethernet uygulamaları "jumbo frame" denilen daha büyük çerçeve boyutlarını desteklemektedir. Dikkat edilmesi gereken nokta Giriş ve Çerçeve Başlangıç Sınırlayıcı alanlarındaki bit düzenlerinin bayt olarak değil karakter dizisi olarak yazılmış olmasıdır. Bu gösterim IEEE 802.3 standardında kullanılan ile uyuşmaktadır. Bir Oktet modern bilgisayarlarda "bayt" olarak adlandırılan sekiz bitlik veri anlamındadır.
+
+Bir Ethernet çerçevesi gönderildikten sonra göndericinin bir sonraki çerçeveden önce 12 oktetlik boş karakter süresince beklemesi gereklidir. Bu süre 10 Mbit/s için 9600 ns, 100Mbit/s için 960 ns ve 1000Mbit/s için 96 ns'tir.
+Aşağıdaki tablodan 10 Mbit/s Ethernet'in net bit oranının yaklaşık olarak 9.75 Mbit/s olduğu hesaplanabilir (1500'er baytlık maksimum boyutlu paketlerin art arda gönderildiği varsayılmıştır):
+
+  
+    
+      
+        
+          
+            
+              
+              
+                
+                  
+                    maksimum yararli yuk biti
+                    paket
+                  
+                
+                ×
+                
+                  
+                    maksimum paket adedi
+                    
+                      saniye
+                    
+                  
+                
+              
+            
+            
+              
+                =
+              
+              
+                
+                  
+                    
+                      1500
+                      
+                         oktet
+                      
+                      ×
+                      8
+                      
+                         bit/oktet
+                      
+                    
+                    paket
+                  
+                
+                ×
+                
+                  
+                    1
+                    izin verilen en büyük paketi gondermek icin gerekli zaman
+                  
+                
+              
+            
+            
+              
+                =
+              
+              
+                12000
+                
+                  
+                    yararli yuk bitleri
+                    paket
+                  
+                
+                ×
+                1
+                
+                  
+                    paket
+                    1538 oktet gondermek icin gerekli zaman
+                  
+                
+              
+            
+            
+              
+                =
+              
+              
+                12000
+                
+                  
+                    yararli yuk bitleri
+                    paket
+                  
+                
+                ×
+                1
+                
+                  
+                    paket
+                    12304 bit gondermek icin gerekli zaman
+                  
+                
+              
+            
+            
+              
+                =
+              
+              
+                12000
+                
+                  
+                    yararli yuk bitleri
+                    paket
+                  
+                
+                ×
+                1
+                
+                  
+                    paket
+                    
+                      12304
+                      ×
+                      
+                        bir bit gondermek icin gerekli zaman
+                      
+                    
+                  
+                
+              
+            
+            
+              
+                =
+              
+              
+                12000
+                
+                  
+                    yararli yuk bitleri
+                    paket
+                  
+                
+                ×
+                1
+                
+                  
+                    paket
+                    
+                      12304
+                      ×
+                      
+                        10
+                        
+                          −
+                          7
+                        
+                      
+                      
+                         s
+                      
+                    
+                  
+                
+              
+            
+            
+              
+                ≈
+              
+              
+                9752925.8
+                
+                   yararli yuk bitleri
+                
+                
+                  /
+                
+                
+                  s
+                
+              
+            
+          
+        
+      
+    
+    {\displaystyle {\begin{aligned}&{\frac {\text{maksimum yararli yuk biti}}{\text{paket}}}\times {\frac {\text{maksimum paket adedi}}{\textrm {saniye}}}\\=&{\frac {1500{\text{ oktet}}\times 8{\text{ bit/oktet}}}{\text{paket}}}\times {\frac {1}{\text{izin verilen en büyük paketi gondermek icin gerekli zaman}}}\\=&12000{\frac {\text{yararli yuk bitleri}}{\text{paket}}}\times 1{\frac {\text{paket}}{\text{1538 oktet gondermek icin gerekli zaman}}}\\=&12000{\frac {\text{yararli yuk bitleri}}{\text{paket}}}\times 1{\frac {\text{paket}}{\text{12304 bit gondermek icin gerekli zaman}}}\\=&12000{\frac {\text{yararli yuk bitleri}}{\text{paket}}}\times 1{\frac {\text{paket}}{12304\times {\text{bir bit gondermek icin gerekli zaman}}}}\\=&12000{\frac {\text{yararli yuk bitleri}}{\text{paket}}}\times 1{\frac {\text{paket}}{12304\times 10^{-7}{\text{ s}}}}\\\approx &9752925.8{\text{ yararli yuk bitleri}}/{\text{s}}\end{aligned}}}
+  
+
+10/100Mbit alıcı/gönderici çipleri (MII PHY) bir seferde 4 bit alıp gönderecek şekilde çalışmaktadır. Dolayısıyla Giriş Alanı 0101 + 0101 verisinin 7 kez tekrarlanması, Çerçeve Başlangıç Sınırlayıcı ise 0101 + 1101 verisi olacaktır. 8-bit veriler, önce aşağı 4-bit, sonra yukarı 4-bit olacak şekilde gönderilir. 1000Mbit alıcı/gönderici çipleri (GMII) bir seferde 8 bit alıp gönderecek şekilde, 10 Gbit/s (XGMII) PHY'ler ise bir seferde 8 bit alıp gönderecek şekilde çalışırlar.
+
+
+== Ethernet çerçevesi tipleri ve  EtherType alanı ==
+Birkaç farklı Ethernet çerçevesi vardır, bunlar:
+
+Ethernet Versiyon 2 ya da Ethernet II çerçevesi, DIX frame olarak da bilinir (DEC, Intel ve Xerox 'un baş harflerinden türetilmiştir); çoğunlukla doğrudan İnternet Protokolü tarafından kullanıldığı için bugün en yaygın olan çerçeve tipidir.
+Novell'in kullandığı IEEE 802.2 Mantıksal Bağlantı kontrolü (İngilizce: Logical Link Control(LLC)) başlık kısmı olmayan standart dışı IEEE 802.3 varyasyonu ("taslak 802.3 çerçevesi").
+IEEE 802.2 Mantıksal Bağlantı Kontrolü (LLC) çerçevesi.
+IEEE 802.2 LLC/Alt-Ağ Erişim Protokolü (İngilizce: Subnetwork Access Protocol(SNAP)) çerçevesi.
+İlave olarak her dört Ethernet çerçeve tipi seçmeli olarak hangi Sanal Ağ'a (İngilizce: Virtual LAN(VLAN)) ait olduklarını ve IEEE 802.1p önceliklerini belirtmek için bir IEEE 802.1Q etiketi kullanabilirler. Bu enkapsülasyon IEEE 802.3ac 'de tanımlanmıştır ve maksimum çerçeve boyutunu 4 bayt artırarak 1522 bayt'a yükseltir.
+Farklı çerçeve tipleri farklı formatlara ve MTU değerlerine sahiptir, ancak aynı paylaşımlı ortamda bir arada bulunabilirler.
+
+Digital/Intel/Xerox (DIX) Ethernet şartnamesi'nin 1.0 ve 2.0 versiyonlarında EtherType adlı 16-bit alt-protokol etiketi alanı bulunmaktadır. Yeni IEEE 802.3 Ethernet şartnamesi'nde bunun yerini 16-bit uzunluğundaki ve MAC başlık kısmı'ndan sonra gelen Mantıksal Bağlantı kontrolü (LLC) alanı almıştır. Etiketsiz klasik Ethernet v2 ve IEEE802.3 çerçeveleri için maksimum çerçeve uzunluğu 1518 bayt, 802.1p ya da etiketli 802.1q çerçevesi için ise 1522 bayttı. Nihai olarak bu iki format EtherType alanındaki 64 ile 1522 arası bir değer uzunluk bilgisi olan yeni 802.3 Ethernet formatını, desimal 1536 (hexadecimal 0600) ve daha büyük bir değer 'EtherType' alanı olan orijinal DIX ya da Ethernet II çerçeve formatını ifade edecek şekilde birleştirildi. Bu kural yazılımın aynı fiziksel ortamda birlikte bulunabilecek Ethernet paketleri içinden herhangi bir çerçevenin Ethernet II formatında mı yoksa IEEE 802.3 formatında mı olduğunu anlayabilmesine olanak sağlamıştır. Ayrıca Bakınız: Jumbo Frames
+802.2 LLC başlık kısmı incelenerek sonraki başlık kısmının SNAP (subnetwork access protocol) protokolünde olup olmadığı tespit edilebilir. Özellikle OSI ağ yığını için tasarlanmış bazı protokoller, veri-bloğu ve bağlantı yönelimli ağ hizmetleri sunan 802.2 LLC üzerinde doğrudan çalışırlar. LLC başlık kısmı hizmet erişim noktası(İngilizce: service access point)ya da OSI terminolojisinde SAP denilen ilave iki adet 8-bitlik adres alanı içerir; hem kaynak hem de hedef SAP alanına 0xAA yazıldığında bu SNAP hizmeti isteği anlamına gelmektedir. SNAP başlık kısmı EtherType değerlerinin tüm IEEE 802 protokolleriyle kullanımına izin vermesinin yanında özel protokol ID alanlarını da destekler. IEEE 802.3x-1997 ile Ethernet standardı MAC adresi alanlarından sonra gelen 16-bitlik alanın uzunluk ya da tip alanı olarak kullanılmasına izin verecek şekilde değiştirilmiştir.
+Novell'in "taslak" 802.3 çerçeve formatı erken dönem IEEE 802.3 çalışmasına dayanmaktadır. Novell bunu kendine ait olan IPX Ethernet üzeri ağ protokolünü geliştirmede başlangıç noktası olarak almıştır. LLC başlık kısmı kullanılmamakta, bunun yerine uzunluk alanından hemen sonra IPX paketi gelmektedir. Bu uygulama IEEE 802.3 standardına uygun olmamakla birlikte diğer Ethernet uygulamalarıyla aynı fiziksel ortamı kullanabilmektedir.
+Novell NetWare 1990'ların ortalarına kadar bu çerçeve tipini varsayılan çerçeve olarak kullanmış ve o dönemde Netware IP'den daha yaygın olduğundan dünya Ethernet trafiğinin büyük bölümü IPX taşıyıcı "taslak" 802.3 protokolünde taşınmıştır. Netware 4.10'dan beri Netware, IPX kullanımında varsayılan çerçeve tipi olarak LLC kullanılan IEEE 802.2'yi benimsemiştir (Netware Frame Type Ethernet_802.2).(Bakınız: Kaynakça "Ethernet Framing")
+Mac OS Ethernet ("EtherTalk") üzerindeki AppleTalk V2 protocol ailesinde 802.2/SNAP çerçevesi, TCP/IP içinse Ethernet II çerçevesi kullanır.
+802.2 Ethernet türleri günümüzde henüz IP üzeri Netware'e güncellenmemiş büyük kurumsal Netware altyapıları dışında yaygın olarak kullanılmamaktadır. Geçmişte pek çok kurumsal ağ Ethernet ile IEEE 802.5 Token Ring ya da FDDI ağları arasında çevrim yapabilmek için 802.2 Ethernet'i desteklemiştir. Bugün kullanılmakta olan en yaygın çerçeve tipi Internet Protokolü-tabanlı ağlar tarafından en çok kullanılmakta olan ve IPv4 için EtherType alanında 0x0800, IPv6 için 0x86DD bulunan Ethernet Version 2'dir.
+IP versiyon 4 trafiğini IEEE 802.2 çerçevesi içine LLC/SNAP başlık kısmı ile birlikte gömmek için bir Internet standardı 'da mevcuttur. Bu standart FDDI, token ring, IEEE 802.11 ve diğer IEEE 802 ağlarında kullanılmasına rağmen Ethernet üzerinde neredeyse hiç kullanılmamaktadır. IP trafiği IEEE 802.2 LLC çerçevesi içine SNAP olmadan gömülemez, çünkü IP için bir LLC protokol tipi olmasına rağmen ARP için bir LLC protokol tipi yoktur. IP Version 6 'da LLC/SNAP ile birlikte IEEE 802.2 kullanılarak Ethernet üzerinden gönderilebilir, ancak yine bu da neredeyse hiç kullanılmamaktadır.
+IEEE 802.1Q etiketi, eğer mevcutsa, Kaynak MAC ve EtherType ya da Uzunluk alanları arasına yerleştirilir. Etiketin ilk iki baytı 0x8100 değerinde olan Etiket Protokol Tanımlayıcısıdır (İngilizce: Tag Protocol Identifier (TPID)). Etiketsiz çerçevelerde bu EtherType/Uzunluk alanı ile aynı yerde bulunur, dolayısıyla EtherType alanında bulunan 0x8100 değeri çerçevenin etiketli olduğunu belirtir ve gerçek EtherType/Uzunluk değeri etiketten sonra gelir. Etiket içinde TPID'yi Etiket Kontrol Bilgisi(İngilizce: Tag Control Information (TCI)) takip eder (IEEE 802.1p önceliği (hizmet kalitesi) bilgisi ve Sanal Ağ kimliği).
+
+
+=== Kısa çerçeveler ===
+IEEE 802.3 'te belirtilen en kısa veri boyutu olan 64 baytın altındaki çerçevelere "Kısa çerçeve" denir. Olası nedenleri çakışma, altında çalışma, arızalı ağ bağdaştırıcısı ya da yazılımıdır.
+
+
+== Ethernet türleri ==
+
+
+=== İlk türler ===
+10BASE5: Thick-Ethernet olarak da bilinen ilk standart. Tek bir eşmerkezli kablo kullanılır. Büyük ölçüde kullanımdan kalkmıştır.
+10BROAD36: Kullanımdan kalkmıştır. Uzun mesafeli Ethernet'i destekleyen eski bir standarttır. Kablolu modemlerdekine benzer geniş bantlı modülasyon teknikleri ve eşmerkezli kablolama kullanılmıştır.
+1BASE5: Düşük maliyetli LAN çözümünü standartlaştırmaya yönelik bir girişim. 1 Mbit/s'te çalışmaktaydı. Ticari bir başarısızlık olmuştur.
+
+
+=== 10Mbit/s Ethernet ===
+10BASE2 (ThinNet ya da Cheapernet olarak da bilinir): 50 Ω eşmerkezli kablo ile aygıtlar birbirine T-adaptor kullanılarak bağlanır. Her iki uçta sonlandırma kullanılması gereklidir. Uzun yıllar boyunca en yaygın 10 Mbit/s standardı olarak kalmıştır.
+10BASE-T: Kategori 3 ya da Kategori 5 kablo üzerinde iki bükülü tel çifti olacak şekilde dört kablo kullanılır. Ortada her bir istasyon için bir porta sahip olan bir hub ya da Ağ anahtarı bulunur. Bu konfigürasyon aynı zamanda 100BASE-T ve gigabit Ethernet için de kullanılmaktadır. Veri iletim hızı 10 Mbit/s'tir.
+FOIRL: Fiberoptik ara tekrarlayıcılı bağlantı. Fiber üzeri Ethernet'in ilk standardıdır.
+10BASE-F: Yeni 10 Mbit/s Ethernet standartları ailesi (10BASE-FL, 10BASE-FB ve 10BASE-FP) için kullanılan genel terim. Bunlar arasında sadece 10BASE-FL yaygın kullanıma sahiptir.
+10BASE-FL: FOIRL standardının güncellenmiş bir versiyonu.
+10BASE-FB: Çok sayıda hub ve ağ anahtarının birbirine bağlandığı omurga yapıları için amaçlanmıştır. Günümüzde kullanım dışıdır.
+10BASE-FP: Tekrarlayıcı gerektirmeyen pasif bir yıldız ağ standardı. Hiç kullanılmamıştır.
+
+
+=== Yüksek Hızlı Ethernet ===
+100BASE-T: Bükülü tel çifti kullanan tüm 100 Mbit/s Ethernet türleri için kullanılan genel terim. 100BASE-TX, 100BASE-T4 ve 100BASE-T2 'yi kapsar. 2009 itibarıyla 100BASE-TX pazara tamamen hakim durumdadır ve informal olarak 100BASE-T ile aynı anlama gelmektedir.
+100BASE-TX: Kategori 5 kablo üzerindeki 100 Mbit/s Ethernet (dört tel çiftinden ikisi kulanılır). 10BASE-T ile aynı yıldız biçimli konfigürasyondadır.
+100BASE-T4: Kategori 3 kablo üzerindeki 100 Mbit/s Ethernet (10BASE-T kurulumlarında kullanıldığı şekliyle). Dört tel çiftinin hepsi kullanılır ve yarı çift yönlü 'dür. Kategori 5 kablo standart hale geldiğinden günümüzde kullanım dışıdır.
+100BASE-T2: Kategori 3 kablo üzerindeki 100 Mbit/s Ethernet. Dört tel çiftinin hepsi kullanılır ve tam çift yönlü iletişimi destekler. Bu standardı destekleyen herhangi bir donanım üretilmemiştir.
+100BASE-FX: Fiber üzeri 100 Mbit/s Ethernet.
+
+
+=== Gigabit Ethernet ===
+1000BASE-T: Ekransız bükülü tel çifti bakır kablo üzeri 1 Gbit/s Ethernet. (Kategori 5 kablo kullanılabilmekle birlikte Kategori 5e kablo tavsiye edilir)
+1000BASE-SX: Kısa erimli çoklu mod fiber üzeri 1 Gbit/s Ethernet.
+1000BASE-LX: Uzun erimli tekli mod fiber üzeri 1 Gbit/s Ethernet.
+1000BASE-CX: 1 Gbit/s Ethernet'i özel bakır kablo üzerinde kullanmak içi geliştirilmiş kısa erimli bir çözüm. 1000BASE-T'den önce çıkmıştır ve günümüzde kullanım dışıdır.
+
+
+=== 10-Gigabit Ethernet ===
+10 gigabit Ethernet standartları ailesi tekli mod fiber (uzun erimli), çoklu mod fiber (300 m'ye kadar), bakır arkayüzey (1 m'ye kadar) ve bakır bükülü tel çifti (100 m'ye kadar) için ortam tiplerini ihtiva eder. İlk olarak IEEE Std 802.3ae-2002 olarak yayımlanmıştır, ancak halihazırda IEEE Std 802.3-2008 içinde bir bölümdür.
+
+10GBASE-SR: Yaygın çoklu mod fib;ll üzerinden kısa mesafeleri desteklemek için tasarlanmıştır. kablo tipine göre 26m ile 82m arasında bir erime sahiptir. Aynı zamanda yeni bir 2000 MHz·km çoklu mod fiber üzerinden 300m'ye kadar çalışmayı destekler.
+10GBASE-LX4: Yaygın çoklu mod fiber kablolama üzerinden 240m ile 300m arasındaki mesafeleri desteklemek için Dalgaboyu Bölümü Çoğullaması (İngilizce: wavelength division multiplexing) tekniğini kullanır. Ayrıca tekli mod fiber üzerinden 10 km'yi destekler.
+10GBASE-LR ve 10GBASE-ER: Bu standartlar tekli mod fiber üzerinden sırasıyla 10 km ve 40 km 'ye kadar olan mesafeleri destekler.
+10GBASE-SW, 10GBASE-LW ve 10GBASE-EW: Bu türler OC-192/STM-64SONET ve SDH ekipmanlarıyla birlikte çalışmak için tasarlanmış WAN PHY kullanırlar. Fiziksel katmanda sırasıyla 10GBASE-SR, 10GBASE-LR ve 10GBASE-ER'ye karşılık gelirler, dolayısıyla aynı fiber tiplerini kullanıp benzer mesafeleri desteklerler. (10GBASE-LX4'e karşılık gelen bir WAN PHY standardı yoktur.)
+10GBASE-T: Bakır bükülü tel çifti kablolama için geliştirilmiştir. IEEE Std 802.3an-2006 ile tanımlanmış ve IEEE Std 802.3-2008 ile birleştirilmiştir.
+2009 yılı itibarıyla, 10 gigabit Ethernet taşıyıcı ağlarda baskın teknoloji olmuştur ve 10GBASE-LR ile 10GBASE-ER kayda değer pazar payına sahiptir.
+
+
+=== 40 Gigabit Ethernet ve 100 Gigabit Ethernet ===
+2009 yılı itibarıyla, 40 Gigabit Ethernet ve 100 Gigabit Ethernet (100GbE) standartları hâlen taslak aşamasındadır.
+
+
+== İlgili standartlar ==
+IEEE 802.3 Ethernet standardının bir parçası olmayan ancak Ethernet çerçeve formatını destekleyen ve Ethernet ile birlikte çalışma kabiliyetine sahip olan ağ standartları:
+LattisNet - SynOptics tarafından geliştirilen bir 10 Mbit/s bükülü tel çifti ön standardı.
+100BaseVG - 100 Mbit/s Ethernet'in ilk dönem rakiplerinden biri. Kategori 3 kablo üzerinde çalışır. Ticari başarısızlık olmuştur.
+TIA 100BASE-SX - Telekomünikasyon Endüstrisi Birliği (İngilizce: Telecommunications Industry Association) tarafından desteklenmektedir. 100BASE-SX fiber kablo üzeri 100 Mbit/s Ethernet'in farklı bir implementasyonudur. Resmî 100BASE-FX standardı ile uyumlu değildir. Temel özelliği 10BASE-FL ile birlikte çalışabilir olması ve 10 Mbit/s ile 100 Mbit/s arası autonegotiation'u desteklemesidir (farklı LED dalgaboyu kullanımı yüzünden remi standartlarda bulunmayan bir özellik). 10 Mbit/s fiber ağ kurulumlarını hedeflemektedir.
+TIA 1000BASE-TX - Telekomünikasyon Endüstrisi Birliği (İngilizce: Telecommunications Industry Association) tarafından desteklenmiştir. Ticari bir başarısızlık olmuştur ve hiç ürün çıkarılmamıştır. 1000BASE-TX resmî 100BASE-T standardına göre daha basit ve donanımsal olarak ucun olmasına rağmen Kategori 6 kablolama gerektirmektedir.
+G.hn - ITU-T tarafından geliştirilen ve HomeGrid Forum 14 Aralık 2020 tarihinde Wayback Machine sitesinde arşivlendi. tarafından desteklenen bir standart. Mevcut ev kablo altyapısını (eşmerkezli kablo, elektrik hatları ve telefon hatları) kullanarak 1 Gbit/s hızına kadar iletişimi desteklemektedir.G.hn 'de Ethernet çerçevelerini kabul edip G.hn MSDU'ları içine gömebilen bir Uygulama Protokolü Yakınsama katmanı tanımlanmıştır.
+Ethernet çerçeve formatını kullanmayan ancak MAC-köprüsü kullanarak Ethernet'e bağlanabilen ağ standartları:
+802.11 - Kablosuz LAN'larda kullanılan bir ağ standardı.
+802.16 - WiMAX gibi kablosuz metropol ağlarında (MAN) kullanılan bir ağ standardı.
+Çok yüksek veri oranlı Sayısal Abone Hattı (İngilizce: VDSL) üzeri 10BaseS-Ethernet
+Uzun Erimli Ethernet
+Tam çift-yönlü Anahtarlamalı Aviyonik Ethernet
+TTEthernet - Karışık gömülü sistemler için Zaman Tetiklemeli Ethernet
+Metro Ethernet
+Ethernet trafiğinin trafik mühendisliği ile benzerlikler gösterdiği gözlemlenmiştir.
+
+
+== Ethernet kartı çeşitleri ==
+
+
+=== Konektör yapılarına göre Ethernet kartları ===
+
+
+==== a.) BNC Konnektörlü ethernet kartları ====
+Eşmerkezli kablo kullanan ethernet kartlarıdır. Eşmerkezli kablonun ucuna BNC konnektörü takılır. 10 Mbit/s veri iletimini sağlar.
+
+
+==== b.) RJ-45 Konnektörlü ethernet kartları ====
+Bükülü kablo çifti kullanan ethernet kartlarıdır. Bükülü kablo çiftinin ucuna RJ-45 konnektörü takılır. 10, 100, 1000 Mbit/s hızlarında veri iletimini sağlarlar.
+Normal ağ kablosundaki renk dizilimi şöyledir;
+Turuncu beyaz turuncu, yeşil beyaz mavi, mavi beyaz yeşil, kahverengi beyaz kahverengi,
+
+
+=== Veri iletim hızlarına göre Ethernet kartları ===
+Günümüzde RJ-45 konnektörlü ethernet kartları üretilmektedir. Bu kartlar 10 Mbit/s, 10/ 100 Mbit/s, 1000 Mbit/s veri aktarım hızlarına sahiptir.

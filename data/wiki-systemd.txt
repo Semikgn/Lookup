@@ -1,0 +1,3 @@
+# Systemd
+
+systemd, Linux tabanlı işletim sistemleri için sistem komponentleri sağlayan bir sistem yazılımıdır.

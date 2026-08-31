@@ -1,0 +1,10 @@
+# HTTP durum kodları
+
+Aşağıda HTTP protokol yanıt kodlarının bir listesi ve bunlarla ilişkili mesajlar ve Türkçe karşılıkları verilmiştir.
+Bu numaralı kodlar, Web tarayıcı programları tarafından otomatik olarak işlenerek anlaşılır bir mesaja çevrilir.
+Bu kodlar RFC2616 spesifikasyonu ile belirlenmiştir, yaygın olarak kullanılırlar.
+Kod numarasının  birinci hanesi, yanıtın beş kategoriden hangisine ait olduğunu belirtir. 200, 301, 302, 404 ve 500 kodları en yaygın olanlardır. Bazı kodlar henüz kullanılmamakla beraber ileride yaygınlaşması beklenmektedir. Bazıları, örneğin 200, görülmese de, var olduğu varsayılır.
+
+
+== Durum kodları ==
+Listede WebDAV olarak belirtilen kodlar HTTP tarafından belirtilmemiş, ancak HTTP'nin bir uzantısı olan WebDAV tarafından belirtilmişlerdir.

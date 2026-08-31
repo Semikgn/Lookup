@@ -1,0 +1,33 @@
+# Güvenlik duvarı
+
+Güvenlik duvarı veya ateş duvarı, (İngilizce: Firewall), güvenlik duvarı yazılımı, bir kural kümesi temelinde ağa gelen giden paket trafiğini kontrol eden donanım tabanlı ağ güvenliği sistemidir. Birçok farklı filtreleme özelliği ile bilgisayar ve ağın gelen ve giden paketler olmak üzere İnternet trafiğini kontrol altında tutar. IP filtreleme, port filtreleme, Web filtreleme, içerik filtreleme bunlardan birkaçıdır. 
+Birçok kişisel bilgisayar işletim sistemleri, internetten gelen tehditlerine karşı korumak için yazılım tabanlı güvenlik duvarları içerir. Ağlar arasında veri aktaran birçok yönlendirici güvenlik duvarı bileşenleri içerir ve, birçok güvenlik duvarı temel yönlendirme işlevlerini gerçekleştirebilir.
+İnternet küresel kullanım ve bağlantı açısından oldukça yeni bir teknoloji iken, bugün güvenlik duvarı teknolojisinin ilk örneği olarak kabul edilen güvenlik duvarı yazılımı 1988'de Digital Equipment Corporation tarafından piyasaya sunulmuştur. Paket filtrelemeli güvenlik duvarı olan bu ilk güvenlik duvarı teknolojisi, bugün birinci nesil adıyla da anılır. Günümüzde daha yaygın olarak yeni nesil olarak adlandırılan güvenlik duvarları ise üçüncü nesile dahildir.
+
+
+== Güvenlik duvarının türleri ==
+Paket filtrelemeli güvenlik duvarları (İngilizce: Packet Filters Firewall)
+Durumlu denetim güvenlik duvarları (İngilizce: Stateful Inspection Firewall)
+Uygulama katmanı güvenlik duvarları (İngilizce: Application Layer Firewall)
+Devre düzeyli geçit yolu (İngilizce: Circuit Level Firewall)
+
+
+=== Paket filtrelemeli güvenlik duvarı ===
+Paket filtreleri, internet üzerindeki bilgisayarlar arasında transfer edilen paket başlıklarını inceleyerek hareket eder. Bir paket güvenlik duvarından geçtiği sırada eğer başlık bilgisi, güvenlik duvarı üzerinde daha önceden tanımlanmış olan, "güvenlik duvarı paket filtresi" ile eşleşirse, ya paket atılır ya da reddedilerek kaynağa hata mesajları gönderilir.
+Bu tür paket filtreleme, paketin mevcut ağ akışının bir parçası olup olmadığına bakmaz.
+Paket filtrelemeli güvenlik duvarı OSI Modeli'nin ilk 3 katmanında çalışır. Paket başlığındaki bilgilerin hepsini baz alarak filtreleme işlemi gerçekleştirilebilir.
+
+
+=== Güvenlik Politikaları ===
+Güvenlik duvarları, ağ güvenliğini sağlamak için belirli güvenlik politikaları uygular. Bu politikaların oluşturulmasında, Crown Jewel Analizi gibi metodolojiler kullanılarak kritik varlıklar belirlenebilir. Bu sayede, en önemli sistemlerin daha sıkı güvenlik önlemleri ile korunması sağlanır.
+
+
+=== Durumlu denetim güvenlik duvarı ===
+Veriyi kaynağından hedefine kadar takip eder. Uygulama tabakası güvenlik duvarı ise yalnızca gelen ve giden verinin başlık kısımlarını kontrol eder ve uygulama katmanındaki protokolleri kısıtlayarak güvenliği sağlar. Örneğin HTTP protokolü üzerinden bir web sitesinin erişiminin engellenmesi buna örnek olarak verilebilir. Daha gelişmiş olanı durumlu denetim özellikte olanlar olup daha çok büyük ağların internet ve iç ağdaki trafiklerini kontrol eder.
+
+
+=== Uygulama katmanı güvenlik duvarı ===
+OSI Modelinde uygulama katmanı düzeyinde çalışır. En sık kullanılan güvenlik duvarı tekniğidir. Uygulama katmanındaki güvenlik duvarı, gelen paketin veri kısmına kadar olan tüm paket başlıklarını açıp kontrol edebilir ve filtreleyebilir.
+Uygulama katmanında filtreleme yapmanın en önemli avantajı bazı uygulamalar ve protokollerin anlaşılır olmasıdır (FTP, DNS, HTTP gibi).
+Günümüzdeki güvenlik duvarları da sadece port kapamak amaçlı kullanılmıyor. Yeni nesil güvenlik duvarları da U.T.M. (Unified Threat Management) (güvenlik duvarı, antivirüs, antispam, IDS/IPS, VPN, yönlendirici (İngilizce: router) gibi özellikleri olan) tümleşik cihazlardır. Bu güvenlik önlemleri, Crown Jewel Analizi (CJA) gibi metodolojilerle desteklenerek, en önemli varlıkları koruma stratejileri oluşturmak için kullanılabilir. Her ne kadar bir dönem bilinen güvenlik duvarı markaları U.T.M. cihazlarının hantal ve başarız olduğunu iddia etse de günümüzde tüm ateş duvarı üreticileri U.T.M. cihazlarını üretmektedir.
+Bilinen U.T.M. cihaz markaları Cisco ASA, Fortinet, Labris, Juniper, NetSafe-Unity, Netscreen ve Symantec serisidir. Bu cihazlar üzerinde port protokol bazısında kısıtlama yapabilir. Web filtrelemesi (terör, şiddet, silah gibi kategorilerine göre yasaklama) yapabilir. Dosya indirme gibi işlemleri durdurabilir. İyi kurulmuş bir güvenlik duvarı, bilgisayarı bir daktiloya çevirebilir.

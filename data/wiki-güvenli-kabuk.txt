@@ -1,0 +1,358 @@
+# Güvenli kabuk
+
+Güvenli kabuk, (İngilizce: Secure Shell (SSH)), ağ hizmetlerinin güvenli olmayan bir ağ üzerinde güvenli şekilde çalıştırılması için kullanılan bir kriptografik ağ protokolüdür. En iyi bilinen örnek uygulaması bilgisayar sistemlerine uzaktan oturum açmak için olandır.
+SSH, bir SSH istemcisini bir SSH sunucusuna bağlayarak istemci-sunucu mimarisi çerçevesinde güvenli olmayan bir ağ üzerinde güvenli kanal sağlar. Yaygın uygulamalar arasında uzaktan komut satırı girişi ve uzaktan komut çalıştırma bulunur, ama herhangi bir ağ hizmeti de SSH ile güvenceye alınabilir. Protokol belirtimi SSH-1 ve SSH-2 olarak adlandırılan iki ana sürüm arasında ayrım yapar.
+Protokolün en görünür uygulaması, Unix benzeri işletim sistemlerinde kabuk hesaplarına erişim içindir, ancak Windows'ta da sınırlı bir kullanım alanı görür. 2015 yılında Microsoft, gelecekteki bir sürümde SSH'ye yerel destek vereceğini duyurdu.
+SSH, Telnet ve güvenli olmayan uzak kabuk protokolleri olan Berkeley rlogin, rsh ve rexec gibi protokollerin yerini almak için tasarlanmıştır. Bu protokoller, özellikle parolaları, düz metin olarak göndererek, paket analizine karşı savunmasız bırakıyor. SSH tarafından kullanılan şifreleme, Internet gibi güvenli olmayan bir ağ üzerinden verilerin gizliliğini ve bütünlüğünü sağlamaya yöneliktir, ancak Edward Snowden tarafından sızdırılan dosyalar, Ulusal Güvenlik Ajansı'nın bazen SSH şifresini çözerek SSH oturumlarının içeriğini okuyabildiğini gösterir.
+6 Temmuz 2017'de, hükûmet şeffaflık organizasyonu WikiLeaks ABD Merkezi İstihbarat Teşkilatının, SSH kullanıcıları tarafından güvenli olmayan sistemler üzerinde başlatılan SSH bağlantılarını yakalamak için Microsoft Windows veya GNU/Linux işletim sistemlerini çalıştıran bilgisayarlara kurulabilecek araçlar geliştirdiğini doğruladı.
+
+
+== Tanımı ==
+SSH, uzak bilgisayarın kimliğini doğrulamak ve gerektiğinde kullanıcının kimliğini doğrulamasına izin vermek için açık anahtarlı şifreleme kullanır. SSH'yi kullanmanın birkaç yolu vardır; bir tanesi, bir ağ bağlantısını basitçe şifrelemek için otomatik olarak oluşturulan özel-genel anahtar çiftlerini kullanmak ve sonra oturum açmak için parola kimlik doğrulaması kullanmaktır.
+Bir diğeri, kimlik doğrulama işlemini gerçekleştirmek için, kullanıcı veya programların bir parola belirtmek zorunda kalmadan oturum açmasına izin veren, el ile oluşturulmuş bir ortak-özel anahtar çifti kullanmaktır. Bu senaryoda, herkes farklı bir anahtar (açık ve gizli) çifti oluşturabilir. Açık anahtar, eşleşen gizli anahtarın sahibine erişmesi gereken tüm bilgisayarlara yerleştirilir (sahip gizli anahtarını saklı tutar). Kimlik doğrulama özel anahtara dayalıyken, kimlik doğrulama sırasında anahtarın kendisi ağ üzerinden aktarılmaz. SSH, yalnızca ortak anahtarı sunan kişinin eşleşen özel anahtara sahip olup olmadığını doğrular. SSH'nin tüm sürümlerinde, bilinmeyen açık anahtarların doğrulanması önemlidir, yani açık anahtarları geçerli olarak kabul etmeden önce kimlikle ilişkilendirmek gerekir. Bir saldırganın açık anahtarını doğrulama olmadan kabul etmek, yetkisiz bir saldırganı geçerli bir kullanıcı olarak yetkilendirir.
+
+
+== Anahtar yönetimi ==
+Unix benzeri sistemlerde, yetkilendirilmiş açık anahtarların listesi genellikle ~/.ssh/authorized_keys dosyasında, uzaktan oturum açmasına izin verilen kullanıcının giriş dizininde saklanır. Bu dosya, sahibi ve tüm yetkili kullanıcıdan başka bir şey tarafından yazılabilir değil ise sadece SSH tarafından değiştirilebilir. Uzak uçta açık anahtar varsa ve yerel uçta eşleşen gizli anahtar varsa, parolayı yazmanız artık gerekmemektedir (Message-Passing Interface (MPI) yığını gibi bazı yazılımların düzgün çalışması için bu parolasız erişim gerekebilir). Ancak, ek güvenlik için gizli anahtarın kendisi bir şifre ile kilitlenebilir.
+Gizli anahtar standart yerlerde de aranabilir ve tam yolu bir komut satırı ayarı olarak belirlenebilir (ssh için -i seçeneği). Ssh-keygen yardımcı programı, her zaman çiftler halinde açık ve gizli anahtarlar üretir.
+SSH, ayrıca otomatik olarak oluşturulan anahtarlar tarafından şifrelenen parola tabanlı kimlik doğrulamayı da destekler. Bu durumda, saldırgan meşru sunucu tarafını taklit edebilir, parola isteyebilir ve parolayı elde edebilir (man-in-the-middle saldırısı). Ancak, bu durum sadece, iki tarafın daha önce hiç birbirlerinin kimliklerini doğrulamadığında SSH'nin daha önce kullanılan sunucu tarafının anahtarını hatırladığı için mümkündür. SSH istemcisi, önceden bilinmeyen yeni bir sunucunun anahtarını kabul etmeden önce bir uyarı verir. Parola kimlik doğrulaması kapatılabilir.
+
+
+== Kullanımı ==
+SSH genellikle uzak makineye giriş yapmak ve komutları çalıştırmak için kullanılır, ayrıca tünel açma, TCP portlarını ve X11 bağlantılarını iletmeyi de destekler; SSH dosya transferi (SFTP) veya güvenli kopyalama (SCP) protokolleri kullanarak dosyaları aktarabilir. SSH istemci-sunucu modelini kullanır.
+SSH sunucularına bağlanmak için atanmış standart TCP port numarası 22 dir.
+SSH istemci programı, genellikle uzak bağlantıları kabul eden SSH arka plan uygulamasına bağlantı kurmak için kullanılır. 
+Her ikisi de MacOS, Linux'un çoğu dağıtımı, OpenBSD, FreeBSD, NetBSD, Solaris ve OpenVMS gibi çoğu modern işletim sistemlerinde yaygın olarak bulunur. Özellikle, Windows varsayılan olarak SSH içermeyen birkaç modern masaüstü / sunucu işletim sistemlerinden biridir. özel mülk, ücretsiz ve açık kaynaklı (örneğin PuTTY, ve Cygwin'in bir parçası olan OpenSSH sürümü) çeşitli karmaşıklıkta ve bütünlükte sürümleri mevcuttur. Yerli Linux dosya yöneticileri (örneğin Konqueror) sürükle-bırak özelliğine sahip bölmeli bir grafik arayüzü sağlamak için FISH protokolünü kullanabilir. Açık kaynak kodlu bir Windows programı WinSCP arka plan olarak PuTTY kullanarak benzer dosya yönetimi (senkronizasyon, kopyalama, uzaktan silme) özelliği sağlar. Hem WinSCP hem de PuTTY, istemci makineye kurulum gerektirmeksizin, doğrudan bir USB sürücüsünden çalışacak şekilde paketlenmiştir. Windows'ta bir SSH sunucusu çalıştırabilmek için genellikle kurulum yapmak gerekir (örneğin Cygwin üzerinden). Windows 10 sürüm 1709'da, OpenSSH'nin resmi bir Win32 bağlantı noktası bulunur.
+SSH, bulut bilişimde bağlantı sorunlarını çözmek, bulut tabanlı sanal bir makineyi doğrudan internette göstermenin güvenlik sorunlarından kaçınmak için önemlidir. 
+Bir SSH tüneli, bir güvenlik duvarından sanal bir makineye Internet üzerinden güvenli bir yol sağlayabilir.
+
+
+== Tarihçesi ve gelişimi ==
+
+
+=== Sürüm 1.x ===
+1995 yılında Finlandiya Helsinki Teknoloji Üniversitesi'nden araştırmacı Tatu Ylönen, kampüs ağında bir parola koklama saldırısı nedeniyle protokölün (şimdiki adı SSH-1) ilk versiyonunu tasarladı. SSH'nin amacı, güçlü kimlik doğrulaması sağlamayan ve gizliliği garanti etmeyen, rlogin, TELNET, ftp ve rsh protokollerinin yerini almaktı. Ylönen, uygulamasını Temmuz 1995'te ücretsiz olarak yayınladı ve araç hızla popülerlik kazandı. 1995'in sonuna doğru SSH kullanıcı tabanı elli ülkede 20.000 kullanıcıya ulaştı.
+Aralık 1995'te Ylönen, SSH'ı pazarlamak ve geliştirmek için SSH Communications Security şirketini kurdu. SSH yazılımının orijinal sürümü, GNU libgmp gibi çeşitli ücretsiz yazılımlar kullandı, fakat daha sonra SSH Communications Security tarafından yayınlanan sürümlerle birlikte Özel mülk yazılım halini aldı.
+2000 yılına kadar kullanıcı sayısının 2 milyona ulaştığı tahmin edilmektedir.
+
+
+=== Sürüm 2.x ===
+2006 yılında, protokolün SSH-2 olarak adlandırılan gözden geçirilmiş bir sürümü yeni standart olarak kabul edildi. Bu sürüm SSH-1 ile uyumlu değildir, ancak SSH-1'e göre hem gelişmiş güvenlik hem de yeni özelliklere sahiptir. Örneğin, yeni anahtar değişim mekanizmaları sunar ve protokolün ISO/OSI protokolüne benzer şekilde ayrı katmanlara bölündüğü gelişmiş bir protokol yapısına sahiptir.  SSH-2'de SSH-1'e göre hem güvenlik ham de yeni özellik iyileştirmeleri mevcuttur. Daha iyi güvenlik, örneğin, Diffie–Hellman anahtar değişimi ve mesaj doğrulama kodları üzerinden güçlü bütünlük denetimi ile sağlanır.
+SSH-2'nin yeni özellikleri arasında, tek bir SSH bağlantısı üzerinden herhangi bir sayıda kabuk oturumunu çalıştırma yeteneğini sayılabilir. SSH-2'nin üstünlüğü ve popülerliği nedeniyle, Lsh ve Dropbear gibi uygulamalar sadece SSH-2'ye destek vermektedirler.
+
+
+=== 1.99 sürüm ===
+Ocak 2006'da, 2.1 sürümü oluşturulduktan sonra, RFC 4253, hem 2.0 hem de daha önceki versiyonları destekleyen SSH sunucularının versiyon 1.99 olarak adlandırılması gerektiğini belirtmiştir. Bu gerçek bir sürüm değildir, fakat geriye dönük uyumluluk tanımlayan bir yöntemdir.
+
+
+=== OpenSSH ve OSSH ===
+1999 yılında, ücretsiz bir yazılım sürümü sunmak isteyen geliştiriciler, açık kaynak lisansı ile yayınlanmış en son sürüm olan 1.2.12 sürümüne geri döndüler. Björn Grönvall'ın OSSH'si daha sonra bu kod tabanından geliştirildi. Kısa bir süre sonra, OpenBSD geliştiricileri Grönvall'ın kodunu çatalladılar ve OpenBSD'nin 2.6 sürümü ile birlikte gelen OpenSSH'yi yaratarak kapsamlı bir çalışma yaptılar. Bu versiyondan, OpenSSH'yi diğer işletim sistemlerine bağlamak için bir "taşınabilirlik" dalı oluşturuldu.
+2005 itibarıyla, OpenSSH, çok sayıda işletim sisteminde varsayılan olarak gelen en popüler SSH uygulamasıydı. OSSH bu arada demode oldu. 7.6 sürümüyle birlikte SSH-1 desteğini çeken OpenSSH, SSH-2 protokolünü geliştirmeye ve desteklemeye devam ediyor.
+
+
+== Kullanım alanları ==
+
+SSH, çoğu Unix varyantı (Linux, Apple'ın macOS ve Solaris dahil BSD'leri) ve Microsoft Windows gibi pek çok platformda kullanılabilen bir protokoldür. Aşağıdaki uygulamalardan bazıları yalnızca belirli SSH istemcileri veya sunucuları ile kullanılabilen ya da uyumlu olan özellikler gerektirebilir. Örneğin, VPN yazmak için SSH protokolü kullanmak mümkündür, ama sadece OpenSSH sunucu ve istemci uygulamasıyla.
+
+Uzak bilgisayardaki bir kabukta oturum açmak için (Telnet ve rlogin yerine)
+Uzak bilgisayarda tek bir komut yürütmek için (rsh yerine)
+Uzak bir sunucuya otomatik (parolasız) oturum açmak için (örneğin, OpenSSH kullanarak)
+Güvenli dosya aktarımı
+rsync ile kombine olarak, dosyaları verimli bir şekilde yedeklemek, kopyalamak ve yansıtmak
+Bir portu yönlendirmek veya tünellemek için (Paketleri farklı ağlar arasında yönlendiren veya iki yayın alanını tek bir ağa bağlayan bir VPN ile karıştırılmamalıdır).
+Tam teşekküllü şifreli bir VPN olarak kullanmak için. Bu özelliği sadece OpenSSH sunucu ve istemci destekler.
+ Uzak bir ana bilgisayardan X iletmek için (birden çok ara ana bilgisayar aracılığıyla)
+Web'i SOCKS protokolünü destekleyen SSH istemcileriyle şifrelenmiş bir proxy bağlantısı aracılığıyla taramak için.
+SSHFS kullanarak uzak bir sunucudaki bir dizini yerel bir bilgisayarda dosya sistemi olarak güvenli bir şekilde kullanabilmek için.
+Yukarıda açıklanan mekanizmalardan bir veya daha fazlası aracılığıyla sunucuların otomatik olarak uzaktan izlenmesi ve yönetimi için.
+SSH'yi destekleyen bir mobil veya gömülü cihaz üzerinde geliştirme yapabilmek için
+
+
+== Güvenli kabuk özellikleri ==
+1.com.ibm.cdb.platform.SshVersionSessionSkipLİSt
+Oluşturulamayan oturumların SSH sunucularını sürümlerini gösterir. Bunun gibi sunucular var olduğunda, oturum algılayıcısı sıkıntısız bir şekilde sonlanmaktadır. 
+
+2.com.collation.SshLogInput
+kabul edilen değer false olarak alınır.
+Kullanılan değerler ise şöyledir: true veya false.
+Değeri true olarak aldıysanız, SSH girişi günlüğe eklenir.
+
+3.com.collation.SshWeirdReauthErrorList
+Böyle bir özellik, eskiden keşif çalışmaları esnasında çalışan kullanıcı ismi ve parola ikililerinin yeniden kullanılmasına imkan sunmaktadır.
+Windows sistemleri, kullanıma açık oturum açma denemeleri gelişigüzel kabul etmediğinden dolayı, bu özelliğe gerek vardır. Özelliğin Permission denied ayarları olması gerekir. Bu özellik bu şekilde kalması gerekir.
+
+
+=== Dosya aktarım protokolleri ===
+Secure Shell protokolleri birçok dosya aktarım mekanizmasında kullanılır.
+
+SSH üzerinden RCP protokolünden evrimleşen Güvenli kopyalama (SCP)
+SCP'den daha verimli olması amaçlanan rsync
+FTP'ye (FTP üzerinden SSH veya FTPS ile karıştırılmamalı) güvenli bir alternatif olan SSH Dosya Aktarım Protokolü (SFTP)
+1998'de çıkan, SSH üzerinden Unix kabuk komutlarından evrimleşen FISH protokolü
+Kontrol için SSH ve veri aktarımı için UDP portları kullanan FASP (ya da Aspera)
+
+
+== Mimarisi ==
+
+SSH-2 protokolü iyi ayrılmış katmanlara sahip bir iç mimariye (tanımlanan RFC 4251'de tanımlanmıştır) sahiptir:
+
+Taşıma katmanı (RFC 4253). Bu katman, ilk anahtar değişiminin yanı sıra sunucu kimlik doğrulamasını halleder ve şifreleme, sıkıştırma ve bütünlük doğrulaması yapar. Üst katmana, her biri 32.768 bayta kadar olan düz metin paketlerini göndermek ve almak için bir arayüz (daha fazlasına izin verilebilir) sunar. Aktarım katmanı ayrıca, genellikle 1 GB'lik veri aktarıldıktan sonra veya 1 saat geçtikten sonra, hangisi daha önce gerçekleşirse, anahtar yeniden değişimini düzenler.
+Kullanıcı kimlik doğrulama katmanı ([rfc:4252 RFC 1310]). Bu katman, istemci kimlik doğrulamasını halleder ve bir dizi kimlik doğrulama yöntemi sunar. Kimlik doğrulaması istemci-güdümlüdür: bir parola sorulduğunda istek, sunucudan değil, SSH istemcisinden istenmiştir. Sunucu, yalnızca istemcinin kimlik doğrulama isteklerine cevap verir. Yaygın olarak kullanılan kullanıcı kimlik doğrulama yöntemleri şunlardır:
+parola: parola değiştirilmesine de izin veren, doğrudan parola kimlik doğrulaması yapan yöntem. Tüm programlar bu yöntemi uygulamaz.
+açık anahtar: genellikle  en az DSA veya RSA anahtar çiftlerini, diğer uygulamalarıyla birlikte ayrıca X.509 sertifikaları destekleyen, açık anahtar tabanlı kimlik doğrulama için bir yöntem.
+klavye-etkileşimli (RFC 4256): sunucunun bilgi girmek için bir veya daha fazla istek gönderdiği çok yönlü bir yöntemdir ve istemci bunları görüntüler ve kullanıcı tarafından girilen yanıtları geri gönderir. S/Key ve SecurID gibi tek kullanımlık şifre kimlik doğrulaması sağlamak için kullanılır. PAM, etkin bir şekilde parola doğrulaması sağlamak için temel ana bilgisayar kimlik doğrulama sağlayıcısı olduğunda bazı OpenSSH yapılandırmaları tarafından kullanılır, bazen yalnızca düz parola kimlik doğrulama yöntemini destekleyen bir istemciyle oturum açılamamasına neden olur.
+SSH oturumlarına tek oturum açma yeteneği sağlayan Kerberos 5 veya NTLM gibi harici mekanizmaları kullanarak SSH kimlik doğrulaması gerçekleştirmek için genişletilebilir bir şema sağlayan GSSAPI kimlik doğrulama yöntemleri. Bu yöntemler genellikle OpenSSH'nin çalışan bir GSSAPI uygulamasına sahip olmasına rağmen, kuruluşlarda kullanılmak üzere ticari SSH uygulamaları tarafından uygulanır.
+Bağlantı katmanı (RFC 4254). Bu katman, hangi SSH hizmetlerinin sağlandığı bilgisine göre kanal kavramı, kanal talepleri ve global talepleri tanımlar. Tek bir SSH bağlantısı, her biri her iki yönde de veri aktarımı yapan, aynı anda birden çok kanala ev sahipliği yapabilir. Kanal istekleri, terminal penceresindeki boyut değişikliği veya sunucu tarafındaki işlemin çıkış kodu gibi bant dışı kanala özgü verileri aktarmak için kullanılır. SSH istemcisi, bir genel istek kullanarak yönlendirilecek bir sunucu portu ister. Standart kanal türleri şunları içerir:
+terminal kabukları için kabuk, SFTP ve exec istekleri (SCP transferleri dahil)
+istemciden sunucuya aktarılan bağlantılar için direkt-tcpip
+sunucudan istemciye aktarılan bağlantılar için yönlendirilmiş-tcpip
+SSHFP DNS kaydı ([rfc:4255 RFC] 4255) ana makinenin kimliğini doğrulamaya yardımcı olmak için açık ana bilgisayar anahtar parmak izlerini sağlar.
+Bu açık mimari, SSH'nin güvenli bir kabuğun ötesinde çeşitli amaçlarla kullanılmasına izin veren önemli bir esneklik sağlar. Taşıma katmanının işlevselliği tek başına Taşıma Katmanı Güvenliği (TLS) ile karşılaştırılabilir; kullanıcı kimlik doğrulama katmanı özel kimlik doğrulama yöntemleri ile büyük ölçüde genişletilebilir; ve BEEP'te olan ve TLS'de geçerli olmayan bir özellik olarak bağlantı katmanı, birçok ikincil oturumu tek bir SSH bağlantısına çoğaltabilir.
+
+
+== Geliştirmeler ==
+Bunlar SSH ürünlerinin performans geliştirmeleri için tasarlanmıştır:
+
+SCTP üzerinden SSH: bağlantı yönelimli taşıma katmanı protokolü olarak TCP yerine SCTP desteği.
+ECDSA: İmza için RSA veya DSA yerine elliptic curve DSA desteği.
+ECDH: Anahtar değişimi için düz Diffie–Hellman yerine elliptic curve Diffie–Hellman desteği.
+UMAC: MAC/bütünlük kontrolü için HMAC yerine UMAC desteği.
+
+
+== Güvenlik açıkları ==
+
+
+=== SSH-1 ===
+1998'de, SSH 1.5 sürümünde, protokolün bu sürümünde kullanılan CRC-32'den kaynaklı yetersiz veri bütünlüğü koruması nedeniyle, şifrelenmiş bir SSH akışına yetkisiz olarak içerik sokulmasına izin veren bir güvenlik açığı tarif edilmiştir. Çoğu uygulamada SSH Compensation Attack Detector olarak bilinen bir düzeltme tanıtıldı. Bu güncellenmiş uygulamaların birçoğu, saldırganın root izni ile herhangi kodu çalıştırabilmesine izin veren yeni bir tamsayı taşması zafiyeti içeriyordu.
+Ocak 2001'de, saldırganların IDEA şifreli bir oturumun son bloğunu değiştirmesine izin veren bir güvenlik açığı keşfedildi. Aynı ay, kötü amaçlı bir sunucunun bir istemci kimlik doğrulamasını başka bir sunucuya iletmesine izin veren başka bir güvenlik açığı keşfedildi.
+SSH-1, onu savunmasız hale getiren içsel tasarım kusurlarına sahip olduğundan, genel olarak geçersiz sayılır. SSH-1'e geri dönüş açıkça devre dışı bırakılmalıdır. Çoğu modern sunucu ve istemci SSH-2'yi desteklemektedir.
+
+
+=== CBC düz metin kurtarma ===
+Kasım 2008'de, tüm SSH sürümleri için, standart varsayılan şifreleme modu olan CBC kullanılarak şifrelenmiş bir şifreli metin bloğunun 32 bitlik düz metninin kurtarılmasına izin veren teorik bir güvenlik açığı keşfedilmiştir. En basit çözüm, SSH'a saldırıya karşı direnç kazandırdığından CBC modu yerine CTR modu kullanmaktır.
+
+
+=== Açıklanmamış güvenlik açıkları ===
+28 Aralık 2014'te Der Spiegel, Ulusal Güvenlik Ajansı'nın SSH trafiğinin bazılarının şifresini çözebileceğini söyleyen muhbir Edward Snowden'in sızdırdığı gizli bilgileri yayınladı. Böyle bir süreçle ilgili teknik detaylar açıklanmadı.
+
+
+=== ABD Hükümeti'nin SSH protokollerini heklediği doğrulandı ===
+6 Temmuz 2017'de, hükûmet şeffaflığı aktivist örgütü WikiLeaks, CIA'nin Bilgi İşlem Merkezi'nin hem Windows hem de Linux işletim sistemlerinde SSH protokolünü kullanan “güvenli” iletişimlere nasıl girdiğini açıklayan ABD Merkezi İstihbarat Kurumu belgelerini yayınladı. WikiLeaks, CIA'nin BothanSpy ve Gyrfalcon programlarının (SSH kimlik bilgilerini engellemek ve genişletmek için tasarlanmış, ancak farklı saldırı sistemlerine sahip farklı işletim sistemlerinde çalışacan) resmi kullanım kılavuzlarını da ekledi.
+BothanSpy, Microsoft Windows platformunda SSH istemci programı Xshell'i hedefleyen ve tüm etkin SSH oturumları için kullanıcı kimlik bilgilerini çalan bir implanttır. 
+Bu kimlik bilgileri, parola tabanlı kimlik doğrulaması yapılmış ise kullanıcı adı ve parola, açık anahtar kimlik doğrulaması kullanılıyor ise dosya adı ve gizli SSH anahtarıdır. BothanSpy çalınan kimlik bilgilerini CIA tarafından kontrol edilen bir sunucuya gönderebilir (böylece implant, hedef sistemdeki diske asla dokunmaz) ya da başka yollarla daha sonra exfiltrasyon için şifreli bir dosyaya kaydedebilir. BothanSpy, hedef makinede bir Shellterm 3.x uzantısı olarak kurulmuştur.
+Gyrfalcon, Linux platformlarında OpenSSH istemcisini hedefleyen bir implanttır (centos, debian, rhel, suse, ubuntu). İmplant sadece aktif SSH oturumlarının kullanıcı bilgilerini çalmakla kalmaz, aynı zamanda tam veya kısmi OpenSSH oturum trafiğini de toplayabilir. 
+Toplanan tüm bilgiler, daha sonra exfiltrasyon için şifrelenmiş bir dosyada saklanır. 
+Hedef makinede CIA tarafından geliştirilen bir kök kiti (JQC/KitV) kullanılarak kurulur ve yapılandırılır. Avantajları
+
+Güçlü şifreleme özelliği.
+Kontrollü kimlik doğrulama.
+Taşınabilirlik özelliği.
+Dezavantajları
+Bazı kullanıcı zorlukları.
+Performans sorunsalı.
+Bazı güvenlik açıkları.
+
+
+== Standartlar belgeler ==
+IETF "secsh" çalışma grubu tarafından sunulan aşağıdaki RFC yayınları, önerilen internet standardı olarak SSH-2'yi belgelemişlerdir.
+
+RFC 4250, The Secure Shell (SSH) Protokole Atanan Numaralar
+RFC 4251, The Secure Shell (SSH) Protokol Mimarisi
+RFC 4252, The Secure Shell (SSH) Kimlik Doğrulama Protokolü
+RFC 4253, The Secure Shell (SSH) Taşıma Katmanı Protokolü
+RFC 4254, The Secure Shell (SSH) Bağlantı Protokolü
+RFC 4255, SSH anahtar parmak izlerini güvenli bir şekilde yayınlamak için DNS kullanımı
+RFC 4256, SSH için genel mesaj değişimi kimlik doğrulaması
+RFC 4335, The Secure Shell (SSH) Oturumu Kanal Arızası Uzantısı
+RFC 4344, The Secure Shell (SSH) Taşıma Katmanı Şifreleme Yöntemleri
+RFC 4345, Secure Shell (SSH) Aktarım Katmanı Protokolü için Geliştirilmiş Arcfour Modları
+Daha sonra aşağıdaki yayınlar tarafından değiştirildi ve genişletildi
+
+RFC 4419, Secure Shell (SSH) Taşıma Katmanı Protokolü için Diffie-Hellman Grup Değişimi (Mart 2006)
+RFC 4432, Secure Shell (SSH) Taşıma Katmanı Protokolü için RSA Anahtar Değişimi (Mart 2006)
+RFC 4462, Secure Shell (SSH) Protocol için GSS-API (Mayıs 2006)
+RFC 4716, The Secure Shell (SSH) Açık Anahtar Dosya Formatı (Kasım 2006)
+RFC 4819: Secure Shell Açık Anahtar Alt sistemleri (Mat 2007)
+RFC 5647: Secure Shell (SSH) Taşıma Katmanı Protokolü için AES Galois Counter Modu (Ağustos 2009)
+RFC 5656, Secure Shell (SSH) Taşıma Katmanı Protokolünde Eliptik Eğri Algoritma Entegrasyonu (Aralık 2009)
+RFC 6187: Secure Shell Kimlik Kontrolü için X.509v3 Sertifikaları kullanımı (Mart 2011)
+RFC 6239: Secure Shell (SSH) için Suite B Kriptografik Serileri (Mayıs 2011)
+RFC 6594: SSHFP Kaynak Kayıtlarında SHA-256 Algoritmasıyla RSA, Digital Signature Algorithm (DSA) ve Elliptic Curve DSA (ECDSA) Kullanımı
+RFC 6668, Secure Shell (SSH) Taşıma Katmanı Protokolü için SHA-2 Veri Bütünlük Doğrulaması (Temmuz 2012)
+RFC 7479: Ed25519 SSHFP Kaynak Kayıtları
+RFC 8332: Güvenli Kabuk (SSH) Protokolünde SHA-256 ve SHA-512 ile RSA Anahtarlarının Kullanımı (Mart 2018)
+Buna ek olarak, OpenSSH projesi birkaç sağlayıcı protokolü spesifikasyonları / uzantıları içerir:
+
+OpenSSH PROTOCOL overview 11 Kasım 2020 tarihinde Wayback Machine sitesinde arşivlendi.
+OpenSSH certificate/key overview 11 Kasım 2020 tarihinde Wayback Machine sitesinde arşivlendi.
+SSH (Secure Shell) güvenli veri iletimi için kriptografik ağ protokolüdür. Ssh ile ağa bağlı olan iki bilgisayar arasında veri aktarımı güvenlik kanalı üzerinden güvensiz bir ağda yapılır. Bu durumda ağda Ssh ile haberleşen makinelerden biri ssh sunucusu diğeri ssh istemcisi olur. Bu protokol şartları SSH-1 ve SSH-2 olmak üzere iki önemli sürüm üzerinden birbirinden ayrılır.
+Ssh kabuk hesabına erişim için Unix ve benzeri işletim sistemlerinde protokolün en iyi uygulaması olarak bilinir, ama aynı zamanda Windows üzerindeki hesaplara erişim için de kullanılabilir. Ssh Telnet ve diğer uzaktan kabuğa erişim yapan güvensiz protokollerin (Berkeley rsh ve rexec protokolü gibi) yerine güvenli veri iletimini sağlaması için tasarlanmıştır.
+
+
+== Tanımlama ==
+SSH uzaktaki makineye bağlanıp kimlik kanıtlaması yapmak için açık anahtarlı şifrelemeyi kullanır ve bu sayede kullanıcıya sistemi kullanmasına izin vermiş olur. SSH kullanmanın birçok farklı yolu vardır. Birincisi otomatik olarak açık-gizli anahtar çifti üretme ve parolayı kullanarak yetki sahibi olmak.
+Diğeri ise kimlik kanıtlaması için açık ve gizli anahtar çiftini manuel olarak üretmek, bu durum kullanıcılara ya da programlara özel bir parola kullanmadan sistemde kimlik kanıtlaması yapmayı sağlar. Bu durumda açık ve gizli anahtarı üreten kişi birbiriyle eşleşen bir anahtar çifti (gizli ve açık) üretmiş olur ve ürettiği gizli anahtarı kendinde muhafaza eder. Kimlik kanıtlaması yapılması gizli anahtara göredir ve gizli anahtar hiçbir şekilde ağ üzerinden başka bir yerdeki makineye gönderilmemelidir. SSH sadece makine üzerinde aynı kişiye ait gizli anahtara karşılık gelen açık anahtar olup olmadığını kontrol eder. SSH'ın tüm sürümlerinde açık anahtar geçerli sayılmadan önce bilinmeyen açık anahtarın doğrulanması önemlidir (açık anahtar sahibinin bilgisiyle ilişkilendirilmiştir).
+
+
+=== Anahtar yönetimi ===
+Unix benzeri sistemlerde, kullanıcıların ev dizininlerinde uzaktaki makineye bağlanamaya izin veren yetkili açık anahtarlar depolanır. Ev dizininde depolandığı yer ise ~/.ssh/authorized_keys dosyasıdır. Açık anahtar uzaktaki makine üzerinde mevcut olduğunda ve yereldeki makinenin gizli anahtarıyla eşleşdiğinde, istemci gizli anahtarını açmak için olan anahtarı doğru girerse uzaktaki makinede kimlik kanıtlaması yapılmış olur.
+Aynı zamandan gizli anahtar  standart olarak belirli bir yerde bulunur. Eğer bu anahtarın makine üzerindeki yeri değiştirildiyse anahtarın tam yolu komut satırından belirtilmelidir. (ssh komutu için -i parametresi kullanılarak). ssh-keygen kullanıldığında ise her zaman bir açık ve gizli anahtar çifti üretilmiş olunur.
+SSH aynı zamandan parola tabanlı kimlik kanıtlamayı destekler. Bu durumda saldırganlar parola sorulduğu için parolayı araya girerek bulmaya çalışabilirlerdi. Ancak bu sadece uzaktaki makinede daha önce hiç kimlik kanıtlaması yapılmadıysa geçerli olur. Sadece bir kez bile uzaktaki makinede kimlik kanıtlaması yapıldığında SSH bu parolayı hatırlar ve parola ile kimlik kanıtlaması geçersiz olur.
+
+
+=== Anahtar yönetimi için bazı komutlar ===
+-A: Ana bilgisayar anahtarları, varsayılan anahtar dosyası yolu, boş bir parola, anahtar türü için varsayılan bitler ve varsayılan yorum ile oluşturulur.
+-B: Belirtilen özel veya genel anahtar dosyasının özetini gösterir.
+-C: Yorum sağlar.
+-e: Bu komut, özel veya genel bir OpenSSH anahtar dosyasını okur ve seçenek tarafından belirtilen biçimlerden birinde bir genel anahtarı stdout'a yazar.
+-g: Kayıtları yazarken genel DNS biçimini kullanır.
+-i: Bu komut, şifrelenmemiş bir özel (veya genel) anahtar dosyasını seçenek tarafından belirtilen biçimde okuyacak OpenSSH uyumlu bir özel (veya genel) anahtarı yazdıracaktır.
+
+
+== Kullanımı ==
+SSH genellikle uzaktaki makinede oturum açma ve komut çalıştırma için kullanılır, fakat aynı zamanda tünellemeyi de destekler, TCP portları üzerinden taşınır ve X11 bağlantısı sağlar. SSH dosya gönderme işlemini SSH dosya transfer protokolü (SFTP) ya da güvenli kopyalama protokolüyle (SCP) yapar. SSH istemci-sunucu modelini kullanır.
+Standart TCP portu olan 22 SSH bağlantısı için atanmıştır.
+SSH istemci programı genenllikle bağlantının kurulması için SSH'ı arka planda (daemon olarak) çalıştırır. SSH iki yayıgın işletim sistemi olan Mac OS X ve pek çok GNU/Linux dağıtımında, OpenBSD, FreeBSD, NetBSD, Solaris ve OpenVMS mevcuttur. Özellikle, Windows az modern olan masaüstü/sunucu işletim sistemlerinden biri olarak varsayılan olarak SSH içermez.
+SSH, bulut bilgisayarların bağlanma problemini çözdüğü için önemlidir, bulut tabanlı sanal makinenin internette güvenlik konularında açığa çıkabilecek problemlerini de önler. SSH tüneli internet üzerinde sanal makinelere güvenlik duvarı (firewall) sayesinde güveli bir yol sağlayabilir.
+
+
+== Tarihçesi ve gelişimi ==
+
+
+=== Sürüm 1.x ===
+Tatu Ylönen Finlandiya'daki Helsinki Üniversitesinde 1995'te araştırmacı olarak görev yapmıştır. Şimdi SSH-1 olarak bilinen protokolün ilk versiyonunu tasarlamıştır. SSH'ın amacı daha önceki rlogin, TELNET ve rsh protokollerinin (bu protokoller güçlü bir kimlik kanıtlama kuralı ya da gizliliği garantilemezler) yerine geçme olmuştur. Ylönen yaptığı çalışmayı ücretsiz olarak Temmuz 1995'te çıkardı ve bu yaptığı çalışma hızlıca popülerlik kazandı. İlerleyen zamanlarda 1995 sonlarına doğru, SSH kullanıcı sayısı 50 farklı ülkede 20000'lere ulaştı.
+Aralık 1995'te ise, Ylönen SSH Communications Security'yi pazarladı ve böylece SSH geliştirdi. SSH yazılımının orijinal sürümü özgür yazılımların çeşitli parçalarında kullanıldı, örnek olarak GNU libgmp gibi, fakat sonraki sürümlerinde  SSH Secure Communications'ı gittikçe artan patentli bir yazılım olarak geliştirdi.
+2000'lere yaklaşıldığında 2 millyona yakın SSH kullanıcısı oldu.
+
+
+=== Dikkate değer güvenlik açıkları ===
+1998'de SSH 1.5'te güvenlik açığı olduğu tanımlandı. Protokolün bu versiyonunda CRC-32 kullanıldı. Bu güvenlik açığı şifrelenmiş SSH akışına veri bütünlüğü korumasının yetersizliği nedeniyle yetkisiz girişler yapılabilmesiydi. SSH Compensation Attack Detector  tarafından yapılan birçok düzeltmeler sunuldu. Bu işlem güncellemelerinin pek çoğu tam sayı taşma zayıflığı içerir, bu durum ise saldırganlara arka planda çalışan SSH'ın haklarıyla (genellikle yönetici olarak) isteklerine göre kod çalıştırmaya izin verir.
+Ocak 2001'de başka bir güvenlik açığı saptandı, bu ise saldırganların Uluslararası Veri Şifreleme Algoritması (IDEA) ile yapılan şifrelemede son bloğu değiştirmeye izin veren bir güvenlik açığıydı. Aynı ayda belirlenen başka bir güvenlik açığı ise kötü amaçlı sunuculara istemci yetkilendirmesini başka bir sunucunun yapmasına izin veren bir açıktı.
+
+
+=== OpenSSH ve OSSH ===
+1999'da, geliştiriciler SSH'ın özgür yazılım  olan halini istediler ve bu yüzden orijinal SSH programının 1.2.12 olan sürümüne (bu sürümü özgür yazılım olarak çıkmıştı) geri döndüler. Björn Grönvall daha sonra OSSH'ı bu kod tabanıyla geliştirdi. Kısaca bundan sonra, OpenBSD geliştiricileri Grönvall'ın kodunu çatalladı ve geniş ölçüde bunun üzerinde çalıştılar, OpenSSH oluşturuldu ve OpenSD'nin 2.6 sürümüyle birlikte çıktı. Bu sürümde, OpenSSH'ı diğer işletim sistemlerine taşımak için alan oluşturulmuş oldu. 2005 itibarıyla, OpenSSH diğer işletim sistemlerinin büyük bir kısmıyla varsayılan olarak kurulu gelerek ve çok popüler olan SSH ile birleşerek tek uygulama oldu. Aynı zamanda OSSH ise artık kullanılmadı. OpenSSH'ın bakımı devam ediyor ve şimdi 1.x ve 2.0 sürümlerinin ikisini de destekliyor.
+
+
+=== Sürüm 2.x ===
+2006'da protokolün gözden geçirilmiş bir sürümü olan SSH-2 bir standart olarak kabul edildi. Bu sürüm SSH-1 ile bağdaşmayan bir sürümdü. SSH-2 güvenliği ve gelişmiş özellikleri SSH-1'in üzerindeydi. Artık daha iyi bir güvenliğe sahipti, örneğin Diffie-Helman anahtar değişimi ve mesaj üzerinden yetkilendirme kodları ile güçlü bir bütünlük kontrolü sağladı. SSH-2'nin yeni özelliği tek bir SSH bağlantısının üzerinde bir grup kabuk oturumu çalıştırmadır. SSH-2'nin üstünlüğü ve SSH-1'den fazla olan popülerliği nedeniyle bazı uygulamalar (Lsh ve Dropbear) sadece SSH-2 protokolünü destekler.
+
+
+==== Zayıflıkları ====
+Kasım 2008'de, SSH'ın tüm sürümlerinde teorik bir güvenlik açığı fark edildi. Bu şifrelenmiş metnin bir bloğundan düz metnin 32 bit üzerinde bir düz metin dönüşümüne izin veren bir güvenlik açığıydı.
+
+
+===== OpenSSH =====
+Bu durumda Standart OpenSSH yapılandırmasını kullanarak, saldırganların başarı olasılığı düz metnin 32 bitlik dönüşümü içindi. OpenSSH 5.2 ise bu tür güvenlik açıklarına karşı davranışları değiştirilmiş bir şekilde çıkarıldı.
+
+
+== Kullanıldığı yerler ==
+SSH birçok platform için kullanılabilen bir protokoldür, bu platformlardan pek çoğu Unix türevleridir, bunun yanı sıra Microsoft Windows tarafından da kullanılır. Bazı uygulamalar SSH sunucu ya da istemcileri ile uyumlu ya da sadece SSH'da mevcut olan özelliklere ihtiyaç duyabilirler. Örneğin SSH VPN'i uygulamak için kullanılabilir ama şu an sadece OpenSSH sunucu ve istemcisinin uygulaması mevcuttur.
+
+Uzaktaki bir makine üzerindeki kabuğa giriş yapmak için
+Uzaktaki bir makine üzerinde tek bir komut çalıştırmak için
+Güvenli dosya iletimi için
+rsync ile birleşiminden yedekleme yapma, dosyaların kopyalarını ya da yansılarını güvenli ve verimli bir şekilde almak için
+Bir portu tünellemek ya da sevk etmek için (bu VPN ile karıştırılmamalı, SSH paketleri farklı ağlar arasında yönlendirir ya da iki broadcast alanını birine köprüler)
+Tam teşekküllü şifrelenmiş VPN'i kullanmak için. Bu özelliği sadece OpenSSH sunucu ya da istemcilerinin desteklediğine dikkat edin.
+Uzak makineden X'i ilerletmek için (birçok ara host sayesinde sağlanabilir)
+SSH istemcilerinin desteklediği SOCKS protokolü ile şifrelenmiş vekil bağlantısı sayesinde webi taramak için
+Uzak bir makine üzerinde dizinleri güvenli bir şekilde bağlamak için, yerel bilgisayarda kullanılan SSHFS gibi
+Yukarıda tartışılan bir ya da birkaç mekanizma sayesinde, uzaktaki makineyi izlemeyi ve sunucu yönetimini otomatikleştirmek için
+SSH'ı destekleyen taşınabilir ya da gömülü cihazların üzerinde geliştirme yapmak için
+
+
+=== SSH kullanarak dosya iletim protokolleri ===
+SSH protokollünü kullanarak dosya iletimi için birçok yöntem mevcuttur.
+
+Güvenli kopyalama (SCP), bu protokol SSH üzerinde RCP'den geliştirilmiş
+rsync, SCP'den daha verimli olma niyetindedir
+SSH Dosya İletim Protokolü (SFTP), FTP'ye bir güvenlik alternatifidir (SSH üzerinde FTP ile karıştırılmamalıdır)
+Dosya iletimi 1998'de çıkan, bir kabuk üzerinden yapılırdı (FISH olarak da bilinir), Fish'de SSH üzerinden Unix kabuk komutlarından geliştirildi.
+
+
+== SSH Bağlantısı İçin Gerekli Olabilecek Bash Komutları ==
+Genel komutlar
+
+sudo (Root erişimi yetkisi için)
+apt-get (Paket Kurulumu)
+wget bulunduğunuz dizine download etmenizi sağlar
+ls Dizinde bulunan her şeyi listeler.
+ls -a Gizli dosyalar ve dizinlerle beraber listeler.
+ls -l Bütün dosyaları boyut ve tarihini göstererek listeler.
+tar -zxpf Uzantısı tar.gz olan sıkıştırılmış dosyaları açar.
+tar -xpf Uzantısı .tar olan dosyaları açar.
+gunzip Uzantısı .gz olan dosları açar.
+cp Dosyayı kopyalar.
+mv Bir dosyayı başka bir dizine taşımanızı sağlar ya da dosya adını değiştirir.
+mkdir Yeni bir dizin oluşturmanızı sağlar.
+rmdir Belirtilen dizini silmenizi sağlar.
+rm Dosya silmenizi sağlar.
+rm -rf Dizin silmenizi sağlar.
+cd Belirtilen dizine geçmenizi sağlar.
+cd .. Bir üst dizine geçmenizi sağlar.
+cd / En üst dizine çıkmanızı sağlar.
+cd ~ kullanıcının ev dizinine geçmenizi sağlar.
+pwd O anda bulunduğunuz dizini görüntüler.
+pico Belirtilen dosyayı text editör ile düzenlemenizi sağlar.
+ftp Belirtilen siteye FTP bağlantısı sağlar.
+lynx Belirtilen siteyi görüntüler.
+df Harddisk istatistiklerini gösterir.
+quota Disk kullanımınızı gösterir.
+uname İşletim sisteiminin durumunu gösterir.
+whoami Kendi bilgilerinizi gösterir.
+who Sunucuya bağlı olanları gösterir.
+last Hesabınıza yapılan en son bağlantıyı gösterir.
+whereis Belirtilen dosyanın nerede olduğunu gösterir.
+BitchX IRC programını çalıştırır.
+mail Postalarınızı kontrol eder.
+ps -x Sizin çalıştırdığınız işlemleri gösterir.
+ps -a Sunucuda çalıştırılan tüm işlemleri gösterir.
+ps -ux Çalıştırılan işlemlerin CPU/RAM kullanımıyla gösterir.
+kill Pid numarası verilen işlemi durdurur.
+kill -9 Pid numarası verilen eggdrop işlemini durdurur.
+killall Belirtilen program türündeki tüm işlemleri durdurur.
+whatis Belirtilen komutun açıklamasını verir.
+man Komut hakkında yardım görüntüler
+passwd Shell hesabınıza girerken kullandığınız şifreyi değiştirmenizi sağlar.
+vhosts ya da vhost Sistemde bulunan vhostları (virtual host) listeler.(BNC için kullanabilirsiniz)
+ROOTMAKİNADAN İP ÖĞRENME: ip addr
+ROOTTA HESAP AÇMAK : adduser login & chown mavigok /home/login & passwd pass1 , passwd pass2
+reboot: Sunucuya restart atar
+service mysql restart: mysql restart atar
+service httpd restart: apache ye restart atar
+service httpd stop : Sitelere ulaşımı kapatır
+apf -d ipadresi : verilen ipe ban atar
+service apf restart : apf ye restart atar
+netstat -n : sunucuya baglanan ipleri gösterir
+netstat -a sunucuya baglanan reseller ipleri gösterir(Proxy kullanmanız fark etmez her zaman gercek cıkış ipi görünür)
+pico : ssh üzerinden text editor ile dosya içeriğini görme ve düzenlemeye yarar.
+top : Sistem cpu kulalnımını gösterir.
+uptime : Uptime Durumu
+Dosya indirme
+
+wget http://www.baskoylu.net/test.rar
+IP adresi yasaklama
+
+*iptables -A INPUT -s 85.159.54.48 -j DROP
+IP Adresi Yasak Kaldırma
+
+*iptables -X INPUT -s 85.159.54.48 -j DROP
+Sunucuya dosya indirme
+
+*wget http://www.indirilecek-dosya-adresi.com/ornek-dosya.rar
+ZIP dosyasını çıkartma/açma
+
+*unzip dosya.zip
+TAR.GZ dosyasını çıkartma/açma
+
+*tar -xvsf dosya.tar.gz
+GZIP dosyasını çıkartma/açma
+
+*gunzip dosya.tar.gz
+Dosya sıkıştırmak
+
+*tar cvzf dosyam.tar.gz sıkıştırılacak-dosya
+SQL yükleme
+
+*mysql -h dbname -u dbuser -p dbpasword < dbname.sql

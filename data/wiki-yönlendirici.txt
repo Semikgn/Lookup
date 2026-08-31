@@ -1,0 +1,32 @@
+# Yönlendirici
+
+Yönlendirici (İngilizce: router), aynı ağ iletişim kurallarını kullanan iki bilgisayar ağı arasında veri çerçevelerinin iletimini sağlayan ağ donanımıdır. Yönlendirme için OSI yedi katman modelinin üçüncüsü olan ağ katmanı kullanılır. Genellikle bu iş için özel üretilmiş donanımlar varsa da birden çok arayüzü olan bilgisayarlar da yazılım desteğiyle yöneltici olarak çalışabilirler.
+
+
+== Çalışma Şekli ==
+ 
+Bir yöneltici iki veya daha fazla ağ arasındaki kesişme noktasıdır ve parçası olduğu her ağ için bir arayüz taşır. Her iki ağın da parçası olduğu için veri paketlerinin ağlar arasında yollarını bulmaları görevini üstlenir. Yöneltme işlemi bir veri paketinin bir istasyondan diğerine yolunun belirlenmesidir. Yolun seçimi için yöneltici yöneltme iletişim kurallarını (İngilizce: routing protocol) kullanarak diğer yönelticilerle bağlantı kurar ve gelen bilgileri yöneltme tablosuna ekler. Gerektiğinde elle de oluşturulabilen yöneltme tablosu bilinen hedeflere giden yolları içerir. Eğer gelen bir veri paketinin hedefi yöneltme tablosu ile belirlenemiyorsa ve bu durum için standart bir ağ geçidi tanımlanmamışsa, yöneltme işlemi başarısızlıkla sonuçlanmış olur. Aksi takdirde paket hedefe ya da hedefin bağlı olduğu varsayılan yönelticiye gönderilir.
+Her ne kadar IP iletişim kuralı günümüzde en çok bilinen yöneltilebilir iletişim kuralıysa da AppleTalk, IPX SNA, XNS ve DECnet gibi başka iletişim kurallarının da yöneltilebilir özelliği olduğunu unutmamak gerekir. Yöneltilebilir iletişim kuralı (İngilizce: routable protocol) ve yöneltme iletişim kuralı (İngilizce: routing protocol) birbirleriyle karıştırılmaması gereken farklı kavramlardır.
+
+
+== Farklılıkları ==
+
+
+=== Köprü ya da dağıtıcıdan ===
+Yönelticiler ortamdan bağımsız ama ağ iletişim kurallarına bağımlı çalışırlar. Köprü ya da dağıtıcıda durum tam tersidir. Mesela üzerinde bir modem, bir WLAN arayüzü ve bir ethernet kartı olan bir yöneltici bu farklı ortamlarda çalışan ağların bir parçası olabilir. Ama işlevini gerçekleştirebilmesi için ortamların aynı ağ iletişim kurallarını (Ör.: IP) kullanıyor olmaları gerekir. Bu durum yönelticinin birden fazla iletişim kuralını tanımasına engel değildir.
+
+
+=== Ağ Geçidinden ===
+Her ne kadar günlük yaşamda ve bazı işletim sistemlerinde ağ geçidi ve yöneltici aynı anlamda kullanılıyorsa da, ağ geçidi OSI yedi katman modelinin dördüncü ve yukarısındaki katmanlarında uygulama bulur. Ağ geçidi farklı ağ iletişim kuralı (TCP/IP ve SNA gibi) kullanan iki ağı birbirine bağlamakta kullanılabilir. İnternet üzerinden normal telefon numaralarının aranabildiği VoIP uygulamalarında da telekomunikasyon ağını internete bağlayan ağ geçitleri kullanılmaktadır.
+
+
+=== Yönlendirici Tipleri ===
+Yönlendiriciler işletimler içinde, işletimle internet arasında ve internet servis sağlayıcıları arasında bağlantı sağlar. Cisco CRS_1 veya JuniperT1600 gibi büyük yöneticiler internet servis sağlayıcılarında veya geniş işletim ağlarında kullanılır. Küçük yöneticiler ev ofislerde bağlantı sağlar.
+
+
+=== Tarihçe ===
+Günümüzdeki yönlendiriciler ile belli başlı benzer özelliklere sahip ilk aygıtlara örnek olarak paket servisler verilebilir. Arayüz mesaj işlemci aletleri ARPANET tarafından üretilir. Yönlendirici fikri ilk olarak (o zamanlar geçit olarak adlandırılıyordu)'INWG' Internatıonal Network Working Group olarak adlandırılan uluslararası bilgisayar ağı araştırmacıları sayesinde ortaya çıkarıldı.
+
+
+=== Güvenlik ===
+Harici ağlar, genel güvenlik stratejisinin önemli bir parçası olarak düşünülmelidir. Yönlendirici'den farklı olarak güvenlik duvarı veya VPN işleme cihazı bu ya da diğer güvenlik fonksiyonlarını içerebilir. Birçok şirket güvenlik odaklı yönlendirici'ler üretmiştir. Buna Cisco system'in PIX'i ve ASA5500 serisi, Juniper'in Netscreen'i, Watchguard'ın Firebox'ı, Barracuda'nın posta odaklı cihazları ve daha birçokları dahildir.

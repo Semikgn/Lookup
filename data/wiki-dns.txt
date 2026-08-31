@@ -1,0 +1,230 @@
+# DNS
+
+DNS (İngilizce: Domain Name System, Türkçe: Alan Adı Sistemi), internet uzayını bölümlemeye, bölümleri adlandırmaya ve bölümler arası iletişimi organize etmeye yarayan, bilgisayar, servis, internet veya özel bir ağa bağlı herhangi bir kaynak için hiyerarşik dağıtılmış bir adlandırma sistemidir.
+İnternet ağını oluşturan her birim sadece kendine ait bir IP adresine sahiptir. Bu IP adresleri kullanıcıların kullanımı için www.site_ismi.com gibi kolay hatırlanır adreslere karşılık düşürülür. DNS sunucuları, internet adreslerinin IP adresi karşılığını kayıtlı tutmaktadır.
+Katılımcı kuruluşların her birine atanmış alan adları çeşitli bilgileri ilişkilendirir. En belirgin olarak, insanlar tarafından kolayca ezberlenebilen alan adlarını, dünya çapında bilgisayar servisleri ve cihazlar için gerekli sayısal IP adreslerine çevirir (dönüştürür). DNS, çoğu internet servisinin işlevselliği için temel bir bileşendir, çünkü Internetin temel yönetici servisidir.
+
+Alan Adı Sistemi DNS her alan için yetkili ad sunucuları atayarak alan adlarını atama ve bu adların IP adreslerine haritalanması sorumluluğunu verir. Yetkili ad sunucuları desteklenen alanları için sorumlu olmakla görevlidirler ve diğer ad sunucuları yerine alt alanlara yetki (otorite) verebilirler. Bu mekanizma dağıtılmış ve arızaya toleranslı servis sağlar  ve tek bir merkezi veritabanına ihtiyacı önlemek için tasarlanmıştır.
+DNS aynı zamanda özünde (çekirdekte) bulunan veritabanı servisinin teknik işlevselliğini de belirtir. DNS protokolünü – DNS'de kullanılan veri yapılarının ve veri iletişim alışverişinin (değiş tokuş) detaylı tanımlaması- İnternet Protocol Suite'in bir parçası olarak tanımlar. Tarihsel olarak DNS' den önceki yönetici servisleri orijinal olarak metin dosyalarına ve belirgin bir şekilde HOSTS.TXT çözücüsüne dayandığı için büyük veya küresel yöneticilere göre ölçeklenebilir değildi. DNS 1980'den bu yana yaygın olarak kullanılır olmuştur.
+İnternet hiyerarşi alan adı ve İnternet Protokol (IP) adres boşluğu olmak üzere iki ana ad boşluğunu sağlar. DNS sistemi alan adı hiyerarşisi sağlar ve onunla adres boşluğu arasında çeviri servisi sağlar. İnternet adı sunucuları ve iletişim protokolü Domain Name Sistemini etkin kılar. Bir DNS ad sunucusu, alan DNS kayıtlarını alan adı için depolayan bir sunucudur; DNS ad sunucusu veritabanına karşı sorulara cevaplarla karşılık verir.
+DNS veritabanında depolanan en yaygın kayıt türleri; DNS bölgesinin yetkisi otoritesi  (SOA), IP adresleri (A ve AAAA), SMTP posta değiştiriciler (MX), ad sunucuları (NS), ters DNS aramaları için işaretçiler (PTR) ve alan adı takma isimleridir (CNAME).
+Genel amaçlı bir veritabanı olmak için tasarlanmamasına rağmen, DNS diğer veri türleri için DNSSEC kayıtları gibi şeyler için otomatik makine aramalarını  ya da Sorumlu kişi (RP) kayıtları gibi insan sorularını da depolayabilir. DNS kayıt türlerinin tam listesi için, DNS kayıt türlerinin listesine bakın. Genel amaçlı veritabanı olarak, DNS veritabanında saklanan gerçek zamanlı kara delik listesi kullanılarak istenmeyen e-posta (Spam) ile mücadelede kullanımında da DNS görülebilir. İnternet adlandırma için veya genel amaçlı kullanımlar için olsun, DNS veritabanı, yapılandırılmış bölge dosyasında geleneksel olarak depolanır.
+
+
+== Amaçları ==
+İnternette bulunan her nesnenin, etkileşime giren her sunucu ve ucun bir internet sitesi olması gerekir. Bu adres, protokol seviyesinin IPv4 ve IPv6 olmasına göre 32 bit ya da 128 bit uzunluğundadır. Alan adı, bu 32 ya da 128 bit uzunluğundaki sayı yerine insanların anlayacağı, akılda tutacağı, kurumsal kimlik ve marka ile özdeşleştirebileceği isimlerin kullanılmasını sağlar. Örneğin tr.wikipedia.org alan adı ile 207.142.131.210 şeklindeki IP nosu arasındaki bağlantıyı Alan Adı Sistemi sağlar. Sırayla; org, wikipedia.org ve tr.wikipedia.org iç içe geçmiş İnternet alanları ya da bölmeleridir.
+İnsan dostu bilgisayar sistem adlarını IP adreslerine çevirerek İnternet için telefon rehberi hizmeti sunan sitem, DNS'i tanımlamak için sıkça kullanılan bir benzetmedir. Mesela, alan adı www.example.com, 93.184.216.119 (IPv4) ve 2606:2800:220:6d:26bf:1447:1097:aa7 (IPv6) adreslerine çevrilir. Bir telefon rehberi aksine DNS aynı ana bilgisayar adını kullanmaya devam eden son kullanıcıları etkilemeden ağdaki servisin konumunun değişmesine izin vererek çabuk bir şekilde güncellenebilir. Kullanıcılar anlamlı bir Değişmeyen Kaynak Konum Belirleyici (URL) ve bilgisayarın servisleri nasıl yerleştirdiğini bilmek zorunda kalmadan e-mail adresi kullandıklarında bundan avantaj sağlarlar.
+Alan Adı Sistemi'nin yarattığı ilişkiler birebir ilişki olmak zorunda değildir. Bir alan adına birden fazla IP adresi atanabilir. Bu yoğun talep olan hallerde geçerlidir. Wikipedia.org, yahoo.com, google.com gibi adreslerde bu çok olur. Ama daha yaygını, birçok alan adı tek bir IP'ye atanabilir. Buna da "Sanal Evsahipliği" (Virtual Hosting) denir.
+Alan Adı Sistemi hiyerarşik bir yapı gösterir. En üste .com, .org, .net, .int, .edu, .info, .biz, .aero, .travel, .jobs, .gov, .mil gibi "jenerik" üst düzey alanlarla (gTLD) .tr, .us, .de, .uk, .jp, .az gibi ülke alanlarından (CcTLD) oluşur. Buna son olarak .eu ve .asia gibi bölgesel birkaç üst düzey alan adı daha eklenmiştir.
+
+
+== DNS’in Tarihçesi ==
+Bilgisayar ağları üzerindeki isimlendirme sorunu ilk olarak internetin babası sayılan Arpanet zamanında ortaya çıkmıştır. 1970'lerde ArpaNet günümüz ağları ile karşılaştırılamayacak kadar küçük durumdaydı ve yalnızca birkaç yüz ile ifade edilebilen sisteme hizmet veriyordu. Bu tarihlerde isimlendirme için tek noktada tutulan bir dosyanın bulunması ve diğer tüm sistemlerin bu dosyayı belli aralıklarla kendi taraflarında güncellemesi isimlendirme sorununu çözmüştü.
+Adres-isim tanımlamalarını içeren HOSTS.TXT dosyası SRI tarafından SRI-NIC (Stanford Research Institute – Network Information Center) adında bir bilgisayar üzerinde tutulmaktaydı. Bu dosya her adrese bir isim karşılık gelecek şekilde düzenlenmişti. Arpanet üzerindeki yeni isim tanımlamaları ve değişiklikleri SRI'ya gönderilen e-postalar arcılığı ile yapılıyor ve HOSTS.TXT'in kopyası File Transfer Protocol ile alınıyordu.
+Arpanet üzerinde TCP/IP kullanımına paralel olarak ortaya çıkan bağlantı patlaması, isim çözümü için birçok sunucuda ve her bilgisayara özgün bir isim atanmasında problemler yaşanmaktaydı. Ayrıca yalnızca isim çözümlenmesi için oldukça yüksek miktarda bant genişliği harcanmaktaydı. Buna rağmen kullanılan isim veritabanlarının uyumlu olması her zaman sağlanamamaktaydı.
+Bu durumun ortaya çıkmasından sonra Arpanet daha ölçeklenebilir bir isim çözümleme yapısı için araştırmalara başladı. Paul Mockapetris bu işle görevlendirildi. Mockapetris 1984 yılında Domain Name System (DNS)’i tanımlayan RFC 882 ve RFC 883’ü yayınladı. Bunlar daha sonra hâlen geçerli olan RFC 1034 ve RFC 1035 tarafından güncellendiler.
+
+
+== DNS'in Yapısı ==
+Alan Adı Sistemi (DNS), internet üzerindeki kaynakları adlandırmak ve bulmak için hiyerarşik ve dağıtık bir yapıya sahiptir. Bu yapı, genellikle kökü en tepede olan ters bir ağaç (tree) modeline benzetilir ve internetin devasa alan adı boşluğunu yönetilebilir parçalara (bölgelere veya "zone"lara) ayırır. Her bir bölge, kendi yetkili isim sunucuları (authoritative name servers) tarafından yönetilir ve bu sunucular, o bölgeye ait kaynak kayıtlarını (resource records) tutar. Hiyerarşi şu temel seviyelerden oluşur:
+
+Kök Alan (Root Zone): Hiyerarşinin en tepesidir ve genellikle görünmez bir nokta (.) ile temsil edilir. Bu seviye, ICANN'in bir fonksiyonu olan IANA'nın gözetiminde, dünya geneline dağıtılmış kök isim sunucuları (root name servers) tarafından yönetilir. Kök sunucular, doğrudan alan adlarının IP adreslerini bilmezler; bunun yerine bir sonraki seviye olan Üst Düzey Alan Adı (TLD) sunucularının adreslerini bilirler ve sorguları ilgili TLD sunucusuna yönlendirirler.
+Üst Düzey Alan Adları (Top-Level Domains - TLDs): Alan adlarının en sağdaki kısmını oluştururlar (örneğin, www.ornek.com adresindeki .com). İnternet adreslerini genel kategorilere ayırırlar. TLD'ler temel olarak birkaç ana gruba ayrılır:
+Genel TLD'ler (gTLDs - generic TLDs): Belirli bir coğrafi bölgeye bağlı olmayan, genel amaçlı alan adlarıdır. En bilinenleri ve orijinal olanları arasında .com (genellikle ticari kuruluşlar), .org (genellikle ticari olmayan kuruluşlar), .net (ağ ile ilgili kuruluşlar), .info (bilgi sağlama amaçlı), `.biz` (işletmeler) bulunur. Son yıllarda .app, .blog, .shop, .xyz gibi yüzlerce yeni gTLD de kullanıma sunulmuştur.
+Ülke Kodu TLD'leri (ccTLDs - country-code TLDs): Belirli bir ülkeye veya özerk bölgeye ISO 3166-1 alpha-2 standardına göre atanmış iki harfli kodlardır. Örneğin; .tr (Türkiye), .de (Almanya), .uk (Birleşik Krallık), .jp (Japonya). Her ülke kendi ccTLD'sinin yönetim politikalarını ve kayıt kurallarını belirler. (Not: ABD kurumları genellikle .com, .org, .gov gibi gTLD'leri kullansa da, .us ccTLD'si de mevcuttur ve bireyler ile kuruluşlar tarafından kullanılabilir.)
+Sponsorlu TLD'ler (sTLDs - sponsored TLDs): Belirli bir topluluğun (örneğin; endüstriyel, akademik, devlet) çıkarlarını temsil eden özel kuruluşlar (sponsorlar) tarafından yönetilen ve özel uygunluk kurallarına sahip TLD'lerdir. Örnekler arasında .gov (ABD hükûmet kurumları), .edu (ABD'deki akredite yükseköğrenim kurumları), .mil (ABD askeri birimleri), .aero (havacılık endüstrisi), .museum (müzeler), .jobs (insan kaynakları yönetimi) bulunur.
+Altyapı TLD'si: .arpa alanı özel bir durumdur ve yalnızca internet altyapısı teknik servisleri için kullanılır. En bilinen kullanımı ters DNS sorgulamaları (IP adresinden alan adına çevirme) içindir.
+İkinci Seviye Alan Adları (Second-Level Domains - SLDs): TLD'nin hemen solunda yer alan kısımdır (örneğin, www.ornek.com adresindeki ornek). Genellikle bir şirketin, kuruluşun, markanın veya bireyin adını temsil eder. Kayıtları, ilgili TLD'yi yöneten kuruluş (registry) tarafından yetkilendirilmiş kayıt şirketleri (registrar) aracılığıyla yapılır.
+Bazı ccTLD'ler altında, ikinci seviye alan adları da belirli kategorilere ayrılabilir. Örneğin Türkiye'de .com.tr (ticari), .org.tr (vakıf, dernek vb.), .edu.tr (üniversiteler), .gov.tr (devlet kurumları) gibi yapılar kullanılmakta ve bu durum zorunlu tutulmaktaydı. (Not: 25 Ağustos 2023 tarihinde açıklanan güncellemeye göre ve günümüzde artık a.tr tarzındaki alan adları kayıt edilebilmektedir.) Bu durumda com, org, edu, gov gibi ifadeler .tr TLD'sinin altında ikinci seviye etiketler olarak işlev görür ve asıl ayırt edici isim üçüncü seviyede yer alır (örn: firmaadi.com.tr).
+Alt Alan Adları (Subdomains): İkinci seviye (veya .com.tr gibi yapılarda üçüncü seviye) alan adının soluna eklenen kısımlardır (örneğin, www.ornek.com, mail.ornek.com, blog.ornek.com). Alan adı sahibi, kendi alan adı içinde istediği kadar alt alan adı oluşturarak web sitesinin farklı bölümlerini, farklı hizmetleri (e-posta sunucusu, FTP sunucusu gibi) veya farklı fiziksel sunucuları organize edebilir. Örneğin, marine.ulakbim.gov.tr adresinde:
+.tr: Türkiye ccTLD'si
+.gov: Türkiye'deki devlet kurumları için kullanılan ikinci seviye etiket
+ulakbim: İkinci Seviye Alan Adı (kuruluşu temsil eder)
+marine: Alt Alan Adı (muhtemelen belirli bir sunucuyu veya hizmeti temsil eder)
+
+
+== DNS Çalışma Mekanizması ==
+Genel ve Özel DNS kullanımı arasında ayrım yapmak önemlidir.
+
+Genel DNS: IP kayıtları genellikle işletmenize İnternet servis sağlayıcınız (İSS) tarafından sağlanır. Bu kayıtlar halka açıktır ve kullandıkları cihazdan veya bağlı oldukları ağdan bağımsız olarak herkes tarafından erişilebilir.
+Özel DNS: Özel bir DNS, bir şirket güvenlik duvarının arkasında yer alması ve yalnızca dahili sitelerin kayıtlarını tutması bakımından genel olandan farklıdır. Bu durumda, özel DNS'nin kapsamı, kullanılan dahili sitelerden ve hizmetlerden IP adreslerini hatırlamakla sınırlıdır ve özel ağın dışından erişilemez.
+Çoğu durumda kullanıcılar, ana bilgisayar adlarını IP adreslerine dönüştürürken genel DNS'ye güvenir. İşte bu sürecin nasıl çalıştığına dair üst düzey genel bir bakış açısı şu şekildedir: 
+
+Bir kullanıcı bir tarayıcıya bir alan adı veya URL(örn. www.example.com ) girer. Bu daha sonra, genellikle yerel bir işletim sistemi veya İnternet servis sağlayıcınız tarafından sağlanan yerel bir DNS sunucusuna bir sorgu gönderir. İstemci ile DNS ad sunucusu arasındaki bu aracı, özyinelemeli çözümleyici olarak bilinir ve istemciden sorgulanan ad sunucusu bilgilerini istemek veya almak için tasarlanmıştır.
+Özyinelemeli çözümleyici, aranan alan adının uzantısına bağlı olarak yönlendirilecek uygun TLD ad sunucusuyla yanıt veren kök ad sunucularına iletilen bir sorgu ister. Kök ad sunucuları, İnternet Tahsisli Sayılar ve Adlar Kurumu (ICANN) tarafından da denetlenir. TLD ad sunucusu .com, .net, .edu ve .gov gibi yaygın uzantılarla biten URL'lerin tüm bilgilerini tutar.
+Düzenli olarak gerçekleştirilen DNS aramalarının kapladığı alan nedeniyle, arama isteklerini, yapılan arama sorgusuna dayalı olarak yetkili DNS'yi doğru IP adresiyle tanımlayan gruplar halinde gruplandırmak için özyinelemeli bir çözümleyici kullanılır. Yetkili ad sunucusu genellikle bir DNS aramasındaki son adımdır. Özyinelemeli çözümleyici, TLD ad sunucusundan bir yanıt aldıktan sonra, istemciye geri sunulmak üzere IP adresinin bulunduğu yetkili ad sunucusuna geçer.
+DNS, İnternet'in temel işlevleri için kritik hale geldi ve kullanıcıların kaynak kayıtları yoluyla bir IP adresleri denizinde kolayca gezinmesine yardımcı oldu. Bu temel süreçler olmadan, günlük olarak kullandığımız tüm özellikleri çevrimiçi olarak desteklemek neredeyse imkansız olurdu ve posta hizmetleri, web sitesi yönlendirmeleri veya karmaşık IPv4 ve IPv6 web adreslerini tanıma söz konusu olduğunda yeteneklerimizi sınırlardı. Ancak DNS aramalarını bu kadar harika yapan şey, süreç ne kadar karmaşık olursa olsun, tüm arama sorgularının ve sunucu yönlendirmelerinin istemci tarafını etkilemeden yalnızca milisaniyeler içinde gerçekleşmesidir.
+Web Uygulamalarının DNS Trafiği ile Yönlendirilmesi
+
+Bir kullanıcı bir web tarayıcısı açar, adres çubuğuna www.example.com girer ve Enter'a basar.
+www.example.com talebi, tipik olarak kullanıcının kablolu İnternet sağlayıcısı, DSL geniş bant sağlayıcısı veya kurumsal ağ gibi İnternet servis sağlayıcısı (ISP) tarafından yönetilen bir DNS çözümleyiciye yönlendirilir.
+ISP için DNS çözümleyici, www.example.com isteğini bir DNS kök ad sunucusuna iletir.
+ISP için DNS çözümleyici, www.example.com isteğini yeniden, bu kez .com alan adları için TLD ad sunucularından birine iletir. .com etki alanları için ad sunucusu, talebe example.com etki alanıyla ilişkili dört Amazon Route 53 adlarıyla yanıt verir.
+ISP için DNS çözümleyici, bir Amazon Route 53 ad sunucusu seçer ve www.example.com isteğini bu ad sunucusuna iletir.
+Amazon Route 53 ad sunucusu, www.example.com kaydı için example.com tarafından barındırılan bölgeye bakar, bir web sunucusunun IP adresi olan 192.0.2.44 gibi ilişkili değeri alır ve IP adresini DNS'ye döndürür çözücü.
+ISP için DNS çözümleyici, sonunda kullanıcının ihtiyaç duyduğu IP adresine sahiptir. Çözümleyici bu değeri web tarayıcısına döndürür. DNS çözümleyici ayrıca example.com'un IP adresini belirttiğiniz süre boyunca önbelleğe alır (depolar), böylece bir dahaki sefere example.com'a göz atıldığında daha hızlı yanıt verebilir.
+Web tarayıcısı, DNS çözümleyicisinden aldığı IP adresine www.example.com için bir istek gönderir. İçeriğiniz, örneğin bir Amazon EC2 bulut sunucusunda çalışan bir web sunucusu veya bir web sitesi uç noktası olarak yapılandırılmış bir Amazon S3 klasörü olduğu yerdir.
+192.0.2.44 adresindeki web sunucusu veya diğer kaynak, www.example.com için web sayfasını web tarayıcısına döndürür ve web tarayıcısı sayfayı görüntüler.
+
+
+== DNS Mesaj Formatı ==
+İki tür DNS mesajıyla gerçekleştirilir:
+
+Sorgu Mesajı
+Yanıt Mesajı
+Format, her iki mesaj türü için de benzerdir. Bilgiler, DNS mesaj biçiminin en fazla beş farklı bölümünde tutulur. Sorgu mesajı, başlık ve soru kayıtları olmak üzere iki bölüme sahiptir.
+Yanıt mesajı beş bölümden oluşur:
+
+Başlık
+Soru
+Kayıtlar
+Cevap Kayıtları
+Yetkili Kayıtlar
+Ek Kayıtlar
+Sorgu mesajları iki alana ayrılmıştır, bu alanlar:
+
+Tanımlama: Tanımlama alanı, yanıtı istemci tarafından gönderilen istek ile eşleştirmek için kullanılan 16 bitten oluşur. İstemci aygıtın sorguları sunucu tarafından alınan karşılık gelen yanıtla eşleştirebilmesi için sunucu yanıt mesajındaki 16 bitlik tanımlama değerini kopyaladığından eşleştirme bu alan tarafından gerçekleştirilir.
+Bayraklar: 16 bittir ve QR (sorgu/yanıt), Opkod, AA, TC, RD, RA, SIFIR ve rKod şeklinde alanlara ayrılır.
+Bayraklar alanının her bir alt alanının açıklaması şu şekildedir:
+
+QR (sorgu/yanıt): 1 bitlik bir alt alandır. Değeri 0 ise mesaj istek tipinde, değeri 1 ise cevap tipindedir.
+Opkod: Bir mesajın taşıdığı sorgu tipini tanımlayan 4 bitlik bir alt alandır. Bu alan değeri yanıtta tekrarlanır. Kısa bir açıklama ile işlem kodu değerlerinin listesi aşağıdadır:
+-İşlem kodu alt alanının değeri 0 ise standart bir sorgudur. 
+-1 değeri, alan adını IP Adresinden bulmayı ima eden sorgunun tersine karşılık gelir. 
+-2 değeri, sunucu durumu talebini ifade eder. 3 değeri, rezerve edilen ve dolayısıyla kullanılmayan durumu belirtir.
+
+AA: Yetkili bir cevaptır. Değer 1 ise sunucunun yetkili olduğunu, aksi takdirde 0 değeri için yetkili olmadığını belirten 1 bitlik bir alt alandır.
+TC: Kesilmedir. Bu, mesajın uzunluğunun izin verilen 512 bayt uzunluğunu aşması durumunda, UDP hizmetleri kullanılırken mesajın kesileceğini belirten 1 bitlik bir alt alandır.
+RD: Özyineleme istenir. Sorgu mesajında değerin 1 olarak ayarlanıp ayarlanmadığını ve ardından sunucunun sorguyu yinelemeli olarak yanıtlaması gerektiğini belirten 1 bitlik bir alt alandır. Değeri, yanıt mesajına kopyalanır.
+RA: Özyineleme mevcuttur. Yanıt mesajında değer 1 olarak ayarlandıysa, özyinelemeli yanıtın kullanılabilirliğini belirten 1 bitlik bir alt alandır.
+Sıfır: 0'a ayarlanmış ve 3 bit ayrılmış bir alt alandır.
+rKod: Yanıt kodu anlamına gelir. Sorgunun başarılı bir şekilde yanıtlanıp yanıtlanmadığını belirtmek için kullanılan 4 bitlik bir alt alandır. Başarılı bir şekilde yanıtlanmazsa, yanıtta hatanın durumu sağlanır. Hata durumlarıyla birlikte değerlerin listesi aşağıda gösterildiği gibidir:
+-rKod'un 0 değeri hata olmadığını gösterir.
+-1 değeri, biçim belirtimiyle ilgili bir sorun olduğunu gösterir.
+-Değer 2, sunucu arızasını gösterir.
+-Değer 3, sorgu tarafından verilen adın etki alanında bulunmadığını ima eden Ad Hatasını ifade eder. 
+-4 değeri, istek türünün sunucu tarafından desteklenmediğini gösterir.
+-5 değeri, politika nedenlerinden dolayı sorguların sunucu tarafından yürütülmemesini ifade eder.
+
+Soru Sayısı: Mesajın Soru Bölümünde soru sayısını belirtmek için 16 bitlik bir alandır. Hem sorgu hem de yanıt mesajlarında bulunur.
+Bir cevap RR sayısı: Mesajın Cevap bölümünde cevap kayıtlarının sayısını belirten 16 bitlik bir alandır. Bu bölüm sorgu mesajlarında 0 değerine sahiptir. Sunucu, istemciden alınan sorguyu yanıtlar. Yalnızca yanıt mesajlarında bulunur.
+Bir dizi yetki RR'si: Mesajın Yetkili bölümündeki kaynak kayıtlarının sayısını veren 16 bitlik bir alandır. Bu bölüm sorgu mesajlarında 0 değerine sahiptir. Yalnızca yanıt mesajlarında bulunur. Bir veya daha fazla yetkili sunucu hakkında alan adlarını içeren bilgileri verir.
+Bir dizi ek RR: Çözümleyiciye yardımcı olacak ek bilgileri tutmak için ek kayıtları tutan 16 bitlik bir alandır. Bu bölüm sorgu mesajlarında 0 değerine sahiptir. Yalnızca yanıt mesajlarında bulunur.
+
+
+== Kaynak Kayıtları ==
+DNS kaynak kayıtları, bir alan adının DNS sunucusunda depolanan ve alan adının isminin bir IP adresine çevrilmesinde kullanılan kayıtlardır. Bu kaynak kayıtları, bir alan adının doğru bir şekilde yönlendirilmesini ve düzgün bir şekilde çalışmasını sağlamak için önemlidir. DNS kaynak kayıtlarının yanlış yapılandırılması, web sitelerinin düzgün çalışmasını engelleyebilir veya e-posta gönderim sorunlarına neden olabilir.
+
+
+=== En Yaygın DNS Kaynak Kayıtları Şunlardır ===
+DNS kaynak kayıtlarının toplam sayısı, zaman içinde değişebilir.
+
+
+== Protokol Uzantıları ==
+Avi Vantage, sorguda ECS seçeneği yoksa bir DNS sorgusuna ECS seçeneğinin eklenmesini destekler. DNS sorgusunda halihazırda bir ECS seçeneği varsa, ECS seçeneğinin güncellenmesini destekler. Avi Vantage, sorguda ECS seçeneği yoksa bir DNS sorgusuna ECS seçeneğinin eklenmesini destekler. DNS sorgusunda halihazırda bir ECS seçeneği varsa, ECS seçeneğinin güncellenmesini destekler.
+Alan Adı Sistemi ilk geliştirildiğinden beri gerekli geliştirmelere sahiptir. Temel DNS protokolünde bulunan çeşitli bayrak alanlarının, dönüş kodlarının ve etiket türlerinin boyutundaki kısıtlamalar, yeni bayraklara ve yanıt kodlarına izin vermek ve daha uzun yanıtlar için destek sağlamak için DNS'yi geriye dönük uyumlu bir şekilde genişletmeyi motive etti. 1999'dan bu yana, DNS için uzantı mekanizmaları (EDNS) bu zorluğun üstesinden gelmek için benimsenen yaklaşım olmuştur.
+
+
+== Dinamik Bölge Güncellemeleri ==
+DNS dinamik bölge güncellemeleri, bir DNS sunucusundaki kayıtların otomatik olarak güncellenmesine izin verir. Bu özellik, ağdaki cihazlar (örneğin, bilgisayarlar, telefonlar, yazıcılar vb.) IP adreslerini değiştirdiğinde veya yeni cihazlar eklendiğinde, DNS kayıtlarını güncellemek için kullanılır. Bu sayede ağ yöneticileri, her bir cihazın IP adresi değiştiğinde manuel olarak DNS kayıtlarını güncellemek zorunda kalmazlar. Bu işlem otomatik olarak gerçekleştirildiği için, ağ yöneticileri zamanlarını daha verimli bir şekilde kullanabilirler.
+Dinamik DNS Güncellemelerini Destekleyen İstemci Uygulamaları
+
+Microsoft Windows'un son sürümlerinde (Me, 2000 ve sonrası), DNS kayıtlarını kendisi için otomatik olarak güncellemek üzere dinamik DNS güncellemesini kullanan "Bu bağlantının adreslerini DNS'ye kaydet" TCP/IP seçeneği bulunur.Varsayılan olarak standart dinamik güncellemeler kullanılır. TSIG kimliği doğrulanmış güncellemeler desteklenmez.
+Birkaç İnternet dinamik IP adresi güncelleme istemcisi, TSIG kimliği doğrulanmış dinamik DNS güncellemelerini destekler.
+Dinamik DNS Güncellemelerinin Güvenliğini Artırmak İçin Yapabileceğiniz İşlemler
+
+IP adresi sahteciliğine karşı koruma için DNS sunucularını her zaman NGFW Motorunun arkasına yerleştirin.
+Hangi ana bilgisayarların dinamik güncellemeler göndermesine izin verildiğini tanımlamanıza izin veren BIND veya eşdeğer bir DNS sunucusu kullanın.
+Gelen yük dengelemede DDNS gerekli olmadığından, bunun yerine statik DNS girişlerini kullanmayı düşünün. Bu durumda, bir ISP başarısız olursa, DNS girişleri otomatik olarak DNS sunucusundan kaldırılmaz, ancak bazen bu sorunları başka yollarla çözebilirsiniz. Örneğin, bazı web tarayıcıları, bir adres yanıt vermezse diğer IP adreslerini otomatik olarak deneyebilir.
+Yapılandırma Aşağıdaki Genel Adımlardan Oluşur
+
+Yapılandırmaya devam etmeden önce DDNS güncellemelerini uygulamanın güvenlik risklerini öğrenin.
+NetLink'lerinizin durumunun izlenmesini etkinleştirmek için, NetLink'lerin özelliklerine araştırma IP adresleri ekleyin.
+Bir Harici DNS Sunucusu öğesi tanımlayın.
+DNS sunucusunun nasıl güncellendiği hakkında bilgi eklemek için Sunucu Havuzu öğesini düzenleyin.
+DDNS güncellemelerine izin vermek için Güvenlik Duvarı politikasını düzenleyin.
+
+
+== Taşıma Protokolleri ==
+Bir DNS Sağlayıcısından Diğerine Geçiş Yapma Yöntemi
+DNS hizmeti, web sitenize web ziyaretçileri tarafından erişilebilmesini sağlayan temel araçlardan biridir. Düzgün çalışan bir DNS hizmeti olmadan, web sitenizin internetteki varlığını bilmeden kapatma riski çok yüksektir. Ve bu endişe DNS geçişi sırasında daha da kritik hale geliyor. DNS geçişi, mevcut bir DNS bölgesini bir DNS sağlayıcısından diğerine aktarma işlemidir.
+
+Yeni DNS sağlayıcınız için bir bölge kaydı oluşturun. Genellikle, DNS sağlayıcıları mevcut DNS kaydınızı mevcut DNS sağlayıcınızdan otomatik olarak tarar.
+DNS Kayıtlarının doğru olup olmadığını kontrol edin. Geçerli DNS sağlayıcınızdan ve ayrıca dig gibi DNS sorgu araçlarını kullanarak başvurabilirsiniz. İhtiyaca bağlı olarak yeni DNS sağlayıcınızdaki bazı DNS Kayıtlarını da düzenleyebilirsiniz.
+DNS Kayıtlarınızı inceledikten sonra, ad sunucularını düzenlemek için kayıt şirketinize gidin. Kayıt şirketinizin kim olduğunu bulmak için DNS sorgu aracı whois'i kullanabilirsiniz. Ad sunucularını düzenlemenin yaygın yolu, yalnızca yeni ad sunucularını eklemek ve eskilerini hemen silmektir.
+Kayıt şirketi verilerinin yürürlüğe girmesini bekleyin. Genellikle yaklaşık 24 saat kadar sürer.
+DNS, web sitenizin internet varlığını koruyan yapıştırıcıdır, bu nedenle büyük değişikliklerin her zaman dikkatli bir şekilde yürütülmesi gerekir. Yukarıdaki genel adımları izleyerek, DNS bölgenizi yeni DNS sağlayıcınıza başarıyla geçirebilir ve aynı zamanda kesinti sürelerini veya işinizde herhangi bir aksaklığı önleyebilirsiniz.
+Not: Farklı DNS sağlayıcılarının, ad sunucularının kayıt şirketinden nasıl düzenleneceği konusunda farklı önerileri vardır. Daha sorunsuz bir geçiş için belirtilen adımlarını izlemeniz önerilir. Bunu yapmanın başka bir yolu da, NS kaydının ttl(yaşama süresi)'sini ayarladıktan sonra veya yeni kayıt şirketi kaydının yürürlüğe girmesinden SONRA yalnızca geçerli DNS sağlayıcınızın eski ad sunucularını silerken, yeni ad sunucularını yeni DNS sağlayıcınızdan eklemektir. Bu, bazen DNS sunucularının eski ad sunucularına sahip DNS verilerini önbelleğe alabileceği, dolayısıyla istekleri eski ad sunucusuna yönlendirebileceği yaygın bir DNS hizmeti sorununu önlemek için yapılır. Eski ad sunucuları kayıt şirketinden zaten silinmişse, bölge dosyalarınız artık orada olmadığı için DNS isteği başarısız olur.
+DNS Aktarım Protokolü
+DNS, DNS sorgularını sunmak için 53 numaralı bağlantı noktasında Kullanıcı Datagram Protokolü'nü (UDP) kullanır. UDP, hızlı ve yükü düşük olduğu için tercih edilir. DNS sorgusu, DNS istemcisinden gelen tek bir UDP isteği ve ardından sunucudan gelen tek bir UDP yanıtıdır.
+Bir DNS yanıtı 512 bayttan büyükse veya bir DNS sunucusu bölge aktarımları (DNS kayıtlarını birincilden ikincil DNS sunucusuna aktarma) gibi görevleri yönetiyorsa, veri bütünlüğü kontrollerini etkinleştirmek için UDP yerine İletim Kontrol Protokolü (TCP) kullanılır.
+
+
+== Güvenlik Sorunları ==
+DNS güvenliği, hızı ve güvenilirliği korumak ve siber saldırıların feci etkilerini önlemek amacıyla DNS altyapısını siber tehditlerden korumak için oluşturulan tüm prosedürleri ifade eder.
+En yaygın DNS saldırı türleri
+
+DoS: Bir hizmet reddi (DoS) saldırısı, bir bilgisayar sistemini veya ağı çökertmeyi amaçlar, böylece hedeflenen kullanıcılar ona erişemez. DoS saldırıları, hedefe aşırı miktarda trafik veya bilgi göndererek çökmesine neden olarak bunu başarır.DoS saldırılarını kullanan kötü niyetli aktörler, sıklıkla medya, bankacılık ve ticaret gibi sektörlerdeki tanınmış şirketlerin yanı sıra devlet ve ticari kuruluşların web sunucularını hedefler.
+DDoS: Dağıtılmış bir hizmet reddi (DDoS) saldırısı, birden fazla sistem bir hedefe karşı senkronize bir DoS saldırısını koordine ettiğinde gerçekleşir. Bu nedenle, DoS'tan temel farkı, hedefe aynı anda tek bir noktadan değil, birden fazla noktadan saldırı yapılmasıdır.DDoS saldırıları, müşteri deneyimi ve iş akışının yanı sıra geliri ve marka itibarını da etkileyebilir.
+DNS ele geçirme: Saldırganlar, DNS isteklerini yanlış çözerek kullanıcıları kötü amaçlı web sitelerine yönlendirmek için DNS yeniden yönlendirmesi olarak da bilinen DNS ele geçirmeyi kullanır. Kötü niyetli oyuncular bir DNS sunucusunu kontrol ediyor ve trafiği sahte bir DNS sunucusuna yönlendiriyorsa, sahte DNS sunucusu geçerli bir IP adresini kötü niyetli bir sitenin IP adresine çevirecektir.
+Diğer dolaylı saldırılar: Diğer siber saldırı biçimlerinin DNS'yi bir araç olarak kullanabilmesi veya bilgisayar korsanları tarafından DNS'yi tehlikeye atmak için kullanılan araçlar olabilmesi, DNS güvenliğinin kritik öneminin altını çizmektedir. Ortadaki adam saldırıları, bot ve sıfır gün saldırılarının yanı sıra bu bağlamda bahsedilmesi gereken en önemli saldırılardır.
+DNS Güvenlik Uzantıları (DNSSEC )
+DNS protokol standartlarından sorumlu kuruluş olan İnternet Mühendisliği Görev Gücü'ndeki'ndeki (IETF ) mühendisler, DNS'de daha güçlü kimlik doğrulamasının olmamasının bir sorun olduğunu uzun süredir fark ettiler. Çözüm üzerindeki çalışmalar 1990'larda başladı ve sonuç DNSSEC Güvenlik Uzantıları (DNSSEC ) oldu.
+DNSSEC, ortak anahtar şifrelemesine dayalı dijital imzalar kullanarak DNS'de kimlik doğrulamasını güçlendirir. DNSSEC ile, kriptografik olarak imzalanan DNS sorguları ve yanıtları değil, verilerin sahibi tarafından imzalanan DNS verileridir.
+Her DNS bölgesinin bir genel/özel anahtar çifti vardır. Bölge sahibi, bölgedeki DNS verilerini imzalamak ve bu veriler üzerinden dijital imzalar oluşturmak için bölgenin özel anahtarını kullanır. "Özel anahtar" adından da anlaşılacağı gibi, bu anahtar materyal bölge sahibi tarafından gizli tutulur. Bununla birlikte, bölgenin genel anahtarı herkesin alması için bölgenin kendisinde yayınlanır. Bölgedeki verileri arayan herhangi bir özyinelemeli çözümleyici, DNS verilerinin gerçekliğini doğrulamak için kullandığı bölgenin ortak anahtarını da alır. Çözümleyici, aldığı DNS verileri üzerinden dijital imzanın geçerli olduğunu onaylar. Eğer öyleyse, DNS veriler yasaldır ve kullanıcıya iade edilir. İmza doğrulanmazsa, çözümleyici bir saldırı varsayar, verileri atar ve kullanıcıya bir hata döndürür.
+DNSSEC, DNS protokolüne iki önemli özellik ekler  
+
+Veri kaynağı kimlik doğrulaması, bir çözümleyicinin, aldığı verilerin aslında verilerin kaynaklandığına inandığı bölgeden geldiğini kriptografik olarak doğrulamasına olanak tanır.
+Veri bütünlüğü koruması, çözümleyicinin, bölgenin özel anahtarıyla bölge sahibi tarafından orijinal olarak imzalandığından, verilerin aktarım sırasında değiştirilmediğini bilmesini sağlar.
+
+
+== Gizlilik ve İzleme Sorunları ==
+Etki Alanı Adı Sistemi (DNS), orijinal olarak kullanıcı gizliliği dikkate alınmadan geliştirilmiştir ve bu nedenle, belirli ağ etkinliğiyle (ör. kullanılan uygulamalar, ziyaret edilen web siteleri, iletişim kurulan kişiler vb.) ilişkilendirilebilecek DNS sorguları ve yanıtları hakkında bilgi sızdırabilir). Kapsamlı izleme, protokol geliştirmede önemli bir endişe haline geldiğinden, önemli İnternet protokollerinin gizlilik özelliklerini iyileştirmeyi amaçlayan bir dizi çaba gösterilmiştir. “DNS Gizliliği”, Alan Adı Sisteminde son zamanlarda yapılan gizlilik iyileştirmelerini ifade eder.
+DNS Gizliliğinin Etkileri
+Trafiğinizin HTTPS üzerinden aktığı durumlarda bile, DNS sorgunuz gözlemlenebilir ve kolayca okunabilir. Saldırganlar, DNS trafiğini gözlemleyerek, ziyaret ettiğiniz web sitelerine dayalı olarak, bu web sitelerindeki eylemleriniz şifrelenmiş olsa bile, sizin hakkınızda önemli bilgiler elde edebilir. İSS'ler, DNS trafiğinizi gözlemleme yeteneğine sahiptir ve İSS'nizin DNS sunucusunu varsayılan DNS sunucunuz olarak kullanırsanız hatalı davranış riski daha da artar. Gözlemlenebilir sorgu içerikleri, hükûmetin içeriği birçok nedenden dolayı sansürlemesine neden olabilir.
+DNS Güvenliğini Çözme – DNSSEC Genel Bakış
+Etki Alanı Adı Sistemi Güvenlik Uzantıları (DNSSEC), geriye dönük uyumluluğu korurken özgünlük ve bütünlük sağlamayı amaçlar. DNSSEC uyumlu sunucuların yanıtları her düzeyde (root, TLD vb.) dijital olarak imzalanır. Cevapları inceleyerek ve imzaları doğrulayarak bir güven zinciri kurulabilir. Kimlik doğrulama zincirini tamamlamak için, DNS dışındaki bir kaynaktan, örneğin işletim sistemi veya başka yollarla elde edilen bir güven çapası gerekir. DNSSEC'nin çalışması için çözüm yolundaki her DNS sunucusunun doğru şekilde yapılandırılması gerekir. Bu, yanıtın dijital imzasını içeren RRSIG gibi yeni DNS kayıt türlerinin kullanılmasını gerektirir. İmzaların eklenmesi, sunucuların anahtarları (Bölge İmzalama Anahtarı ve Anahtar İmzalama Anahtarı) işlemesi gerektiği anlamına gelir ve ekstra görevler, sunucunun kendisinde ek yük anlamına gelir. internetsociety.org'da birden fazla DNSSEC istatistiği mevcuttur, bunlar size DNSSEC'nin şu anda ne kadar yaygın olduğu hakkında bir fikir vermelidir.
+Gizliliği Çözme – TLS Üzerinden DNS
+DNS over TLS (DoT), şifrelenmiş DNS trafiğini kullanarak gizlilikle ilgili kaygıları ortadan kaldırmayı amaçlar. Bağlantı iyi bilinen bir bağlantı noktası (RFC7858'e göre varsayılan olarak 853 bağlantı noktası) üzerinden kurulur, istemciler ve sunucular birbirlerinin bir TLS oturumu üzerinde anlaşmasını bekler ve ardından gelen trafik şifrelenir. Doğal olarak, DNS sunucusuna güven tesis edilmelidir. Sunucunun TLS sertifikası, istemci tarafından, örneğin, saklanan bir değere karşı sertifikanın hash'ini kontrol ederek doğrulanmalıdır. DoT'nin piyasaya sürülmesi kademelidir, bazı isim sunucuları henüz bunları desteklememektedir. DoT'nin ayrı bir bağlantı noktası kullandığından, belirli ortamlarda bayraklara neden olabilecek DNS sorguları için kullandığınız açık olacaktır.
+Son yıllarda IETF, DNS gizliliğini iyileştirmek için şifreleme ve kimlik doğrulama için üç protokol üretti:
+DoT: TLS üzerinden DNS, şifreleme yoluyla gizlilik sağlamak için DoT kullanımını belirten, RFC (yorum talebi) 7858'de tanımlanan standartları takip eden bir protokoldür.
+DoD: RFC 8094'te tanımlanan deneysel bir protokol, Datagram Aktarım Katmanı Güvenliği üzerinden DNS, TLS'nin TCP trafiğini koruma yöntemine benzer şekilde, Kullanıcı Datagram Protokolü trafiğini korumak için DTLS protokolüne dayanır.
+DoH: RFC 8484'te tanımlanan başka bir standart izleme protokolü olan HTTPS üzerinden DNS, TLS üzerinden HTTP trafiği gönderme protokolünü tanımlayan HTTP Güvenli protokolü üzerinden DNS sorguları ve yanıtları göndermek için bir mekanizma sağlar.
+
+
+== DNS Sorgulama ==
+DNS; mail sunucuları, domain isimleri ve IP adresleri gibi bilgileri tutan hiyerarşik bir yapıdır. Bir DNS istemcisi, ad çözümlemesi yapmak için DNS sunucularını sorgular. DNS hizmetleri; kullanıcının girdiği bir DNS adını çözüp, IP adresi gibi o ad ile ilişkili bilgileri oluşturur.
+DNS sorgulaması yapmadan önce yapılan bir tarama sonucunda, DNS bilgileri 'name servers(NS)' ya da 'domain servers' olarak görülür. Bu bilgilerin erişiminden sonra DNS sorgulamasıyla daha fazla bilgiye ulaşılır.
+Yanlış yapılandırılmış bir DNS sunucusu sonucunda 'Bölge Transferi(Zone Transfer)' olarak bilinen atak yapılabilir. Bölge transferi ile DNS sorgusu yapılan hedefle ilgili birçok bilgiye ulaşılabilir. Bölge transferi; DNS sunucusunun çalıştığı domain ile ilgili bütün verileri içerir. Bu önemli bilgilerin içinde e-posta sunucusunun ismi, IP adresi, kullanılan işletim sistemi ile ilgili bilgiler vardır.
+Bölge transferlerine karşı bir önlem olarak güvenlik duvarında(firewall) veya ağ geçitlerindeki yönlendiricilerde 53 numaralı TCP portu gelen tüm yetkisiz bağlantılara karşı kapalı tutulmalıdır.
+DNS sorgulamasından bir korunma yöntemi olarak alan adı bir domain değilse, -.tr uzantısı ile sonlanmıyorsa 'private domain' haline getirmek bazı tehlikelerden korur. Private domain olan alan adlarında kişisel bilgiler 'Private' halini alır. Yani gerçek bilgiler gizlenir. Ama private domain her domain sağlayıcıda yoktur.
+
+
+== DNS Sorgulamalarına Karşı Alınacak Önlemler ==
+DNS bilgileri önemli bilgilerdir. DNS sunucuları ayarlanırken sistemle ilgili çok az bilgi verilmelidir. Sunucuya isim verilirken işletim sistemini çağrıştıracak bir isim verilmemelidir. Ayrıca kullanılan işletim sistemiyle ilgili yer boş bırakılmalıdır.
+Güvenlik duvarı kullanılmalıdır ya da yetkisiz bağlantıları önlemek için ağ geçitlerindeki yönlendiricilerdeki port durumlarına dikkat edilmelidir. DNS, UDP ile 53 numaralı portu; bölge transferi(Zone Transfer) ise TCP ile 53 numaralı portu kullandığından bunun önlemleri alınmalıdır. Bu portlar yetkisiz bağlantılara karşı kapatılmalıdır.
+İç ağ için ayrı, internet için ayrı bir DNS sunucusu kullanmak. Kullanıcı internete çıkmak isterse iç DNS sunucusu bu isteği alıp proxy sunucusu gibi davranarak isteği dış DNS sunucusuna iletir. Böylece ağ dışından olan biri sadece dış DNS'teki isimlere erişir.
+com: Ticari kuruluşları gösterir.
+edu: Eğitim kurumlarını gösterir.
+org: Ticari olmayan, hükûmete de bağlı bulunmayan kurumları gösterir.
+net: Internet omurgası işlevini üstlenen ağları gösterir.
+gov: Hükûmete bağlı kurumları gösterir.
+mil: Askeri kurumları gösterir.
+num: Telefon numaralarını bulabileceğiniz yerleri gösterir.
+arpa: Ters DNS sorgulaması yapılabilecek yerleri gösterir.
+Bu isimlere yakın zaman önce biz gibi uzantılar da eklenmiştir. Alan isimleri, ağaç yapısı denilen ve belli bir kurala göre dallanan bir yapıda kullanılmaktadır. Amerika Birleşik Devletleri haricinde, internete bağlı olan tüm ülkelerdeki adresler, o ülkenin ISO3166 ülkekodu ile bitmektedir. Türkiye'deki tüm alt alan adresleri, .tr ile bitmektedir. Örneğin; marine.ulakbim.gov.tr adresinde;
+
+tr Türkiye'yi,
+gov alt alanın devlet kurumu olduğunu
+ulakbim bu devlet kurumunu
+marine bu kurumda bulunan bir makineyi göstermektedir.
+
+
+== Alan Adı Kaydı ==
+Bir alan adı kayıt kuruluşu, alan adlarının rezervasyonunu ve bu alan adları için IP adreslerinin atanmasını yöneten bir işletmedir. Alan adları, web sitelerine erişmek için kullanılan alfasayısal takma adlardır; örneğin, Cloudflare'nin alan adı 'cloudflare.com'dur ve IP adresi 192.0.2.1 gibi bir şey olabilir (yalnızca bir örnek). Alan adları, alfanümerik IP adreslerini ezberlemek ve girmek zorunda kalmadan web sitelerine erişmeyi kolaylaştırır.
+Kayıt şirketlerinin alan adlarını fiilen yönetmediği ve korumadığına dikkat edilmelidir; bu kısım bir alan adı kaydı tarafından yapılır.
+Kayıt Yaptırıcısı (Registrar) ve Kayıt Defteri (Registry) Arasındaki Fark
+Registries, 'com' ve 'net' gibi üst düzey alan adlarının (TLD'ler) kayıtlarını, hangi bireysel alan adlarının, hangi kişilere ve kuruluşlara ait olduğunu tutarak yöneten kuruluşlardır. Bu kayıtlar, İnternet'in temel işlevlerini destekleyen çeşitli işlemler ve veritabanlarını koordine eden küresel bir organizasyon olan Internet Corporation for Assigned Names and Numbers (ICANN) bünyesinde bir departman olan Internet Assigned Numbers Authority (IANA) tarafından yönetilir.
+Registries, alan adı kayıt işlemlerinin ticari satışını registrar'lara devreder. Örneğin, bir registrar bir kullanıcıya ('registrant') '.com' alan adı kaydı satarsa, registrar bu durumu 'com' alan adlarının registry'si olan VeriSign'e bildirmek zorundadır. Registrar, VeriSign'e bir ücret ödemek zorundadır ve bu ücret, registrar'ın son kullanıcıya fiyatlandırdığı fiyata dahil edilir.
+Bu düzenleme, bir araba satış bayisi ile benzer şekilde çalışır. Bir araba satın almak isteyen bir müşteri, showroom'u ziyaret eder ve mevcut arabaları deneyimli bir satış temsilcisi tarafından gösterilir. Müşteri bir araba satın almayı seçerse (bu örnekte stokta olan bir araba değilse), satıcı daha sonra aracı üreticiden sipariş etmek zorundadır. Müşteri sonunda arabayı alır ve satıcıdan müşteri hizmeti alır.
+Bir registrar, alan adları için bir bayi gibi davranırken, registry ise üreticiye benzer bir rol oynar. Registrar işlemleri kolaylaştırır ve destek hizmetleri sağlarken, registry mal üretmekten ve teslim etmekten sorumludur. Bir alan adı kaydetmenin bir araba satın almadan farklı olarak, arabalar tüketici tarafından sahiplenilebilirken, alan adları teknik olarak yalnızca kiralanabilir.

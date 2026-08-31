@@ -1,0 +1,69 @@
+# OSI modeli
+
+Open Systems Interconnection (OSI) modeli ISO (International Organization for Standardization) tarafından geliştirilmiştir. Bu modelle, ağ farkındalığına sahip cihazlarda çalışan uygulamaların birbirleriyle nasıl iletişim kuracakları tanımlanır.
+İlk OSI standartları 1970'lerin sonlarında ve 1980'lerin başlarında ISO'nun TC 97 (Technical Committee 97), Enformasyon İşlemesi tarafından ortaya çıkartılmıştır. ISO, son OSI standardını 1984'te çıkartmıştır. Bu model kısa sürede kabul görerek yaygınlaşmış ve ağ işlemleri için bir kılavuz olmuştur.
+
+OSI modeli öncesinde, işletmelerce kullanılan ticari ağların çoğunluğu belirli bir işletme tarafından belirli standartlara oturtulmamış teknolojiyle oluşturulmaktaydı. Örneğin IBM'in SNA ile DEC'in DECnet'i gibi. Bu ağların özellikleri, çoğunlukla yalnızca o üreticinin donanımının kullanılmasına izin verecek (ya da en azından başka ürünlerin bağlanmasını zorlaştıracak) biçimde tanımlanmıştı. Onlardan ayrı olarak OSI, çeşitli üreticilerin ürünlerinin bağlanabileceği bir ağ için, bir sektör etkinliği olarak ortaya çıkmıştır.
+OSI Modeli herhangi bir donanım ya da bilgisayar ağı tipine göre değişiklik göstermemektedir. OSI'nin amacı ağ mimarilerinin ve protokollerinin bir ağ ürünü bileşeni gibi kullanılmasını sağlamaktır.
+ISO standartlarının ağ üzerindeki iletişimi sağlarken karmaşık bir yol izlediği bir gerçektir. ISO standardı yedi katmana (alt göreve) ayrılmıştır. OSI modeli olarak bilinen bu yedi katman sağ tarafta gösterilmiştir.
+Daha fazla kaynak erişimi için aşağıdan yukarıya doğru İngilizce karşılıkları: Physical Layer, Data Link Layer, Network Layer, Transport Layer, Session Layer, Presentation Layer, Application Layer
+OSI modeli sayesinde bir cihazın ağ içinde veya ağ dışında nasıl görevlendirildiği kolaylıkla anlatılabilir. Gerek ağ içinde gerek ağ dışında veri iletimi için verinin mutlaka her katmandan geçmesi gerekir. Geçtiği her katmanda da veriye belli görevler yüklenir.
+OSI katmanlarında veri iletimi için uygulama katmanından donanım katmanına(fiziksel katman) doğru giderken veriye her bir katmanda ayrı bir başlık eklenir. Veri karşıdaki bilgisayara ulaştığında donanım katmanından(fiziksel katman) uygulama katmanına doğru bu başlıklara göre gider. En son uygulama katmanına ulaştığında veri karşı bilgisayara ulaşmış olur.
+
+
+== OSI Katmanlarının Açıklaması ==
+X.200 önerisi 1 numaraları katman en alt katman olacak şekilde 1'den 7'ye numalandırılmış yedi adet katmandan oluşur.
+
+
+=== 1. Katman: Fiziksel Katman ===
+Fiziksel katmanın başlıca özellikleri şunlardır:
+Fiziksel Katman, ağ arabirimi denetleyicisi, Ethernet hub'ı veya ağ anahtarı gibi bir aygıt ile fiziksel iletim ortamı arasında yapılandırılmamış ham verilerin iletilmesinden ve alınmasından sorumludur. Dijital bitleri elektrik, radyo veya optik sinyallere dönüştürür. Katman özellikleri, voltaj seviyeleri, voltaj değişikliklerinin zamanlaması, fiziksel veri hızları, maksimum iletim mesafeleri, modülasyon şeması, kanal erişim yöntemi ve fiziksel konektörler gibi özellikleri tanımlar. Bu, kablosuz cihazlar için pimlerin düzenini, voltajları, hat empedansı, kablo özelliklerini, sinyal zamanlamasını ve frekansını içerir. Bit hızı kontrolü fiziksel katmanda yapılır ve iletim modunu simplex, (half dublex) yarım çift yönlü ve tam çift yönlü olarak tanımlayabilir. Fiziksel bir katmanın bileşenleri bir ağ topolojisi açısından tanımlanabilir. Fiziksel katman özellikleri, her yerde bulunan Bluetooth, Ethernet ve USB standartlarının belirtimlerine dahil edilmiştir. Daha az bilinen bir fiziksel katman spesifikasyonuna bir örnek, CAN standardı için olabilir.
+Fiziksel Katman, kodlamanın elektrik voltajı veya ışık darbesi gibi fiziksel bir sinyal üzerinde nasıl gerçekleştiğini de belirtir. Örneğin, bakır bir tel üzerinde 1 bit, 0 volttan 5 voltluk bir sinyale geçişle temsil edilebilirken, 0 bit, 5 voltluk bir sinyalden 0 voltluk bir sinyale geçişle temsil edilebilir. Sonuç olarak, Fiziksel Katman'da oluşan yaygın sorunlar genellikle yanlış ortam sonlandırma, EMI veya gürültü karıştırma ve yanlış yapılandırılmış veya düzgün çalışmayan NIC'ler ve hub'lar ile ilgilidir.
+
+
+=== 2. Katman: Veri Bağlantısı Katmanı ===
+Veri bağlantısı katmanı uç düğümler arası veri transferi sağlar. Fiziksel katmanda meydana gelebilecek hataları tespit eder ve bu hataları mümkün olduğunca düzeltir. Veri bağlantısı katmanı, fiziksel olarak bağlı iki cihaz arasında bağlantı kurmayı ve bu bağlantıyı sonlandırmayı sağlayan protokolü tanımlar. Ayrıca bu cihazlar arasındaki veri akış kontrolü için de protokol tanımlar.
+IEEE 802, veri bağlantısı katmanını iki alt katmana ayırır:
+
+Media Access Control (MAC) katmanı - Ağdaki cihazların ağ ortamına(Örneğin: Kablo ) erişiminden ve veri iletim izninden sorumludur.
+Logical Link Control (LLC) katmanı - Ağ katmanı protokollerinin tanımlanması daha sonra çözülmesi ve hata kontrollerinin sağlanmasından sorumludur.
+
+
+=== 3. Katman: Ağ Katmanı ===
+Ağ katmanı, değişken uzunluklu veri dizilerinin(datagram) bir ağ düğümünden aynı ağa bağlı başka bir ağ düğümüne aktarımını sağlar. Bu hareketin gerçekleştirilebilmesi için hiyerarşik bir adresleme yapısı gerekmektedir. Ayrıca hiyerarşik sistem dataların hedef bilgisayara en etkili ve en kısa yoldan ulaşmasını da sağlar. Adresleme dinamik ya da statik olarak yapılabilir. Statik adresleme el ile yapılan adreslemedir. Dinamik adreslemede ise otomatik olarak ip dağıtacak örneğin DHCP gibi bir protokole ihtiyaç vardır. Bu katmanda harekete geçen bir datanın hedefine ulaşabilmesi için en iyi yol seçimide yapılır. Bu işleme Routing bu işlemi yapan cihaza ise Router denir. Router en basit tarif ile en iyi yol seçimini yapar ve broadcast geçirmediği için ağ performansını olumsuz etkilemez. Bu katmanda kullanılan protokollere de şu örnekler verilebilir; IP, ARP, RARP, BOOTP, ICMP. Mantıksal ağ adresini fiziksel makine adresine çevirir. Ağ, birden fazla düğümün bağlanabildiği bir ortamdır. Her düğümün bir adresinin olduğu, bağlı olan düğümlerin başka düğümlere veri iletimine izin veren ve sadece verinin içeriği ile hedef düğümün adresinin var olması koşuluyla başka düğümlere yönlendirilir. Eğer ağ katmanında çalışan bir düğümden, veri bağlantısı katmanında çalışan bir başka düğüme iletilen verinin boyutu fazla büyükse, ağ veriyi birkaç parçaya ayırır, parçaları ayrı ayrı gönderir ve gönderdiği düğümde bu parçaları tekrar birleştirir. Aynı zamanda böyle bir işlem yapmayıp hata raporu da gönderebilir. 
+Ağ katmanında veri iletiminin güvenli bir şekilde gerçekleştirileceğinin garantisi verilmez. Ağ katman protokolü güvenli veri iletimi sağlayabilir ama böyle bir zorunluluğu yoktur.
+3. Katmandaki süreçlerden adresleme ile her cihaz kendi ağındaki ya da başka bir ağdaki cihaz ile uçtan uca iletişimi sağlayacak kimlik bilgisini elde etmiş olur. 3. Katman adresleme yapısı kullanılan ağ katmanı protokolüne özgü bir biçimde tanımlanmalıdır.IPv4 ve IPv6 ağ katmanı protokollerinin asıl görevi uçtan uca iletimi sağlamak üzere gereken adresleme sistemini sağlamak olduğundan bu katmandaki protokoller paketlerin karşı tarafa güvenli bir şekilde gönderildiğinin kontrolünü yapmazlar.
+
+
+=== 4. Katman: Taşıma/iletim Katmanı ===
+Taşıma/iletim katmanı değişken uzunluklu veri dizilerinin(datagram) kaynaktan cihazdan hedef cihaza bir veya daha fazla ağ üzerinden servis kalitesini de koruyarak göndermeyi sağlar. Taşıma katmanı protokolüne örnek olarak, Internet Protocol(IP) üzerine inşa edilmiş olan Transmission Control Protocol(TCP) verilebilir.
+Üst katmanlardan gelen her türlü bilgi(veri) taşıma katmanı tarafından diğer katmanlara ve hedeflere ulaştırılır.
+Taşıma/iletim katmanı protokolü verilen bağlantı üzerinden gerçekleştirilen akış kontrolünü, paketlerin parçalara bölünüp birleştirilmesini ve hata kontrolünün güvenliğinden sorumludur. Taşıma katmanındaki bazı protokoller(Örneğin: TCP ve UDP) bağlantıya dayalıdır. Protokolün bağlantı temelli olması sayesinde taşıma katmanı, parçalara bölünerek gönderilmiş olan paketlerden karşı tarafa ulaşamamış olanların (böyle bir durumda datayı alan bilgisayar alamadığı paketleri yok edecektir ki önlemek için Taşıma Katmanı, arabellekleme, tıkanıklıktan kaçınma ve pencereleme metodlarını kullanarak akışı sağlar.Arabellekleme de datanın akış hızına müdahale etmeden, kapasitenin üzerindeki datanın arabelleğe alınması, Tıkanıklıktan kaçınma metodun da ICMP Source Quench mesajı ile gönderen bilgisayarın gönderimini yavaşlatması, Pencereleme metoduyla paketlerin gruplar halinde gönderilmesi sağlanır.) yeniden gönderilmesini sağlar. Taşıma katmanı ayrıca karşı tarafa iletilen veriden sonra eğer bir hata oluşmamışsa başarı mesajı verir ve sonraki veriyi gönderir. Taşıma katmanı, uygulama katmanından aldığı veriyi paket haline getirir. Paketleme, büyük verileri küçük verilere bölme işlemidir.
+
+
+=== 5. Katman: Oturum Katmanı ===
+Oturum katmanı, cihazlar arasındaki bağlantıları kontrol eder. Yereldeki ve uzaktaki bağlantıları kurabilir, yönetebilir ve sonlandırabilir. Oturum katmanı mesajlaşma kurallarından(full-duplex, half-duplex, simplex), uygulamalar arasındaki mesajlaşma kontrolünden, farklı birimlere gidecek verilerin gruplanmasından, mesajlaşmaya kalınan noktadan devam edilmesinden ya da yeniden alınmasından sorumludur. Oturum katmanı çoğunlukla uzak yordam çağrısını kullanan uygulama ortamlarında kullanılır.
+Bu katmanda kullanılan servislere şu örnekler verilebilir;
+SQL,
+Netbios Adları,
+NFS.
+
+
+=== 6. Katman: Sunum Katmanı ===
+Sunum katmanı, uygulama katmanındaki varlıkların arasındaki ortamı kurar. Bu katman eğer sunum servisi varlıklar arasında büyük bir veri eşleme sağlıyorsa uygulama katmanındaki varlıklar farklı sözdizimi(syntax) ve semantik kullansa bile bu ortamı sağlayabilir. Eşleme mevcutsa sunum servisi verileri sarmalayarak oturum protokolü verilerine dönüştürülür ve protokol yığınına iletir.
+Bu katman uygulama ve ağ formatları arasındaki dönüşüm sayesinde verinin temsil edilme biçiminden(örn: şifreleme) bağımsızdır. Sunum katmanı, verileri uygulamaların kabul edeceği hale dönüştürür. Bu katman veriyi biçimlendirip şifreleyerek ağda gönderilmesini sağlar. Bu yüzden bu katmana sözdizim(syntax) katmanı da denildiği olur.
+
+
+=== 7. Katman: Uygulama Katmanı ===
+Uygulama katmanı son kullanıcıya en yakın olan OSI katmanıdır. Yani hem OSI uygulama katmanı hem de kullanıcı doğrudan yazılımla, uygulamayla etkileşimde bulunur. Bu katman iletişim bileşenini yürüten uygulamayla etkileşime girer. Bazı uygulamalar OSI modelin kapsamı dışına çıkabilir. Uygulama katmanı sayesinde iletişim kuran kişiler tanımlanır, kaynak kullanılabilirliğine karar verilir ve senkronize iletişim gerçekleştirilir. İletişim kuran kişiler tanımlanırken kişilerin bir uygulama üzerinden veri göndermek için gereken kimliğine ve kullanılabilirliğin yeterli olup olmadığına karar verir. Kaynak kullanılabilirliğine karar verirken, uygulama katmanı ağın yeterli olup olmadığına ya da istenilen bağlantının var olup olmadığına karar vermelidir. İletişim senkronize edilirken uygulamalar arasındaki tüm iletişim, uygulama katmanı tarafından sağlanan iş birliğine ihtiyaç duyar. Bu katman uygulama ve son kullanıcı işlemlerini destekler. İletişimde bulunan kişiler ve servis kalitesi tanımlıdır, kullanıcı yetkilendirme ve gizlilik dikkate alınır ve de verinin sözdizimi ile ilgili kısıtlamalar da yine tanımlıdır. Bu katmandaki her şey uygulamaya özgüdür. 
+
+
+== TCP/IP ile OSI arasındaki Farklar ==
+TCP/IP haberleşme görevini karmaşık bir iş olarak niteleyerek daha basit alt görevlere böler. Her bir alt görev diğer alt görevler için belirli servisler sunar ve diğer alt görevin servislerini kullanır. OSI modeli de aynı kavramı kullanır, ancak OSI modelinde her bir katmandaki protokollerin özellikleri ve birbiri ile ilişkileri kesin bir dille tanımlanmıştır. Bu özellik OSI modeli ile çalışmayı daha verimli kılar.
+OSI modelinde katmanların görevlerinin kesin bir şekilde belirlenmiş olması yeni bir protokol geliştirmeyi kimi zaman güçleştirebilir.
+TCP/IP ise böyle bir kısıtlama getirmediğinden, gerektiğinde yeni bir protokol mevcut katmanlar arasına rahatlıkla yerleştirilebilir.
+
+OSI modelinde gerekmeyen bir katmanın kullanılmaması gibi esnek bir yapıya izin verilmemektedir. TCP/IP ise katı kurallarla tanımlı olmadığından gereksinim duyulmayan katmanların kullanılmamasına izin verir. Örneğin uygulama katmanında olmasına rağmen doğrudan IP üzerinden kullanılabilen protokoller mevcuttur.
+TCP/IP protokollere örnek olarak, dosya alma/gönderme protokolü (FTP, File Transfer Protocol), Elektronik posta iletişim protokolü (SMTP Simple Mail Transfer Protocol), TELNET protokolü (Internet üzerindeki başka bir bilgisayarda etkileşimli çalışma için geliştirilen *login* protokolü) verilebilir. Adını sıkça duyduğumuz WWW ortamında birbirine link objelerin iletilmesini sağlayan protokol ise Hyper Text Transfer Protocol (HTTP) olarak adlandırılmaktadır. TCP/IP protokolü aynı zamanda, diğer iletişim ağlarında da kullanılabilir. Özellikle pek çok farklı tipte bilgisayarı veya iş istasyonlarını birbirine bağlayan yerel ağlarda (LAN) kullanımı yaygındır.
+
+X.25

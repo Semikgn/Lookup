@@ -1,0 +1,451 @@
+# Systemd (ArchWiki)
+
+Related articles
+
+systemd/User
+
+systemd/Timers
+
+systemd/Journal
+
+systemd/Sandboxing
+
+systemd/FAQ
+
+init
+
+udev
+
+Improving performance/Boot process
+
+Allow users to shutdown
+
+From the project web page:
+
+systemd is a suite of basic building blocks for a Linux system. It provides a system and service manager that runs as PID 1 and starts the rest of the system. systemd provides aggressive parallelization capabilities, uses socket and D-Bus activation for starting services, offers on-demand starting of daemons, keeps track of processes using Linux control groups, maintains mount and automount points, and implements an elaborate transactional dependency-based service control logic. Other parts include a logging daemon, utilities to control basic system configuration like the hostname, date, locale, maintain a list of logged-in users and running containers and virtual machines, system accounts, runtime directories and settings, and daemons to manage simple network configuration, network time synchronization, log forwarding, and name resolution.
+
+Historically, what systemd calls "service" was named daemon: any program that runs as a "background" process (without a terminal or user interface), commonly waiting for events to occur and offering services. A good example is a web server that waits for a request to deliver a page, or an ssh server waiting for someone trying to log in. While these are full featured applications, there are daemons whose work is not that visible. Daemons are for tasks like writing messages into a log file (e.g. syslog, metalog) or keeping your system time accurate (e.g. ntpd). For more information see daemon(7).
+
+Note For a detailed explanation of why Arch moved to systemd, see this forum post.
+
+Contents
+
+1 Basic systemctl usage
+
+1.1 Using units
+
+1.2 Power management
+
+1.2.1 Soft reboot
+
+2 Writing unit files
+
+2.1 Handling dependencies
+
+2.2 Service types
+
+2.3 Editing provided units
+
+2.3.1 Replacement unit files
+
+2.3.2 Drop-in files
+
+2.3.3 Revert to vendor version
+
+2.3.4 Examples
+
+2.4 Service logging levels
+
+2.4.1 Suppressing a service's standard output
+
+3 Targets
+
+3.1 Get current targets
+
+3.2 Create custom target
+
+3.3 Mapping between SysV runlevels and systemd targets
+
+3.4 Change current target
+
+3.5 Change default target to boot into
+
+3.6 Default target order
+
+4 systemd components
+
+4.1 systemd.mount - mounting
+
+4.1.1 GPT partition automounting
+
+4.1.1.1 /var
+
+4.2 systemd-sysvcompat
+
+4.3 systemd-tmpfiles - temporary files
+
+4.4 Drop-in configuration files
+
+5 Tips and tricks
+
+5.1 Socket activation
+
+5.2 GUI configuration tools
+
+5.3 Running services after the network is up
+
+5.4 Enable installed units by default
+
+5.5 Sandboxing application environments
+
+5.6 Notifying about failed services
+
+5.7 Notifying with e-mail
+
+5.8 Automatically turn off an external HDD at shutdown
+
+5.9 Index of configuration directives
+
+5.10 Control user unit as root
+
+6 Troubleshooting
+
+6.1 Investigating failed services
+
+6.2 Diagnosing boot problems
+
+6.3 Diagnosing a systemd-provided service
+
+6.4 Shutdown/reboot takes terribly long
+
+6.5 Short lived processes do not seem to log any output
+
+6.6 Boot time increasing over time
+
+6.7 systemd-tmpfiles-setup.service fails to start at boot
+
+6.8 Disable emergency mode on remote machine
+
+6.9 Error "Unit xxx.service not found", but service does exist
+
+6.10 Manually renewing LoaderDevicePartUUID after changing EFI partition UUID
+
+7 See also
+
+Basic systemctl usage[edit source]
+
+The main command used to introspect and control systemd is systemctl. Some of its uses are examining the system state and managing the system and services. See systemctl(1) for more details.
+
+Tip 
+
+You can use all of the following systemctl commands with the -H user@host switch to control a systemd instance on a remote machine. This will use SSH to connect to the remote systemd instance.
+
+Plasma users can install systemdgenie as a graphical frontend for systemctl.
+
+Using units[edit source]
+
+Units commonly include, but are not limited to, services (.service), mount points (.mount), devices (.device) and sockets (.socket).
+
+When using systemctl, you generally have to specify the complete name of the unit file, including its suffix, for example sshd.socket. There are however a few short forms when specifying the unit in the following systemctl commands:
+
+If you do not specify the suffix, systemctl will assume .service. For example, netctl and netctl.service are equivalent.
+
+Mount points will automatically be translated into the appropriate .mount unit. For example, specifying /home is equivalent to home.mount.
+
+Similar to mount points, devices are automatically translated into the appropriate .device unit, therefore specifying /dev/sda2 is equivalent to dev-sda2.device.
+
+See systemd.unit(5) for details.
+
+Note Some unit names contain an @ sign (e.g. name@string.service): this means that they are instances of a template unit, whose actual file name does not contain the string part (e.g. name@.service). string is called the instance identifier, and is similar to an argument that is passed to the template unit when called with the systemctl command: in the unit file it will substitute the %i specifier. To be more accurate, before trying to instantiate the name@.suffix template unit, systemd will actually look for a unit with the exact name@string.suffix file name, although by convention such a "clash" happens rarely, i.e. most unit files containing an @ sign are meant to be templates. Also, if a template unit is called without an instance identifier, it will generally fail (except with certain systemctl commands, like cat).
+
+The commands in the below table operate on system units since --system is the implied default for systemctl. To instead operate on user units (for the calling user), use systemctl --user without root privileges. See also systemd/User#Basic setup to enable/disable user units for all users.
+
+Tip 
+
+Most commands also work if multiple units are specified, see systemctl(1) for more information.
+
+The --now switch can be used in conjunction with enable, disable, and mask to start or stop the unit immediately rather than after rebooting.
+
+A package may offer units for different purposes. If you just installed a package, pacman -Qql package | grep -Fe .service -e .socket can be used to check and find them.
+
+When available, enabling unit.socket instead of unit.service might be beneficial because the socket would start the service when necessary. See #Socket activation for more details.
+
+A search pattern can be appended to a lot of commands, making the use of grep unnecessary. For example, you can search the manual by executing systemctl help 'dbus*', or list specific units with systemctl list-units 'dbus*'.
+
+Action
+Command
+Note
+
+Analyzing the system state
+
+Show system status
+systemctl status
+
+List running units
+systemctl orsystemctl list-units
+
+List failed units
+systemctl --failed
+
+List installed unit files1
+systemctl list-unit-files
+
+Show process status for a PID
+systemctl status pid
+cgroup slice, memory and parent
+
+Checking the unit status
+
+Show a manual page associated with a unit
+systemctl help unit
+as supported by the unit
+
+Status of a unit
+systemctl status unit
+including whether it is running or not
+
+Check whether a unit is enabled
+systemctl is-enabled unit
+
+Starting, restarting, reloading a unit
+
+Start a unit immediately
+systemctl start unit as root
+
+Stop a unit immediately
+systemctl stop unit as root
+
+Restart a unit
+systemctl restart unit as root
+
+Reload a unit and its configuration
+systemctl reload unit as root
+
+Reload systemd manager configuration2
+systemctl daemon-reload as root
+scan for new or changed units
+
+Enabling a unit
+
+Enable a unit to start automatically at boot
+systemctl enable unit as root
+
+Enable a unit to start automatically at boot and start it immediately
+systemctl enable --now unit as root
+
+Disable a unit to no longer start at boot
+systemctl disable unit as root
+
+Disable a unit to no longer start at boot and stop it immediately
+systemctl disable --now unit as root
+
+Reenable a unit3
+systemctl reenable unit as root
+i.e. disable and enable anew
+
+Masking a unit
+
+Mask a unit to make it impossible to start4
+systemctl mask unit as root
+
+Unmask a unit
+systemctl unmask unit as root
+
+See systemd.unit(5) § UNIT FILE LOAD PATH for the directories where available unit files can be found.
+
+This does not ask the changed units to reload their own configurations (see the Reload action).
+
+For example, in case its [Install] section has changed since last enabling it.
+
+Both manually and as a dependency, which makes masking dangerous. Check for existing masked units with: 
+$ systemctl list-unit-files --state=masked
+
+Power management[edit source]
+
+polkit is necessary for power management as an unprivileged user. If you are in a local systemd-logind user session and no other session is active, the following commands will work without root privileges. If not (for example, because another user is logged into a tty), systemd will automatically ask you for the root password.
+
+Action
+Command
+
+Shut down and reboot the system
+systemctl reboot
+
+Shut down and power-off the system
+systemctl poweroff
+
+Suspend the system
+systemctl suspend
+
+Put the system into hibernation (write RAM to disk)
+systemctl hibernate
+
+Put the system into hybrid-sleep state (also called suspend-to-both, it saves RAM to disk and then suspends)
+systemctl hybrid-sleep
+
+First suspend the system, then wake up after a configured time in order to just hibernate the system
+systemctl suspend-then-hibernate
+
+Perform a reboot of the userspace-only with a #Soft reboot.
+systemctl soft-reboot
+
+Soft reboot[edit source]
+
+Soft reboot is a special kind of a userspace-only reboot operation that does not involve the kernel. It is implemented by systemd-soft-reboot.service(8) and can be invoked through systemctl soft-reboot. As with kexec, it skips firmware re-initialization, but additionally the system does not go through kernel initialization and initramfs, and unlocked dm-crypt devices remain attached.
+
+When /run/nextroot/ contains a valid root file system hierarchy (e.g. is the root mount of another distribution or another snapshot), soft-reboot would switch the system root into it, allowing for switching to another installation without losing states managed by kernel, e.g. networking.
+
+Tip /run/nextroot/ is not necessarily a mount point or backed by physical device. For example, it can reside in the /run/ tmpfs. systemd will turn /run/nextroot/ automatically into a mount point on soft-reboot.
+Note Do not invoke systemctl soft-reboot after package updates that involved the kernel and initramfs.
+
+Writing unit files[edit source]
+
+The syntax of systemd's unit files (systemd.unit(5)) is inspired by XDG Desktop Entry Specification .desktop files, which are in turn inspired by Microsoft Windows .ini files. Unit files are loaded from multiple locations (to see the full list, run systemctl show --property=UnitPath), but the main ones are (listed from lowest to highest precedence):
+
+/usr/lib/systemd/system/: units provided by installed packages
+
+/run/systemd/system/: units installed by the system administrator, deleted on power-off (useful for #Editing provided units)
+
+/etc/systemd/system/: units installed by the system administrator
+Note 
+
+The load paths are completely different when running systemd in user mode.
+
+systemd unit names may only contain ASCII alphanumeric characters, underscores and periods. All other characters must be replaced by C-style "\x2d" escapes, or employ their predefined semantics ('@', '-'). See systemd.unit(5) and systemd-escape(1) for more information.
+
+Look at the units installed by your packages for examples, as well as systemd.service(5) § EXAMPLES.
+
+Tip Comments prepended with # may be used in unit-files as well, but only in new lines. Do not use end-line comments after systemd parameters or the unit will fail to activate.
+
+To inspect or verify the work, systemd-analyze(1) can help with the cat-config or verify command.
+
+Handling dependencies[edit source]
+
+With systemd, dependencies can be resolved by designing the unit files correctly. The most typical case is when unit A requires unit B to be running before A is started. In that case add Requires=B and After=B to the [Unit] section of A. If the dependency is optional, add Wants=B and After=B instead. Note that Wants= and Requires= do not imply After=, meaning that if After= is not specified, the two units will be started in parallel.
+
+Dependencies are typically placed on services and not on #Targets. For example, network.target is pulled in by whatever service configures your network interfaces, therefore ordering your custom unit after it is sufficient since network.target is started anyway.
+
+Service types[edit source]
+
+There are several different start-up types to consider when writing a custom service file. This is set with the Type= parameter in the [Service] section:
+
+Type=simple (default): systemd considers the service to be started up immediately. The process must not fork. Do not use this type if other services need to be ordered on this service, unless it is socket activated.
+
+Type=forking: systemd considers the service started up once the process forks and the parent has exited. For classic daemons, use this type unless you know that it is not necessary. You should specify PIDFile= as well so systemd can keep track of the main process.
+
+Type=oneshot: this is useful for scripts that do a single job and then exit. You may want to set RemainAfterExit=yes as well so that systemd still considers the service as active after the process has exited. Setting RemainAfterExit=yes is appropriate for the units which change the system state (e.g., mount some partition). See also [1] for the differences of simple and oneshot.
+
+Type=notify: identical to Type=simple, but with the stipulation that the daemon will send a signal to systemd when it is ready. The reference implementation for this notification is provided by libsystemd-daemon.so.
+
+Type=dbus: the service is considered ready when the specified BusName appears on DBus's system bus.
+
+Type=idle: systemd will delay execution of the service binary until all jobs are dispatched unless these take longer than 5s, where the service binary is started anyway. Other than that its behaviour is very similar to Type=simple. It should never be used for service ordering and is intended for helping with console output readability.
+
+See the systemd.service(5) § OPTIONS man page for a more detailed explanation of the Type values.
+
+Editing provided units[edit source]
+
+This article or section needs expansion.
+Reason: We should fit "If --runtime is specified, the changes will be made temporarily in /run/ and they will be lost on the next reboot." in here. An example would be passing debug flags to a service and not wanting to keep the changes permanently. (Discuss in Talk:Systemd)
+
+To avoid conflicts with pacman, unit files provided by packages should not be directly edited. There are two safe ways to modify a unit without touching the original file: create a new unit file which overrides the original unit or create drop-in snippets which are applied on top of the original unit. For both methods, you must reload the unit afterwards to apply your changes. This can be done either by editing the unit with systemctl edit (which reloads the unit automatically) or by reloading all units with:
+
+# systemctl daemon-reload
+
+Tip 
+
+You can use systemd-delta to see which unit files have been overridden or extended and what exactly has been changed.
+
+Use systemctl cat unit to view the content of a unit file and all associated drop-in snippets.
+
+Replacement unit files[edit source]
+Note The replacement units will keep on being used even if Pacman updates the original units in the future. This method makes system maintenance more difficult and therefore the next approach is preferred.
+
+To replace the unit file /usr/lib/systemd/system/unit, create the file /etc/systemd/system/unit and reenable the unit to update the symlinks.
+
+Alternatively, run:
+
+# systemctl edit --full unit
+
+This opens /etc/systemd/system/unit in your editor (copying the installed version if it does not exist yet) and automatically reloads it when you finish editing.
+
+Drop-in files[edit source]
+
+To create drop-in files for the unit file /usr/lib/systemd/system/unit, create the directory /etc/systemd/system/unit.d/ and place .conf files there to override or add new options. Drop-in directories must always include the full unit name, including its extension like .service, .socket, or .timer, followed by .d. systemd will parse and apply these files on top of the original unit.
+
+The easiest way to do this is to run:
+
+# systemctl edit unit --drop-in=drop_in_name
+
+This opens the file /etc/systemd/system/unit.d/drop_in_name.conf in your text editor (creating it if necessary) and automatically reloads the unit when you are done editing.
+Omitting the --drop-in= option will result in systemd using the default file name override.conf .
+
+Note 
+
+The key must be still placed in the appropriate section in the override file.
+
+Not all keys can be overridden with drop-in files. For example, for changing Conflicts= a replacement file is necessary.
+
+You can use top-level drop-in files to affect all units of the same type. For example, a drop-in file in /etc/systemd/system/service.d/ affects all .service units. You can see an example in #Notifying about failed services
+
+Revert to vendor version[edit source]
+
+To revert any changes to a unit made using systemctl edit do:
+
+# systemctl revert unit
+
+Examples[edit source]
+
+For example, if you simply want to add an additional dependency to a unit, you may create the following file:
+
+/etc/systemd/system/unit.d/customdependency.conf
+
+[Unit]
+Requires=new dependency
+After=new dependency
+
+As another example, in order to replace the ExecStart directive, create the following file:
+
+/etc/systemd/system/unit.d/customexec.conf
+
+[Service]
+ExecStart=
+ExecStart=new command
+
+Note how ExecStart must be cleared before being re-assigned [2]. The same holds for every item that can be specified multiple times, e.g. OnCalendar for timers.
+
+One more example to automatically restart a service:
+
+/etc/systemd/system/unit.d/restart.conf
+
+[Service]
+Restart=always
+RestartSec=30
+
+Service logging levels[edit source]
+
+For services that send logs directly to journald or syslog, you can control their verbosity by setting a numeric value between 0 and 6 for the LogLevelMax= parameter in the [Service] section using the methods described above. For example:
+
+/etc/systemd/system/unit.d/override.conf
+
+[Service]
+LogLevelMax=3
+
+The standard log levels are identical to those used to filter the journal. Setting a lower number excludes all higher and less important log messages from your journal.
+
+Suppressing a service's standard output[edit source]
+
+If a service is echoing stdout and/or stderr output, by default this will end up in the journal as well. This behavior can be suppressed by setting StandardOutput=null and/or StandardError=null in the [Service] section. Other values than null can be used to further tweak this behavior. See systemd.exec(5) § LOGGING_AND_STANDARD_INPUT/OUTPUT.
+
+Targets[edit source]
+
+systemd uses targets to group units together via dependencies and as standardized synchronization points. They serve a similar purpose as runlevels but act a little differently. Each target is named instead of numbered and is intended to serve a specific purpose with the possibility of having multiple ones active at the same time. Some targets are implemented by inheriting all of the services of another target and adding additional services to it. There are systemd targets that mimic the common SystemVinit runlevels.
+
+Get current targets[edit source]
+
+The following should be used under systemd instead of running runlevel:
+
+$ systemctl list-units --type=target
+
+Create custom target[edit source]
+
+The runlevels that held a defined 

@@ -1,0 +1,27 @@
+# Ağ anahtarı
+
+Dağıtıcı (İngilizce: switch), bilgisayarların ve diğer ağ öğelerinin birbirlerine bağlanmasına olanak veren ağ donanımlarından biridir. OSI yedi katman modelinin 2. katmanında ve yeni dağıtıcılar IP routing yapabildiği için 3. katmanda da çalışır.
+
+
+== Çalışma Şekli ==
+Dağıtıcının her bir kapısı diğerlerinden bağımsız veri alış-verişinde bulunabilir. Bir veri paketi (veri çerçevesi) kapılardan birine ulaştığında dağıtıcı gönderenin MAC adresini ve gönderilen kapıyı adres tablosuna kaydeder. MAC adres tablosundaki mevcut kayıtlar incelenerek hedef MAC adresinin bağlı olduğu kapıyı tespit etmeye çalışır. Eğer herhangi bir kayıt bulunamazsa, veri paketi gelen kapı hariç bütün kapılara gönderilir. Eğer MAC adresi biliniyorsa, bu durumda veri paketi sadece hedef kapıya gönderilir. Eğer gönderenin ve alıcının MAC adresleri aynıysa paket silinir.
+Çalışma şekli itibarıyla ağ köprüsü ve ağ göbeğine (İngilizce: hub) benzerliğinden dolayı saydam köprü, çok kapılı köprü ya da akıllı hub olarak da adlandırıldığı olur. Saydamlığı dağıtıcının kullanıcı için fark edilemez olmasından, yani gelen paketlerin dağıtıcıdan geçtiğinin anlaşılamamasından kaynaklanmaktadır. Bu da dağıtıcıların yönetimini zorlaştıran durumlardan biridir. Bu zorluğu özellikle ağ yöneticileri için ortadan kaldırmak için belli bir kapıdan geçen veri trafiğini dışardaki bir hedefe yansıtan kapı ikizleme (İngilizce: port mirroring) yöntemi geliştirilmiştir. SMON iletişim kuralları RFC 2613 ile tanımlanmış ve standardlaşmıştır.
+
+
+== Kullanımı ==
+Dağıtıcı yıldız topolojisine sahip yerel ağlar oluşturmanın yanında, paket anahtarlamalı farklı ağları birbirine bağlamakta da kullanılabilirler. Yıldız topolojisine sahip çok sayıda ağın birbirine bağlandığı topolojiye ağaç topolojisi denir. İki dağıtıcı arasındaki bağlantıyı sağlamak için genelde üstbağ kapısı (İngilizce: uplink port) kullanılır. Switchlerin konfigürasyonu için CLI(command line interface) arayüzü veya http arayüzü kullanılabilir. CLI arayüzü http arayüzüne göre daha profesyonelce ve daha fazla opsiyonu içinde barındırır.
+Kullanım alanlarına bakıldığında ise, switchler VLAN(virtual Local Area Network) uygulamaları yapılabilir, ayrıca SPB(shortest path bridging), STP(Spanning tree protocol)protokolünü de içinde barındırır.
+
+
+=== Anahtarlama Yöntemleri ===
+Bir dağıtıcının kullanabileceği dört çeşit iletme yöntemi vardır:
+
+Depola ve İlet (İngilizce: store and forward): Dağıtıcı her bir veri paketini iletmeden önce arabelleğe alır ve bir kontrol toplamı oluşturur. Oluşturulan kontrol toplamı pakette kayıtlı olanla uyuşmuyorsa paket iletilmez. Bu sayede ağ içerisinde hatalı paketlerin dolaşması engellenmiş olur. Ağ öğeleri farklı hızlarla ya da farklı ortamlardan bağlanıyorlarsa, kullanılabilinecek tek yöntemdir. Kopyalama ve kontrol toplamı işlemleri nedeniyle yavaş ama aynı nedenlerden dolayı güvenilir bir yöntemdir.
+Kestirme (İngilizce: cut-through): Dağıtıcı veri paketinde sadece MAC adresi bilgisini okur ve iletmeye başlar. Hata kontrolü yapılmaz. Diğer dağıtıcıların ya da daha üst OSI katmanların varsa hatayı bulacaklarından yola çıkılır. Hızlı bir yöntemdir.
+Serbest Parça (İngilizce: fragment free): Yukarıdaki iki yöntemin avantajlarından faydalanmaya çalışan bir yöntemdir. Veri paketinin, adresleme bilgisinin de içinde olduğu ilk 64 byte okunur ve paket kontrol toplamı oluşturulmadan iletilir. Ethernet'teki minimum veri büyüklüğü olan 64 byte'a ulaşamayan paketler süzgeçlenerek silinir.
+Uyarlamalı Anahtarlama (İngilizce: adaptive switching): Yukarıdaki üç yöntem arasında kendi kendine seçim yapan bir yöntemdir.
+
+
+== Ayrıca Gözat ==
+Yönlendirici
+Ağ köprüsü

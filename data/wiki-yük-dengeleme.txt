@@ -1,0 +1,19 @@
+# Yük dengeleme
+
+Yük dengeleme; işi, iki ya da daha fazla bilgisayar, işlemci, sabit disk ya da diğer kaynaklar arasında paylaştırma teknolojisidir. Bu teknolojiyi kullanarak en iyi kaynak kullanımı, en yüksek işlem hacmi, en düşük cevap süresi sağlanabilir; oluşabilecek aşırı yüklemeden (overload) kurtulunabilir.
+Tek bileşen kullanmak yerine, yük dengeleme ile birden fazla bileşen kullanımı yedekleme (redundancy) sayesinde güvenilirliği artırabilir.
+Yük dengeleme genellikle adanmış bir yazılım ya da donanım aygıtı (DNS, Multilayer switch vb.) kullanılarak sağlanır.
+Yük dengeleme genellikle bilgisayar grupları (computer cluster) arasındaki iç iletişimi sağlamak amacıyla kullanılır.
+
+
+== İnternet servisleri ==
+Yük dengelemenin en genel kullanım alanı sunucu çiftliği olarak bilinen, birçok sunucu kullanarak bir tane internet servisi sağlamaktır. Bu internet servisi genellikle popüler web siteleri, yüksek bant genişliğine sahip dosya aktarım iletişim kuralı siteleri, NNTP sunucusu, DNS sunucusu, mali işlemler gibi çalışması kritik uygulamalardır.
+Yük dengeleyici genellikle bir yazılımdır. İstemcilerle iletişime geçer ve gelen isteği cevap vermesi için herhangi bir zamanlama algoritması kullanarak seçtiği arka uç sunucusuna iletir. Sanal ip adrese (VIPs) sahiptir. Bu yöntemde istemciler arka uç sunucularla direkt iletişime geçmediği için ağ yapısı ve diğer portlar üzerinde koşan bağımsız servisler üzerine gelebilecek saldırılar engellenir.
+Yük dengeleyici kullanılarak oluşturulan yük dengeleme sisteminde, arka uç sunucularından birinde bir problem olduğunda sistem çalışmasına devam ederken; yük dengeleyicide bir problem olduğunda sistem tamamen çalışmaz hale gelir.
+Çözümlerden bir diğeri, Round Robind DNS olarak adlandırılan, adanmış yazılım ya da donanım gerektirmeyen metottur. Tek bir Alan adı (www.example.org) ile birden çok IP adresi eşleştirilerek gerçekleştirilir. DNS sunucusu gelen isteklere, Round Robin algoritmasını kullanarak tanımlanan sunuculardan bir tanesini atar. İstemci arka uç sunucuların varlığını bildiğinden dolayı teknolojiden haberdardır. Teknoloji DNS'nin getirdiği tüm avantaj ve dezavantajlara sahiptir.
+
+
+=== Kalıcı veriler ===
+Bir kullanıcının istekleri boyunca oturum bilgilerinin nasıl tutulacağı önemlidir. Eğer bilgiler yerel olarak arka uç sunuculardan birinde tutulursa, izleyen istekte diğer bir arka uç sunucusuna gittiğinde bilgiler bulunamaz. Bu, tekrar kullanılacak bilgileri saklama gereksinimini ortaya çıkarır.
+Çözümlerden biri, "Persistence" olarak da bilinen aynı istemciden gelen tüm istekleri aynı sunucuya yönlendirmektir. Fakat arka uç sunucularından birinde bir problem oluştuğunda o sunucu üstündeki tüm verileri tüm veriler kaybedilir.
+Diğer çözüm oturum bilgilerini veritabanında tutmaktır. Veritabanı yükü arttıkça performans düşüşü oluştuğundan dolayı veriler kısa süreli tutulacaksa tercih edilir.

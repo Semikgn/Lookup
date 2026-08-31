@@ -1,0 +1,202 @@
+# HTTP
+
+HTTP (İngilizce: Hyper-Text Transfer Protocol, Türkçe: Hiper-Metin Transfer Protokolü) bir kaynaktan dağıtılan ve ortak kullanıma açık olan hiperortam bilgi sistemleri için uygulama seviyesinde bir iletişim protokolüdür. HTTP, World Wide Web için veri iletişiminin temelidir; burada köprü metni belgeleri, örneğin bir fare tıklamasıyla veya bir web tarayıcısında ekrana dokunarak kullanıcının kolayca erişebileceği diğer kaynaklara köprüler içerir.
+HTTP, 1989'da CERN'de Tim Berners-Lee tarafından geliştirilmeye başlandı. Yorumlara yönelik erken HTTP taleplerinin (RFC'ler) geliştirilmesi, İnternet Mühendisliği Görev Gücü (IETF) ve World Wide Web Consortium (W3C) tarafından koordine edilmiş bir çalışmadır. Daha sonra IETF'e taşınmıştır.
+HTTP/1.1 ilk olarak 1997'de RFC 2068'de belgelendi. Bu şartname 1999'da RFC 2616'nın gelmesiyle iptal edildi ve aynı şekilde 2014'te, RFC 7230 ile değiştirildi.
+HTTP/2, HTTP'nin "kablolu" semantiğinin daha verimli bir ifadesidir. 2015'te yayınlanmıştır; artık hemen hemen tüm web tarayıcıları ve TLS 1.2 veya daha yenisinin gerekli olduğu bir Uygulama Katmanı Protokol Anlaşması (ALPN) uzantısı kullanan Taşıma Katmanı Güvenliği (TLS) üzerinden büyük web sunucuları tarafından desteklenmektedir.
+HTTP/3, HTTP/2'nin halihazırda web'de kullanımda olan ve temeldeki aktarım protokolü için TCP yerine UDP kullanan ardılıdır. HTTP/3, Eylül 2019'da Cloudflare ve Google Chrome tarafından desteklenmeye başladı (Chrome ve Firefox'un kararlı sürümlerinde etkinleştirilebilir).
+
+
+== Teknik genel bakış ==
+HTTP, istemci-sunucu bilgi işlem modelinde bir istek-yanıt protokolü olarak işlev görür. Örneğin, bir web tarayıcısı istemci olabilir veya bir web sitesini barındıran bir barındırma hizmetinde çalışan bir uygulama sunucu olabilir. İstemci, sunucuya bir HTTP istek mesajı gönderir. HTML dosyaları ve diğer içerik gibi kaynakları sağlayan veya istemci adına diğer işlevleri gerçekleştiren sunucu, istemciye bir yanıt mesajı verir. Yanıt, istekle ilgili tamamlanma durumu bilgilerini içerir, ayrıca mesaj gövdesinde istenen içeriği gösterebilir.
+HTTP, ara ağ ögelerinin istemciler ve sunucular arasındaki iletişimi iyileştirmesine veya etkinleştirmesine izin vermek için tasarlanmıştır. Yüksek trafikli web siteleri, genellikle yanıt süresini iyileştirmek için yukarı akış sunucuları adına içerik sağlayan web önbellek sunucularından yararlanır. Web tarayıcıları, önceden erişilen web kaynaklarını önbelleğe alır ve ağ trafiğini azaltmak için mümkün olduğunca bunları yeniden kullanır. Özel ağ sınırlarındaki HTTP vekil sunucuları, mesajları harici sunucularla aktararak, genel olarak yönlendirilebilir bir adrese sahip olmayan istemciler için iletişimi kolaylaştırabilir.
+HTTP, İnternet iletişim kuralları dizisi paketi çerçevesinde tasarlanmış bir uygulama katmanı protokolüdür. İletim Kontrol Protokolü (TCP) yaygın olarak kullanılmaktadır. Ancak HTTP, Kullanıcı Datagram Protokolü (UDP) gibi güvenilmez protokolleri, örneğin HTTPU ve Basit Hizmet Keşif Protokolü (SSDP) gibi kullanacak şekilde uyarlanabilir.
+HTTP kaynakları, Tekdüzen Kaynak Tanımlayıcıları (URL'ler) şemaları http ve https kullanılarak, Tekdüzen Kaynak Konum Belirleyicileri (URL'ler) tarafından tanımlanır. RFC 3986'da tanımlandığı gibi, URL'ler HTML belgelerinde köprüler olarak kodlanır, böylece birbirine bağlı köprü belgeleri oluşturulur.
+HTTP/1.1, orijinal HTTP'nin (HTTP/1.0) bir revizyonudur.
+HTTP/1.0'da her istek için sunucuya ayrı bir bağlantı yapılması gerekir. HTTP/1.1'de ise tek bir bağlantı ile birden fazla istek yapılabilir. Bu nedenle HTTP/1.1 iletişimleri daha az gecikme yaşar.
+HTTP/2.0 protokol perfonmansını iyileştirmek için ortaya çıktı. Çünkü HTTP/1.1 sıralı bir protokol olup her seferinde tek bir istek gönderilebilir. HTTP/2.0'de ise zaman uyumsuz olarak istek göndermeye ve yanıt almaya izin verir.
+HTTP/3.0'nin HTTP/2.0'dan farkı kullanılan taşıma katmanı protokolüdür. HTTP/2.0 TLS içeren veya içermeyen TCP bağlantıları varken HTTP/3.0'da QUIC(Hızlı UDP İnternet Bağlantıları) üzerine tasarlanmıştır. HTTP/3.0'ın avantajları daha iyi iletim hızı, daha kısa yükleme süreleri ve daha kararlı bir bağlantı sağlar.
+
+
+== Tarihçe ==
+
+Hiper metin terimi ilk kez, Ted Nelson tarafından 1965'te Xanadu Projesi'nde ortaya atıldı. Bu da Vannevar Bush'un 1930'lardaki mikrofilm temelli bilgi erişim ve yönetim sistemi "memex"in vizyonundan esinlenerek 1945 tarihli "Düşündüğümüz Gibi" adlı makalesinde anlatıldı. Tim Berners-Lee ve CERN'deki ekibi, orijinal HTTP'yi, HTML'i ve bir web sunucusu ve metin tabanlı bir web tarayıcı için ilgili teknolojiyi icat etmekle tanınır. Ayrıca Berners-Lee, ilk olarak 1989 yılında "WorldWideWeb" projesini önerdi - günümüzde World Wide Web olarak bilinmektedir. Protokolün ilk sürümünde, bir sunucudan bir sayfa talep edecek GET adında tek bir yöntem bulunuyordu.
+HTTP'nin belgelenen ilk sürümü 1991'de yayınlanan HTTP V0.9'du. Dave Raggett, 1995 yılında HTTP Çalışma Grubunu (HTTP WG) yönetti ve protokolü, ek yöntemler ve başlık alanları ekleyerek daha verimli hale gelen bir güvenlik protokolüne bağlı genişletilmiş işlemler, genişletilmiş görüşme, daha zengin meta bilgilerle genişletmek istedi. RFC 1945 ise, 1996'da resmi olarak HTTP V1.0'ı tanıttı.
+HTTP WG, Aralık 1995'te yeni standartlar yayınlamayı planladı ve daha sonra gelişmekte olan RFC 2068'e (HTTP-NG olarak adlandırılır) dayanan ön standart HTTP/1.1 desteği, 1996'nın başlarında büyük tarayıcı geliştiricileri tarafından hızla benimsendi. Yeni tarayıcıların son kullanıcılar tarafından benimsenmesi hızlı oldu. Mart 1996'da, bir web barındırma şirketi, internette kullanılan tarayıcıların %40'ından fazlasının HTTP 1.1 uyumlu olduğunu bildirdi. Aynı web barındırma şirketi, Haziran 1996 itibarıyla, sunucularına erişen tüm tarayıcıların %65'inin HTTP/1.1 uyumlu olduğunu bildirdi. RFC 2068'de tanımlanan HTTP/1.1 standardı resmi olarak Ocak 1997'de yayınlandı. Daha sonra yapılan iyileştirmeler ve güncellemeler, Haziran 1999'da RFC 2616 kapsamında yayınlandı.
+2007'de, HTTP/1.1 spesifikasyonunu revize etmek ve açıklığa kavuşturmak için kısmen HTTP Çalışma Grubu oluşturuldu. Haziran 2014'te WG, RFC 2616'yı geçersiz kılan güncellenmiş altı bölümlü bir spesifikasyon yayınladı:
+
+RFC 7230, HTTP/1.1: Mesaj Sözdizimi ve Yönlendirme
+RFC 7231, HTTP/1.1: Anlambilim ve İçerik
+RFC 7232, HTTP/1.1: Koşullu İstekler
+RFC 7233, HTTP/1.1: Aralık İstekleri
+RFC 7234, HTTP/1.1: Önbellek
+RFC 7235, HTTP/1.1: Kimlik Doğrulama
+HTTP/2 ise, Mayıs 2015'te RFC 7540 olarak yayınlandı.
+
+
+== HTTP oturumu ==
+
+Bir HTTP oturumu, bir ağ istek-yanıt işlemleri dizisidir. HTTP istemcisi, bir sunucudaki belirli bir bağlantı noktasına (tipik olarak 80 numaralı bağlantı noktası, bazen 8080 numaralı bağlantı noktası) bir İletim Kontrol Protokolü (TCP) bağlantısı kurarak bir istek başlatır. (TCP ve UDP port numaraları listesine bakınız). Bu port üzerinde dinleyen bir HTTP sunucusu, bir istemcinin istek mesajını bekler. İsteği aldıktan sonra sunucu, "HTTP / 1.1 200 OK" gibi bir durum satırı ve kendisine ait bir mesaj gönderir. Bu mesajın gövdesi tipik olarak talep edilen kaynaktır, ancak bir hata mesajı veya başka bilgiler de döndürülebilir.
+
+
+=== Kalıcı bağlantılar ===
+HTTP/0.9 ve 1.0'da, bağlantı tek bir istek/yanıt çiftinden sonra kapatılır. HTTP/1.1'de, bir bağlantının birden fazla istek için yeniden kullanılabileceği bir canlı tutma mekanizması tanıtıldı. Bu tür kalıcı bağlantılar, istemcinin ilk istek gönderildikten sonra TCP 3 Yollu El Sıkışma bağlantısını yeniden iletmesi gerekmediğinden istek gecikmesini hissedilir şekilde azaltır. Diğer bir olumlu yan etki, genel olarak, TCP'nin yavaş başlatma mekanizması nedeniyle bağlantının zamanla daha hızlı hale gelmesidir.
+Protokolün 1.1 sürümü ayrıca HTTP/1.0 için bant genişliği optimizasyonu iyileştirmeleri yaptı. Örneğin, HTTP/1.1, kalıcı bağlantılardaki içeriğin arabelleğe alınmak yerine akışa alınmasına izin vermek için parçalı aktarım kodlaması getirmiştir. HTTP ardışık düzeni, gecikme süresini daha da azaltarak istemcilerin her yanıtı beklemeden önce birden çok istek göndermesine olanak tanır. Protokole bir başka ek, bir sunucunun bir istemci tarafından açıkça talep edilen bir kaynağın sadece bir kısmını ilettiği bayt hizmetiydi.
+
+
+=== Oturum durumu ===
+HTTP, durum bilgisiz bir protokoldür. Durum bilgisi olmayan bir protokol, HTTP sunucusunun birden çok istek süresi boyunca her bir kullanıcı hakkındaki bilgileri veya durumu saklamasını gerektirmez. Ancak, bazı web uygulamaları, örneğin HTTP tanımlama bilgilerini veya web formları içindeki gizli değişkenleri kullanarak durumlar veya sunucu tarafı oturumları uygular.
+
+
+== HTTP kimlik doğrulaması ==
+HTTP, temel erişim kimlik doğrulaması ve özet erişim kimlik doğrulaması gibi, sunucunun istenen içeriği sunmadan önce bir sınamayı tanımlayıp yayınladığı bir sınama-yanıt mekanizması aracılığıyla çalışan çoklu kimlik doğrulama şemaları sağlar.
+HTTP, bir sunucu tarafından bir istemci isteğini sorgulamak için ve bir istemci tarafından kimlik doğrulama bilgilerini sağlamak için kullanılabilen, genişletilebilir bir dizi sınama-yanıt kimlik doğrulama şemaları aracılığıyla erişim kontrolü ve kimlik doğrulaması için genel bir çerçeve sağlar.
+
+
+=== Kimlik doğrulama ===
+HTTP Kimlik Doğrulaması belirtimi ayrıca belirli bir kök URL'de ortak olan kaynakları daha fazla bölmek için rastgele, uygulamaya özgü bir yapı sağlar. Bölge değeri dizesi, varsa, meydan okumanın koruma alanı bileşenini oluşturmak için kurallı kök URL ile birleştirilir. Bu, sunucunun tek bir kök URL altında ayrı kimlik doğrulama kapsamları tanımlamasına izin verir.
+
+
+== Mesaj biçimi ==
+İstemci sunucuya istek gönderir ve sunucu yanıtlar gönderir.
+
+
+=== Mesaj isteği ===
+İstek mesajı aşağıdakilerden oluşur:
+
+Bir istek satırı (örneğin, sunucudan /images/logo.png adlı bir kaynak isteyen GET /images/logo.png HTTP/1.1)
+Başlık alanları (örneğin, Accept-Language: en)
+Boş satır
+İsteğe bağlı mesaj bölümü
+İstek satırı ve diğer başlık alanlarının her biri <CR> <LF> ile bitmelidir. (Bir satır başı karakteri ve ardından bir satır besleme karakteri). Boş satır yalnızca <CR> <LF> içermeli ve başka bir boşluk olmamalıdır. HTTP/1.1 protokolünde, ana bilgisayar dışındaki tüm başlık alanları isteğe bağlıdır.
+Yalnızca yol adını içeren bir istek satırı, RFC 1945'teki HTTP/1.0 belirtiminden önce, HTTP istemcileriyle uyumluluğu korumak için sunucular tarafından kabul edilir.
+
+
+==== İstek yöntemleri ====
+HTTP, tanımlanan kaynakta gerçekleştirilmesi istenen eylemi belirtmek için yöntemleri tanımlar (bazen fiil olarak adlandırılır, ancak spesifikasyonun hiçbir yerinde fiilden bahsedilmez ve OPTIONS veya HEAD bir fiil değildir). Önceden var olan veriler veya dinamik olarak oluşturulan veriler olsun, bu kaynağın neyi temsil ettiği, sunucunun uygulanmasına bağlıdır. Çoğu zaman kaynak, bir dosyaya veya sunucuda bulunan bir yürütülebilir dosyanın çıktısına karşılık gelir. HTTP/1.0 spesifikasyonu GET, HEAD ve POST yöntemlerini tanımladı ve HTTP/1.1 spesifikasyonu beş yeni yöntem ekledi: OPTIONS, PUT, DELETE, TRACE ve CONNECT. Bu belgelerde belirtilerek, anlambilimleri iyi bilinir ve bunlara güvenilebilir. Herhangi bir istemci herhangi bir yöntemi kullanabilir ve sunucu herhangi bir yöntem kombinasyonunu destekleyecek şekilde yapılandırılabilir. Bir yöntem bir ara madde tarafından bilinmiyorsa, güvenli olmayan ve etkisiz olmayan bir yöntem olarak ele alınacaktır. Tanımlanabilecek yöntem sayısında herhangi bir sınırlama yoktur ve bu, mevcut altyapıyı bozmadan gelecekteki yöntemlerin belirlenmesine olanak tanır. Örneğin, WebDAV yedi yeni yöntem tanımladı ve RFC 5789 PATCH yöntemini belirledi.
+Yöntem adları büyük/küçük harfe duyarlıdır. Bu, büyük/küçük harfe duyarlı olmayan HTTP başlık alanı adlarının tersidir.
+GET
+GET yöntemi, belirtilen kaynağın bir temsilini ister. GET kullanan istekler yalnızca verileri almalı ve başka bir etkisi olmamalıdır. (Bu, diğer bazı HTTP yöntemleri için de geçerlidir.) W3C, bu ayrımla ilgili kılavuz ilkeler yayınladı ve "Web uygulaması tasarımı yukarıdaki ilkelerle ve aynı zamanda ilgili sınırlamalarla bilgilendirilmelidir." şeklinde açıklama yaptı.
+HEAD
+HEAD yöntemi, GET isteğiyle aynı olan ancak yanıt gövdesi olmayan bir yanıt ister. Bu, tüm içeriği taşımak zorunda kalmadan yanıt başlıklarında yazılan meta bilgileri almak için kullanışlıdır.
+POST
+POST yöntemi, sunucunun, talepte yer alan varlığı URL tarafından tanımlanan web kaynağının yeni bir alt ögesi olarak kabul etmesini ister. POST edilen veriler, örneğin, mevcut kaynaklar için bir açıklama olabilir; bir bülten panosu, haber grubu, posta listesi veya yorum dizisi için bir mesaj; bir web formunun bir veri işleme sürecine gönderilmesinin sonucu olan bir veri bloğu; veya veritabanına eklenecek bir ögedir.
+PUT
+PUT yöntemi, kapalı varlığın sağlanan URL altında depolanmasını ister. URL zaten var olan bir kaynağa başvuruyorsa, değiştirilir; URL mevcut bir kaynağa işaret etmiyorsa, sunucu bu URL ile kaynağı oluşturabilir.
+DELETE
+DELETE yöntemi, belirtilen kaynağı siler.
+TRACE
+TRACE yöntemi, alınan isteği yansıtır, böylece bir istemci, ara sunucular tarafından (varsa) hangi değişikliklerin veya eklemelerin yapıldığını görebilir.
+OPTIONS
+OPTIONS yöntemi, sunucunun belirtilen URL için desteklediği HTTP yöntemlerini döndürür. Bu, belirli bir kaynak yerine '*' isteyerek bir web sunucusunun işlevselliğini kontrol etmek için kullanılabilir.
+CONNECT
+CONNECT yöntemi, istek bağlantısını şeffaf bir TCP/IP tüneline dönüştürür, genellikle şifrelenmemiş bir HTTP proxy'si aracılığıyla SSL şifreli iletişimi (HTTPS) kolaylaştırır.
+PATCH
+PATCH yöntemi, bir kaynağa kısmi değişiklikler uygular.
+Tüm genel amaçlı HTTP sunucularının en azından GET ve HEAD yöntemlerini uygulaması gerekir ve diğer tüm yöntemler şartnameye göre isteğe bağlı kabul edilir.
+
+
+==== Güvenli yöntemler ====
+Yöntemlerden bazıları (örneğin, GET, HEAD, OPTIONS ve TRACE), geleneksel olarak güvenli olarak tanımlanır, yani bunlar yalnızca bilgi alma amaçlıdır ve sunucunun durumunu değiştirmemelidir. Başka bir deyişle, günlük tutma, web önbelleğe alma, banner sunulması veya bir web sayacı artırma gibi nispeten zararsız etkilerin ötesinde yan etkileri olmamalıdır. Uygulamanın durumuna bakılmaksızın keyfi GET taleplerinde bulunmak bu nedenle güvenli kabul edilmelidir. Ancak, bu standart tarafından zorunlu kılınmamıştır ve garanti edilemeyeceği açıkça kabul edilmiştir.
+Buna karşılık, POST, PUT, DELETE ve PATCH gibi yöntemler, sunucu üzerinde yan etkilere veya Elektronik ticaret veya e-posta iletimi gibi harici yan etkilere neden olabilecek eylemler için tasarlanmıştır. Bu nedenle, bu tür yöntemler genellikle uyumlu Arama robotları veya web tarayıcıları tarafından kullanılmaz; uymayanlar bağlam veya sonuçlara bakılmaksızın istekte bulunma eğilimindedir.
+GET isteklerinin öngörülen güvenliğine rağmen, uygulamada bunların sunucu tarafından işlenmesi teknik olarak hiçbir şekilde sınırlı değildir. Bu nedenle, dikkatsiz veya kasıtlı programlama, sunucuda önemsiz olmayan değişikliklere neden olabilir. Bu tavsiye edilmez, çünkü web önbelleğine alma, arama motoru ve diğer otomatik aracılar için sorunlara neden olabilir ve bu da sunucuda istenmeyen değişiklikler yapabilir. Örneğin, bir web sitesi http://example.com/article/1234/delete gibi bir URL aracılığıyla bir kaynağın silinmesine izin verebilir; bu, GET kullanılarak bile keyfi olarak getirilirse, yalnızca makaleyi siler.
+Pratikte bunun bir örneği, bir kullanıcının görüntülediği sayfadaki rastgele URL'leri önceden getirerek kayıtların toplu olarak otomatik olarak değiştirilmesine veya silinmesine neden olan kısa ömürlü Google Web Accelerator'ın beta sürümünde meydana geldi. Beta, yaygın eleştirilerin ardından ilk sürümünden sadece haftalar sonra askıya alındı.
+
+
+==== Etkisiz yöntemler ve web uygulamaları ====
+PUT ve DELETE yöntemleri etkisiz olarak tanımlanır, yani birden çok özdeş isteğin tek bir istekle aynı etkiye sahip olması gerekir. GET, HEAD, OPTIONS ve TRACE yöntemleri, güvenli olarak tanımlanır ve HTTP durumsuz bir protokol olduğundan etkisiz olmalıdır.
+Bunun tersine, POST yöntemi etkisiz değildir ve bu nedenle, aynı POST isteğinin birden çok kez gönderilmesi durumu daha fazla etkileyebilir veya başka yan etkilere (e-ticaret gibi) neden olabilir. Bazı durumlarda bu arzu edilebilir, ancak diğer durumlarda bu, bir kullanıcının eyleminin başka bir istek göndermesiyle sonuçlanacağını fark etmemesi veya ilk talebinin yapıldığına dair yeterli geri bildirim almaması gibi bir kazadan kaynaklanıyor olabilir. Web tarayıcıları, bir sayfanın yeniden yüklenmesinin POST isteğini yeniden gönderebileceği bazı durumlarda kullanıcıları uyarmak için uyarı iletişim kutuları gösterebilirken, POST isteğinin birden fazla kez gönderilmemesi gereken durumları ele almak genellikle web uygulamasına bağlıdır.
+Bir yöntemin etkisiz olup olmadığının protokol veya web sunucusu tarafından zorlanmadığını unutulmamalıdır. Örneğin, bir veritabanı girişinin veya etkisiz olmayan başka bir eylemin bir GET veya başka bir talep tarafından tetiklendiği bir web uygulaması yazmak tamamen mümkündür. Ancak, bir kullanıcı aracısı aynı isteği tekrar etmenin güvenli olmadığına karar verirse, bu tavsiyenin göz ardı edilmesi istenmeyen sonuçlara yol açabilir.
+
+
+==== Güvenlik ====
+TRACE yöntemi, siteler arası izleme olarak bilinen bir saldırı sınıfının parçası olarak kullanılabilir; bu nedenle, genel güvenlik tavsiyesi, sunucu yapılandırmasında devre dışı bırakılmasıdır. Microsoft IIS, benzer şekilde davranan ve aynı şekilde devre dışı bırakılması önerilen tescilli bir "TRACK" yöntemini destekler.
+
+
+=== Yanıt mesajı ===
+Yanıt mesajı aşağıdakilerden oluşur:
+
+Durum kodunu ve neden mesajını içeren bir durum satırı (örneğin, istemcinin isteğinin başarılı olduğunu belirten HTTP/1.1 200 OK)
+Yanıt başlığı alanları (örneğin, İçerik Türü: metin/html)
+Boş satır
+İsteğe bağlı mesaj bölümü
+Durum satırı ve diğer başlık alanlarının tümü <CR> <LF> ile bitmelidir. Boş satır yalnızca <CR> <LF> içermeli ve başka bir boşluk olmamalıdır. <CR> <LF> için bu katı gereksinim, yalnızca <CR> veya <LF> gibi diğer sistem satır kesmelerinin tutarlı kullanımı için ileti gövdeleri içinde biraz gevşetilir.
+
+
+== Durum kodları ==
+İstemci, bir web sayfası görüntülemek için bir tarayıcı ile bu siteyi oluşturmak için sunucudan web site dosyalarını istemektedir. Sunucu bu istek sonucunda bir HTTP durum kodu kullanarak yanıt oluşturmaktadır. Bu kodları HTTP durum kodu veya yanıt kodu olarak adlandırmaktayız. Her bir durum kodu farklı anlamlara gelmektedir ve bu kodlar sayfanın düzgün çalışıp çalışmadığı hakkında bilgi vermektedir. 60'tan fazla HTTP durum kodu bulunmakta. Bu durum kodlarının bazıları kullanılmamakta bazıları ile de sıkça karşılaşmamaktayız bu kodların bazıları ise gelecekte kullanılmak için hazırlanmış kodlardır. SEO çalışmalarında veya site tarama analizlerinde karşılaşılan en yangın durum kodları 5 başlık altında incelenmektedir.
+
+1xx Bilgilendirme
+2xx Başarılı
+3xx Yönlendirme
+4xx İstemci Hatası
+5xx Sunucu Hatası
+
+
+=== 1xx Durum kodları ===
+1xx HTTP durum kodları bilgilendirme kodları olarak tanımlanmakta. İstemcinin isteği sunucu ulaşıldığı ve işlemin başladığına dair bilgilendirme kodlarını ifade eden durum kodlarıdır. Sunucu tarafından cevap oluştuktan sonra kaldırılırlar. Bu kodlarının bazıları ile daha sık karşılaşılmaktadır.
+100: İstemci tarafından gönderilen isteğin başlığı sunucu tarafından alındığı ve gövdesinin de alınmaya hazır olduğunu ifade etmektedir.
+101: İstemcinin Sunucudan protokol değiştirmesini talep ettiği ve sunucun talebi kabul ettiğini ifade etmektedir.
+
+
+=== 2xx Durum Kodları ===
+İstemcinin isteklerine sunucunun başarılı verdiğini ifade eden durum kodlarıdır. SEO denetimleri için bu sayfaların sorunsuz çalıştığını ifade etmektedir. Genellikle sayfaların 2xx kodları döndürmesini bekleriz. 2xx içerisinde farklı anlamlara gelen sıkça karşılaşılan 2xx durum kodları bulunmakta.
+200: OK yanıt kodu olarak tanımlanmakta ideal durum kodudur. Sayfaların sorunsuz bir şekilde çalıştığını ifade eder.
+201: Oluşturuldu durum olarak tanımlanmakta. Sunucu yapılan isteği kabul eder ve işleme süreci başlar bunun sonucunda istek yerine getirilebilir ya da getirilemez.
+204: İçerik yok yanıt kodu olarak ifade edilmekte. Sunucu isteği başarılı bir şekilde işleme koydu ve istemciye geri gönderilecek veri bulunmadığı ifade etmektedir.
+205: İçeriği sıfırla yanıt olarak tanımlanmakta. Sunucu işleme başarılı bir şekilde işleme koydu fakat istek gönderenden belge görünümü sıfırlanmasını istemekte ve herhangi bir içerik döndürmemektedir.
+206: Kısmi içerik yanıt kodu olarak ifade edilmekte. Sunucu istemci tarafından gönderilen bir aralık bağlılığı nedeniyle kaynağın yalnızca bir kısmını göndermekte. Aralık başlığı HTTP istemcileri tarafından kesintiye uğramış ve indirmelerin devam ettirilmesini sağlamak veya bir indirmeyi birden çok eşzamanlı akışa bölmek için kullanılır.
+207: Çoklu durum yanıt kodu olarak ifade edilmekte. Takip eden mesaj gövdesi bir XML masajıdır ve kaç tane alt istekle bulunduğuna bağlı olarak bir dizi ayrı yanıt kodu oluşturabilmekte. Bu durum kodu birden çok durum kodunun doğru olabildiği durumlarda kullanılmakta.
+
+
+=== 3xx Durum Kodları ===
+Geçici veya kalıcı yönlendirme kodlarıdır. Bu kodlar sayfaların SOE değerini korumak için önemlidir. 3xx durum kodları kendi içerisinde farklı anlamlara gelen farklı durum kodlarından oluşmaktadır.
+301: Kalıcı yönlendirme durum kodu olarak ifade edilmekte .Bir web sayfasının kalıcı olarak bir başka web sayfasına yönlendirildiği ve sayfayı ziyaret eden kullanıcının da otomatik olarak yönlenmesini sağlayan durum kodudur.
+302:Geçici yönlendirme durum kodu olarak ifade edilmekte. Bir web sayfasının geçici olarak bir başka web sayfasına yönlendirildiğini ifade eden durum kodudur. 301 yönlendirme kodundan farkı ilgili sayfanın test aşamasında olması, bakıma alınması ya da bir e-ticaret sitesi için ilgili ürünün stoklarının geçici olarak tükenmesi gibi ilgili sayfanın tekrar aktif edileceği durumlarda kullanılmasıdır. Fakat kullanıcılar 301 yönlendirmesi ile 302 yönlendirmesi arasındaki farkı anlamayacaktır. İlgili sayfaya giriş yapan kullanıcılar direkt olarak diğer sayfaya yönlendirilmektedir.
+307: Geçici Yeniden Yönlendirme kodu olarak ifade edilmektedir. 302 gibi bir bir kaynağa geçici olarak yönlendirmeyi ifade eder.
+308: Bir kaynağın kalıcı olarak farklı bir kaynağa taşındığını ifade eden durum kodudur. 301 durum kodundan farklı olarak HTTP yönetiminin değişmesine izin vermez.
+
+
+=== 4xx Durum kodları ===
+İstemci hata kodları olarak ifade edilmektedir. SEO denetimleri yapılırken en çok dikkat edilen durum kodlarıdır. Bu durum kodlarından bazıları ile daha sık karşılaşılır.
+400: Hatalı istek durum kodu olarak ifade edilir. Sunucunun istemciden kaynaklanan hatadan dolayı isteği yerine getirememesidir.
+401: Kaynağa erişmek için kimlik doğrulaması (kullanıcı adı, şifre, token vb.) gerektiğini ifade eder. 
+403: Yasaklanmış içerik. Sunucu Yapılan isteği anlar fakat reddettiği durumlarda bu durum kodunu döndürmekte.
+404: Sayfa bulunamadı olarak ifade edilir. En çok karşılaşılan HTTP durum kodudur. İstenilen kaynağın bulunamadığı fakat gelecekte bulanabileceği anlamına gelir bu yüzden bu hatayı düzeltmek için genellikle 3xx yönlendirme kodları kullanılmakta ya da özel 404 sayfaları oluşturulmakta.
+407: İstemcinin talep edilen kaynağa erişebilmesi için önce proxy sunucusu üzerinden kimlik doğrulaması yapması gerektiğini belirtir.
+408: Sunucunun istemciden belirli süre içinde tam bir istek almadığını ve bu nedenle bağlantıyı sonlandırdığını belirtir.
+409: Sunucunun isteği işleyemediğini çünkü mevcut kaynak durumu ile çakıştığını ifade eder.
+
+
+=== 5xx Durum Kodları ===
+Sunucu hataları ifade eden durum kodlarıdır. Sunucular istekleri işleyemediklerinde bu durum kodlarını döndürmekte. Kullanıcılar tarafında sayfa görüntülenemez.
+500:Sunucu hatası olarak ifade edilir. Beklenmeyen bir durumla karşılaşıldığında Sunucular bu kodları döndürmekte.
+502:Sunucunun başka bir sunucuya istek gönderdikten sonra geçersiz yanıt aldığı anlamına gelen durum kodudur.
+504:Bir isteği işlerken bir sunucunun diğer sunucudan yanıt beklerken isteğin zaman aşımına uğraması durumunda görülen durum kodudur.
+505:HTTP protokol sürümünün desteklenemediği anlamında gelen durum kodudur.
+511:Kullanılmak istenen ağın isteği sunucuya iletmeden önce kimlik doğrulaması yapması gerektiği durumlarda görülen durum kodudur.
+
+
+== Şifrelenmiş bağlantı ==
+
+Şifreli bir HTTP bağlantısı kurmanın en popüler yolu HTTPS'dir. Şifreli bir HTTP bağlantısı kurmak için iki başka yöntem de mevcuttur: Güvenli Köprü Metni Aktarım Protokolü ve TLS'ye yükseltme belirtmek için HTTP/1.1 Yükseltme başlığını kullanma. Ancak bu ikisi için tarayıcı desteği neredeyse yoktur.
+
+
+== Örnek oturum ==
+Aşağıda, bir HTTP istemcisi ile www.example.com, bağlantı noktası 80 üzerinde çalışan bir HTTP sunucusu arasındaki örnek bir konuşma bulunmaktadır.
+
+
+=== İstemci isteği ===
+Bir istemci isteğini (bu durumda istek satırı ve yalnızca bir başlık alanından oluşur) boş bir satır izler, böylece istek, her biri satır başı şeklinde olan çift satır sonu ile biter. "Ana Bilgisayar" alanı, tek bir IP adresini paylaşan çeşitli DNS adları arasında ayrım yaparak isme dayalı sanal barındırmaya izin verir. HTTP / 1.0'da isteğe bağlı olsa da, HTTP / 1.1'de zorunludur. ("/", Varsa /index.html anlamına gelir.)
+
+
+=== Sunucu yanıtı ===
+ETag (varlık etiketi) başlık alanı, istenen kaynağın önbelleğe alınmış bir sürümünün sunucudaki kaynağın geçerli sürümüyle aynı olup olmadığını belirlemek için kullanılır. Content-Type, HTTP mesajı tarafından taşınan verinin İnternet ortam tipini belirtirken Content-Length, uzunluğunu bayt cinsinden belirtir. HTTP/1.1 web sunucusu, Accept-Ranges: bayt alanını ayarlayarak belgenin belirli bayt aralıklarına yönelik isteklere yanıt verme yeteneğini yayınlar. Bu, istemcinin, bayt hizmeti olarak adlandırılan, sunucu tarafından gönderilen bir kaynağın yalnızca belirli kısımlarına sahip olması gerekiyorsa yararlıdır. Connection: close gönderildiğinde, web sunucusunun bu yanıtın aktarılmasından hemen sonra TCP bağlantısını kapatacağı anlamına gelir.
+Başlık satırlarının çoğu isteğe bağlıdır. İçerik Uzunluğu eksik olduğunda, uzunluk başka yollarla belirlenir. Parçalı aktarım kodlaması, içeriğin sonunu işaretlemek için yığın boyutu 0 kullanır. İçerik Uzunluğu olmadan kimlik kodlaması, soket kapanana kadar içeriği okur.
+Gzip gibi bir sıkıştırma programı, iletilen verileri sıkıştırmak için kullanılabilir.
+
+
+== Benzer protokoller ==
+Gopher protokolü, 1990'ların başlarında HTTP tarafından değiştirilen bir içerik teslim protokolüdür.
+SPDY protokolü, Google'da geliştirilen ve HTTP/2'nin yerini alan HTTP'ye bir alternatiftir.
+Gemini protokolü, gizlilikle ilgili özellikleri zorunlu kılan, Gopher'dan ilham alan bir protokoldür.

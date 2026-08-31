@@ -1,0 +1,28 @@
+# Alt ağ
+
+Bir alt ağ veya subnet, bir IP ağının bir alt bölümüdür. Alt ağlara ayırmaya İngilizcede subnetting denir.
+Aynı alt ağa ait olan bilgisayarlar, IP adreslerini en önemli bitlerinden oluşan aynı grupla adreslenir. Bu, bir IP adresinin iki alana bölünmesiyle sonuçlanır: ağ numarası veya yönlendirme öneki ve geri kalan alan veya ana bilgisayar tanımlayıcısı. Geri kalan alan, belirli bir ana bilgisayar veya ağ arayüzü için bir tanımlayıcıdır.
+Yönlendirme öneki, bir ağın Sınıfsız Etki Alanları Arası Yönlendirme (CIDR) notasyonuyla yazılan, ardından eğik çizgi karakteri (/) gelen ve önekin bit uzunluğuyla biten ilk adresi olarak ifade edilebilir. Örneğin, 198.51.100.0/24, İnternet Protokolü sürüm 4 (IPv4) ağının verilen adresten başlayan, 24 biti ağ öneki için ayrılmış ve geri kalan 8 biti ana bilgisayar adreslemesi için ayrılmış olan önekidir.
+Kaynak adresin ve hedef adresin yönlendirme önekleri farklı olduğunda, yönlendiriciler aracılığıyla alt ağlar arasında trafik alışverişi yapılır. Yönlendirici, alt ağlar arasında mantıksal veya fiziksel bir sınır görevi görür.
+Mevcut bir ağı alt ağa bağlamanın faydaları her dağıtım senaryosuna göre değişir. CIDR kullanan İnternetin adres tahsisi mimarisinde ve büyük kuruluşlarda, adres alanının verimli tahsisi gereklidir. Alt ağ oluşturma, yönlendirme verimliliğini de artırabilir veya alt ağlar, daha büyük bir kuruluştaki farklı kuruluşlar tarafından idari olarak kontrol edildiğinde ağ yönetiminde avantajlara sahip olabilir. Alt ağlar, bir kuruluşun ağ adres alanını ağaç benzeri dallanmış bir yönlendirme yapısına veya file benzeri diğer yapılara bölerek hiyerarşik bir mimaride mantıksal olarak düzenlenebilir.
+
+
+== Ağ adresleme ve yönlendirme ==
+ 
+Bir IP ağına katılan bilgisayarların en az bir ağ adresi vardır. Genellikle bu adres her cihaz için özeldir ve Dinamik Ana Bilgisayar Yapılandırma Protokolü (DHCP) içeren bir ağ hizmeti tarafından otomatik olarak, bir yönetici tarafından manuel olarak veya durum bilgisi olmayan adres otomatik yapılandırması ile işletim sistemi tarafından otomatik olarak yapılandırılabilir.
+Bir adres, hedef yönlendirmede ana bilgisayarı tanımlama ve onu ağ üzerinde konumlandırma işlevlerini yerine getirir. En yaygın ağ adresleme mimarisi İnternet Protokolü sürüm 4'tür (IPv4), ancak onun halefi olan IPv6, yaklaşık 2006'dan beri giderek artan bir şekilde kullanılmaktadır. Bir IPv4 adresi 32 bitten oluşur. Bir IPv6 adresi 128 bitten oluşur. Her iki mimaride de bir IP adresi, ağ öneki ve ana bilgisayar tanımlayıcısı olmak üzere iki mantıksal parçaya bölünmüştür. Bir alt ağdaki tüm ana bilgisayarlar aynı ağ önekine sahiptir. Bu önek adresin en önemli bitlerini kaplar. Bir ağ içinde öneke tahsis edilen bitlerin sayısı, ağ mimarisine bağlı olarak alt ağlar arasında değişiklik gösterebilir. Ana bilgisayar tanımlayıcısı benzersiz bir yerel kimliktir ve yerel ağdaki bir ana bilgisayar numarası veya bir arayüz tanımlayıcısıdır.
+Yönlendiriciler alt ağlar arasında mantıksal veya fiziksel sınırlar oluşturur ve aralarındaki trafiği yönetir. Her alt ağa, belirlenmiş bir varsayılan yönlendirici tarafından hizmet verilir, ancak dahilî olarak ağ anahtarları ile birbirine bağlanan birden fazla fiziksel Ethernet bölümünden oluşabilir.
+Bir adresin yönlendirme öneki, IP adresleri için kullanılanla aynı biçimde yazılan "alt ağ maskesi" (İngilizce: subnet mask) tarafından tanımlanır. Örneğin, bir IPv4 adresinin en önemli 24 bitinden oluşan bir yönlendirme önekinin alt ağ maskesi 255.255.255.0 olarak yazılır. 255.255.255.0 alt ağ maskesine sahip IPv4 ağı 192.0.2.0, 192.0.2.0/24 olarak yazılır.
+
+
+== IPv4 ==
+
+
+=== Ağ önekinin belirlenmesi ===
+Bir IPv4 alt ağ maskesi 32 bitten oluşur; birler (1) ve ardından bir sıfırlar bloğu (0) dizisidir. Bunlar, ağ öneki için kullanılan adresteki bitleri belirtir ve sondaki sıfır bloğu, bu bölümün ana bilgisayar tanımlayıcısı olduğunu belirtir.
+Aşağıdaki örnek, ağ önekinin ve ana bilgisayar tanımlayıcısının bir adresten (192.0.2.130) ve bununla ilişkili /24 alt ağ maskesinden (255.255.255.0) ayrılmasını gösterir. İşlem, ikili adres formatları kullanılarak bir tabloda görselleştirilir. 
+
+
+== IPv6 ==
+IPv6 adres alanının tasarımı IPv4'ten önemli ölçüde farklıdır. IPv4'te alt ağ oluşturmanın temel nedeni, özellikle işletmeler için mevcut nispeten küçük adres alanının kullanımında verimliliği artırmaktır. Son kullanıcılara bile sunulan geniş adres alanı sınırlayıcı bir faktör olmadığından IPv6'da böyle bir sınırlama yoktur.
+IPv4'te olduğu gibi, IPv6'da da alt ağ oluşturma, değişken uzunluklu alt ağ maskeleme (VLSM) ve Sınıfsız Etki Alanları Arası Yönlendirme metodolojisi kavramlarına dayanmaktadır.
