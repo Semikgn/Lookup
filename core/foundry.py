@@ -145,6 +145,7 @@ def tekrar_temizle(metin: str) -> str:
     """
     parcalar = re.split(r"(?<=[.!?:])\s+|\n", metin)
     gorulen: list[set[str]] = []
+    kisa_gorulen: set[str] = set()
     tutulan: list[str] = []
     for p in parcalar:
         kelimeler = set(re.findall(r"\w+", p.casefold()))
@@ -155,6 +156,13 @@ def tekrar_temizle(metin: str) -> str:
             if tekrar:
                 continue
             gorulen.append(kelimeler)
+        elif kelimeler:
+            # Kısa cümleler için birebir eşleşme: "TCP/IP açıklayınız." × 50
+            # vakası (3 kelime, Jaccard süzgecinin altında kalıyordu).
+            anahtar = " ".join(sorted(kelimeler))
+            if anahtar in kisa_gorulen:
+                continue
+            kisa_gorulen.add(anahtar)
         tutulan.append(p)
     return "\n".join(t for t in tutulan if t.strip()) if "\n" in metin else " ".join(tutulan)
 
