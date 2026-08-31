@@ -41,6 +41,7 @@ def retriever_al() -> Retriever | None:
 
 class Soru(BaseModel):
     soru: str
+    gecmis: list[dict] = []  # [{soru, cevap}] — son turlar, tarayıcıdan gelir
 
 
 @app.post("/api/sor")
@@ -52,7 +53,9 @@ def sor(istek: Soru) -> dict:
                 "model": "-", "parcalar": [], "reddedildi": False, "sure": 0}
 
     baslangic = time.perf_counter()
-    sonuc = rag.cevapla(istek.soru, retriever=retriever, endpoint=endpoint)
+    sonuc = rag.cevapla(
+        istek.soru, retriever=retriever, endpoint=endpoint, gecmis=istek.gecmis
+    )
     sure = time.perf_counter() - baslangic
     return {
         "cevap": sonuc.cevap,
@@ -158,6 +161,8 @@ function ekle(sinif, metin) {
   return kutu;
 }
 
+const gecmis = [];  // son sorular + cevaplar: takip sorulari icin hafiza
+
 async function gonder(e) {
   e.preventDefault();
   const girdi = document.getElementById('soru');
@@ -171,9 +176,10 @@ async function gonder(e) {
     const y = await fetch('/api/sor', {
       method: 'POST',
       headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify({soru})
+      body: JSON.stringify({soru, gecmis: gecmis.slice(-3)})
     });
     const v = await y.json();
+    gecmis.push({soru, cevap: (v.cevap || '').slice(0, 300)});
     bekleme.textContent = v.cevap || '(boş cevap)';
     if (v.reddedildi) bekleme.classList.add('red');
     let bilgi = v.reddedildi
