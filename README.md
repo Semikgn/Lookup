@@ -5,6 +5,8 @@ edilmiş doküman asistanı. Microsoft Azure Foundry Local yaz okulu projesi.
 İsim, `nslookup`'a ve sözlükteki "lookup"a aynı anda göz kırpar; her cevap
 `127.0.0.1`'den döner.
 
+![Lookup arayüzü](docs/repo.png)
+
 > Projenin eski adı **RAG Router TR** idi. v2'de runtime model router'ı
 > kaldırıldı ve proje yeniden markalandı. Omurga artık **tek iyi model +
 > Türkçe-özel hibrit retrieval + bunu sayıyla kanıtlayan değerlendirme**.
@@ -136,4 +138,3 @@ Soru ─► hibrit retrieval ──► skor >= eşik ─► en iyi parçalar + T
 └── cli.py                 # hızlı test
 ```
 
-<!-- WiFi kapalı demo ekran görüntüsü buraya: docs/demo.png -->
