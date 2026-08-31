@@ -68,8 +68,8 @@ python -m ingest.ingest           # chunk -> embedding -> SQLite
 # Soru sor (CLI)
 python cli.py "DHCP kiralama süresi ne anlama gelir?"
 python cli.py --mod duz "..."     # v1 düz kosinüsle karşılaştır
-python cli.py --k 2 "..."         # hız düğmesi: ~%15 daha hızlı prefill
-                                  # (hit@2 %96.7, hit@3 %100 — varsayılan k=3)
+python cli.py --k 3 "..."         # kalite düğmesi: daha geniş bağlam
+                                  # (varsayılan k=2: hit@2 %96.7; k=3: hit@3 %100)
 
 # Benchmark (before/after + model yarışı)
 python -m bench.run_bench --sadece-retrieval
@@ -101,7 +101,11 @@ Soru ─► hibrit retrieval ──► skor >= eşik ─► top-3 parça + Türk
 - **Üretim kalitesi/hızı:** küçük modellerin cümle-tekrar döngüsü çıktı
   katmanında kırılır (Jaccard ≥ 0.7 tekrar ayıklama, `core/foundry.py`);
   `frequency_penalty` denendi ve geri alındı — bu sunucu/model ikilisinde
-  döngüyü paraphrase'e çevirip kötüleştirdi. max_tokens 320, temperature 0.2.
+  döngüyü paraphrase'e çevirip kötüleştirdi. max_tokens 256, temperature 0.2.
+- **Latency (CPU'da ~10-20 sn/cevap):** prefill ana kalem olduğundan bağlam
+  parçaları prompt'a girerken soru kökleriyle örtüşen cümleler seçilerek
+  ~600 karaktere kırpılır (kör baş-kırpma değil; saf lexical seçim),
+  varsayılan k=2. Ölçüm: 31.8 sn → 17.1 sn (DNS), 38.9 → 16.7 (RAID).
 
 ## Proje yapısı
 

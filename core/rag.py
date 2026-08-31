@@ -5,15 +5,16 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass, field
 
-from core import foundry
+from core import foundry, metin
 from core.retriever import Parca, Retriever
 
 RAG_SISTEM_PROMPTU = (
     "Sen Türkçe konuşan bir doküman asistanısın. SADECE sana verilen bağlam "
     "parçalarındaki bilgiyi kullanarak cevap ver. Bağlamda olmayan komut, menü "
     "yolu ya da adım UYDURMA; bağlam soruyu tam karşılamıyorsa hangi kısmın "
-    "dokümanlarda olmadığını açıkça söyle. KISA yaz: en fazla 4-5 cümle ya da "
-    "3-4 madde. Aynı bilgiyi veya maddeyi asla tekrarlama."
+    "dokümanlarda olmadığını açıkça söyle. ÇOK KISA yaz: en fazla 3 kısa cümle "
+    "ya da 3 madde; sorunun sorduğundan fazlasını anlatma. Aynı bilgiyi veya "
+    "maddeyi asla tekrarlama."
 )
 
 
@@ -25,9 +26,37 @@ class RagCevabi:
     reddedildi: bool = False  # domain dışı: modele gidilmedi
 
 
-def baglam_kur(parcalar: list[Parca]) -> str:
+BAGLAM_PARCA_LIMITI = 600  # karakter; CPU'da prefill süresinin ana kalemi
+
+
+def _kirp(metin_parcasi: str, soru: str, limit: int = BAGLAM_PARCA_LIMITI) -> str:
+    """Parçayı soruyla EN İLGİLİ cümleleri seçerek limite kırpar.
+
+    Kör baş-kırpma parçanın asıl bilgisini atabiliyor (RAID aynalama vakası);
+    bunun yerine cümleler soru kökleriyle örtüşmeye göre puanlanır, en iyiler
+    orijinal sırayla tutulur. Saf lexical seçim — reranker modeli değil.
+    """
+    if len(metin_parcasi) <= limit:
+        return metin_parcasi
+    soru_kokleri = set(metin.tokenle(soru))
+    cumleler = [c for c in re.split(r"(?<=[.!?])\s+|\n", metin_parcasi) if c.strip()]
+    puanli = []
+    for sira, c in enumerate(cumleler):
+        ortusme = len(soru_kokleri & set(metin.tokenle(c)))
+        puanli.append((-ortusme, sira, c))  # örtüşme çoksa önce; eşitse erken cümle
+    secilen: list[int] = []
+    uzunluk = 0
+    for _, sira, c in sorted(puanli):
+        if uzunluk + len(c) > limit and secilen:
+            continue
+        secilen.append(sira)
+        uzunluk += len(c) + 1
+    return " ".join(cumleler[i] for i in sorted(secilen))
+
+
+def baglam_kur(parcalar: list[Parca], soru: str) -> str:
     bloklar = [
-        f"[Kaynak: {p.kaynak} / parça {p.sira} / benzerlik {p.skor:.2f}]\n{p.metin}"
+        f"[Kaynak: {p.kaynak} / parça {p.sira}]\n{_kirp(p.metin, soru)}"
         for p in parcalar
     ]
     return "\n\n---\n\n".join(bloklar)
@@ -72,7 +101,7 @@ def cevapla(
     soru: str,
     retriever: Retriever | None = None,
     rol: str = "uretim",
-    k: int = 3,
+    k: int = 2,  # hız/kalite dengesi: hit@2 %96.7, hit@3 %100 (bench k=3 ile ölçer)
     endpoint: str | None = None,
     gecmis: list[dict] | None = None,
 ) -> RagCevabi:
@@ -122,7 +151,7 @@ def cevapla(
         f"Önceki sohbet:\n{_gecmis_metni(gecmis)}\n\n---\n\n" if gecmis else ""
     )
     kullanici_mesaji = (
-        f"{gecmis_blok}Bağlam:\n\n{baglam_kur(parcalar)}\n\n---\n\nSoru: {soru}"
+        f"{gecmis_blok}Bağlam:\n\n{baglam_kur(parcalar, soru)}\n\n---\n\nSoru: {soru}"
     )
     cevap = foundry.chat_tamamla(
         model,
@@ -131,5 +160,6 @@ def cevapla(
             {"role": "user", "content": kullanici_mesaji},
         ],
         endpoint,
+        max_tokens=256,
     )
     return RagCevabi(cevap=cevap, model=model, parcalar=parcalar)
