@@ -1,11 +1,17 @@
-"""Türkçe benchmark koşucusu: modelleri testset.tr.json ile skorlar.
+"""Benchmark v2: retrieval-odaklı Türkçe RAG değerlendirmesi.
 
-Her model için üç kategoride (rag, kod, genel) doğruluk ve gecikme ölçer,
-sonucu bench/leaderboard.json'a yazar. Router bu dosyaya göre model seçer.
+İki ayrı ölçüm:
+1. RETRIEVAL (model'siz, hızlı): her mod (duz / hibrit) için hit@3 — sorunun
+   altın dokümanından bir parça ilk 3'te mi? + domain-dışı red doğruluğu.
+   Before/after tablosunun kaynağı budur.
+2. UÇTAN UCA (modelli, yavaş): aday modeller hibrit RAG üzerinde cevap
+   doğruluğu (anahtar eşleşme) + latency. Soru bazlı checkpoint + --limit ile
+   dilimli koşulabilir (bu makinede uzun koşular kesintiye uğrayabiliyor).
 
 Kullanım:
-    python -m bench.run_bench                          # varsayılan modeller
-    python -m bench.run_bench --modeller qwen2.5-0.5b  # tek model
+    python -m bench.run_bench --sadece-retrieval
+    python -m bench.run_bench --modeller qwen2.5-coder-1.5b qwen3-1.7b
+    python -m bench.run_bench --modeller qwen3-1.7b --limit 10
 """
 
 from __future__ import annotations
@@ -13,6 +19,7 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import statistics
 import sys
 import time
 from datetime import datetime, timezone
@@ -22,10 +29,15 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from core import foundry, rag
 from core.retriever import Retriever
 
+if sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
+    sys.stdout.reconfigure(encoding="utf-8")
+
 BENCH_KLASORU = Path(__file__).resolve().parent
 TESTSET_YOLU = BENCH_KLASORU / "testset.tr.json"
 LEADERBOARD_YOLU = BENCH_KLASORU / "leaderboard.json"
-ARA_YOLU = BENCH_KLASORU / ".bench_ara.json"  # soru bazlı checkpoint
+ARA_YOLU = BENCH_KLASORU / ".bench_ara.json"
+
+VARSAYILAN_MODELLER = ["qwen2.5-coder-1.5b", "qwen3-1.7b"]
 
 
 def _ara_oku() -> dict:
@@ -38,184 +50,187 @@ def _ara_oku() -> dict:
 
 
 def _ara_yaz(ara: dict) -> None:
-    ARA_YOLU.write_text(
-        json.dumps(ara, ensure_ascii=False, indent=1), encoding="utf-8"
-    )
-
-# qwen3-4b bilerek listede yok: bu donanımda soru başına 80-140 sn sürüyor.
-# İstersen elle skorla: python -m bench.run_bench --modeller qwen3-4b
-VARSAYILAN_MODELLER = ["qwen2.5-0.5b", "qwen2.5-coder-1.5b", "qwen3-1.7b"]
-
-GENEL_SISTEM = (
-    "Sen Türkçe konuşan yardımcı bir asistansın. Kısa ve net cevap ver."
-)
+    ARA_YOLU.write_text(json.dumps(ara, ensure_ascii=False, indent=1), encoding="utf-8")
 
 
 def cevap_puanla(cevap: str, anahtarlar: list[str], mod: str) -> bool:
-    """Anahtar ifade eşleşmesi. Kısa/sayısal anahtarlarda kelime sınırı aranır."""
     metin = cevap.casefold()
     sonuclar = []
     for anahtar in anahtarlar:
         a = anahtar.casefold()
         if len(a) <= 3 and re.fullmatch(r"\w+", a, re.UNICODE):
-            eslesme = re.search(rf"(?<!\w){re.escape(a)}(?!\w)", metin, re.UNICODE)
-            sonuclar.append(eslesme is not None)
+            sonuclar.append(
+                re.search(rf"(?<!\w){re.escape(a)}(?!\w)", metin, re.UNICODE) is not None
+            )
         else:
             sonuclar.append(a in metin)
     return all(sonuclar) if mod == "hepsi" else any(sonuclar)
 
 
-def soruyu_calistir(
-    soru: dict, model_alias: str, retriever: Retriever, endpoint: str
-) -> tuple[bool, float, str]:
-    """Tek soruyu koşturur: (doğru mu, süre, cevap) döndürür."""
-    baslangic = time.perf_counter()
-    if soru["kategori"] == "rag":
-        sonuc = rag.cevapla(
-            soru["soru"], retriever=retriever, rol=model_alias, endpoint=endpoint
-        )
-        cevap = sonuc.cevap
-    else:
-        cevap = foundry.sohbet(
-            soru["soru"], rol=model_alias, sistem=GENEL_SISTEM, endpoint=endpoint
-        )
-    sure = time.perf_counter() - baslangic
-    dogru = cevap_puanla(cevap, soru["anahtarlar"], soru.get("mod", "herhangi"))
-    return dogru, sure, cevap
+# --- 1) Retrieval ölçümü (model'siz) -------------------------------------
 
+def retrieval_olc(sorular: list[dict], endpoint: str) -> dict:
+    sonuc: dict = {}
+    rag_sorulari = [s for s in sorular if s["kategori"] == "rag"]
+    red_sorulari = [s for s in sorular if s["kategori"] == "red"]
+
+    for mod in ("duz", "hibrit"):
+        retriever = Retriever(mod=mod)
+        isabet3 = isabet1 = 0
+        kacanlar = []
+        for soru in rag_sorulari:
+            parcalar = retriever.ara(soru["soru"], k=3, endpoint=endpoint)
+            if any(p.kaynak in soru["altin"] for p in parcalar):
+                isabet3 += 1
+            else:
+                kacanlar.append(soru["id"])
+            if parcalar and parcalar[0].kaynak in soru["altin"]:
+                isabet1 += 1
+        red_dogru = 0
+        red_kacan = []
+        for soru in red_sorulari:
+            parcalar = retriever.ara(soru["soru"], k=3, endpoint=endpoint)
+            if retriever.reddedilmeli(parcalar):
+                red_dogru += 1
+            else:
+                red_kacan.append(soru["id"])
+        sonuc[mod] = {
+            "hit1": round(isabet1 / len(rag_sorulari), 3),
+            "hit3": round(isabet3 / len(rag_sorulari), 3),
+            "isabet": f"{isabet3}/{len(rag_sorulari)}",
+            "red_dogru": f"{red_dogru}/{len(red_sorulari)}",
+            "kacanlar": kacanlar,
+            "red_kacan": red_kacan,
+        }
+        print(f"  [{mod:6}] hit@1 = {sonuc[mod]['hit1']}, hit@3 = {sonuc[mod]['hit3']} "
+              f"({sonuc[mod]['isabet']}), red = {sonuc[mod]['red_dogru']}"
+              + (f", kaçan: {kacanlar}" if kacanlar else "")
+              + (f", red kaçan: {red_kacan}" if red_kacan else ""))
+    return sonuc
+
+
+# --- 2) Uçtan uca model ölçümü --------------------------------------------
 
 def modeli_skorla(
-    model_alias: str, sorular: list[dict], retriever: Retriever, endpoint: str,
+    alias: str, sorular: list[dict], retriever: Retriever, endpoint: str,
     limit: int | None = None,
 ) -> dict | None:
-    """Modeli skorlar. `limit` verilirse bu koşuda en fazla o kadar soru işler;
-    model bitmediyse None döndürür (sonraki koşu checkpoint'ten devam eder)."""
-    print(f"\n=== {model_alias} ===")
+    """None dönerse kısmi koşudur; checkpoint'ten devam edilir."""
+    print(f"\n=== {alias} ===")
     ara = _ara_oku()
-    model_ara: dict = ara.setdefault(model_alias, {})
+    model_ara: dict = ara.setdefault(alias, {})
     bekleyen = [s for s in sorular if s["id"] not in model_ara]
     if limit:
         bekleyen = bekleyen[:limit]
 
     if bekleyen:
-        # Isınma: model yüklensin, ilk isteğin yükleme süresi ölçüme karışmasın.
-        foundry.sohbet("Merhaba", rol=model_alias, endpoint=endpoint, max_tokens=8)
+        foundry.sohbet("Merhaba", rol=alias, endpoint=endpoint, max_tokens=8)  # ısınma
 
     for soru in bekleyen:
+        baslangic = time.perf_counter()
         try:
-            dogru, sure, _ = soruyu_calistir(soru, model_alias, retriever, endpoint)
+            sonuc = rag.cevapla(
+                soru["soru"], retriever=retriever, rol=alias, endpoint=endpoint
+            )
+            if soru["kategori"] == "red":
+                dogru = sonuc.reddedildi
+            else:
+                dogru = (not sonuc.reddedildi) and cevap_puanla(
+                    sonuc.cevap, soru["anahtarlar"], soru.get("mod", "herhangi")
+                )
         except Exception as hata:
             print(f"  [{soru['id']}] HATA: {hata}")
-            dogru, sure = False, 0.0
+            dogru = False
+        sure = time.perf_counter() - baslangic
         model_ara[soru["id"]] = {"dogru": dogru, "sure": round(sure, 2)}
-        _ara_yaz(ara)  # kesinti olursa bu sorudan devam edilir
+        _ara_yaz(ara)
         print(f"  [{soru['id']}] {'✓' if dogru else '✗'} ({sure:.1f} sn)")
 
     if len(model_ara) < len(sorular):
-        print(f"  ... kısmi koşu: {len(model_ara)}/{len(sorular)} tamam, devam için tekrar çalıştır")
+        print(f"  ... kısmi: {len(model_ara)}/{len(sorular)}, devam için tekrar çalıştır")
         return None
 
-    kategoriler: dict[str, dict] = {}
-    for soru in sorular:
-        kayit = model_ara[soru["id"]]
-        k = kategoriler.setdefault(
-            soru["kategori"], {"dogru": 0, "toplam": 0, "sureler": []}
-        )
-        k["toplam"] += 1
-        k["dogru"] += int(kayit["dogru"])
-        if kayit["sure"]:
-            k["sureler"].append(kayit["sure"])
-
-    ozet = {}
-    for ad, k in kategoriler.items():
-        ozet[ad] = {
-            "dogruluk": round(k["dogru"] / k["toplam"], 3),
-            "ortalama_sure": round(sum(k["sureler"]) / len(k["sureler"]), 2)
-            if k["sureler"] else None,
-            "soru_sayisi": k["toplam"],
-        }
-    toplam_dogru = sum(k["dogru"] for k in kategoriler.values())
-    toplam_soru = sum(k["toplam"] for k in kategoriler.values())
+    rag_kayitlari = [model_ara[s["id"]] for s in sorular if s["kategori"] == "rag"]
+    red_kayitlari = [model_ara[s["id"]] for s in sorular if s["kategori"] == "red"]
+    sureler = [k["sure"] for k in rag_kayitlari if k["sure"]]
     return {
-        "kategoriler": ozet,
-        "genel_dogruluk": round(toplam_dogru / toplam_soru, 3),
+        "rag_dogruluk": round(sum(k["dogru"] for k in rag_kayitlari) / len(rag_kayitlari), 3),
+        "ortalama_sure": round(sum(sureler) / len(sureler), 2) if sureler else None,
+        "medyan_sure": round(statistics.median(sureler), 2) if sureler else None,
+        "red_dogru": f"{sum(k['dogru'] for k in red_kayitlari)}/{len(red_kayitlari)}",
+        "soru_sayisi": len(rag_kayitlari),
     }
 
 
 def tablo_yazdir(leaderboard: dict) -> None:
-    print("\n" + "=" * 72)
-    print(f"{'Model':<22} {'RAG':>8} {'Kod':>8} {'Genel':>8} {'Toplam':>8} {'~sn':>6}")
-    print("-" * 72)
-    for model, veri in sorted(
-        leaderboard["modeller"].items(),
-        key=lambda x: -x[1]["genel_dogruluk"],
-    ):
-        kat = veri["kategoriler"]
-        sureler = [
-            k["ortalama_sure"] for k in kat.values() if k.get("ortalama_sure")
-        ]
-        ort_sure = sum(sureler) / len(sureler) if sureler else 0
-        print(
-            f"{model:<22}"
-            f" {kat.get('rag', {}).get('dogruluk', '-'):>8}"
-            f" {kat.get('kod', {}).get('dogruluk', '-'):>8}"
-            f" {kat.get('genel', {}).get('dogruluk', '-'):>8}"
-            f" {veri['genel_dogruluk']:>8}"
-            f" {ort_sure:>6.1f}"
-        )
-    print("=" * 72)
+    r = leaderboard.get("retrieval", {})
+    if r:
+        print("\nRetrieval (hit@3):")
+        for mod, veri in r.items():
+            print(f"  {mod:8} {veri['hit3']:>6}  (isabet {veri['isabet']}, red {veri['red_dogru']})")
+    if leaderboard.get("modeller"):
+        print(f"\n{'Model':<24} {'RAG doğruluk':>12} {'medyan sn':>10} {'red':>6}")
+        print("-" * 56)
+        for ad, v in sorted(
+            leaderboard["modeller"].items(), key=lambda x: -x[1]["rag_dogruluk"]
+        ):
+            print(f"{ad:<24} {v['rag_dogruluk']:>12} {v['medyan_sure']:>10} {v['red_dogru']:>6}")
 
 
 def main() -> int:
-    ayristirici = argparse.ArgumentParser(description="Türkçe benchmark koşucusu")
-    ayristirici.add_argument(
-        "--modeller", nargs="+", default=VARSAYILAN_MODELLER,
-        help="Skorlanacak model alias'ları",
-    )
-    ayristirici.add_argument(
-        "--limit", type=int, default=None,
-        help="Bu koşuda işlenecek en fazla soru sayısı (kısmi koşu)",
-    )
+    ayristirici = argparse.ArgumentParser(description="Türkçe RAG benchmark v2")
+    ayristirici.add_argument("--modeller", nargs="+", default=VARSAYILAN_MODELLER)
+    ayristirici.add_argument("--limit", type=int, default=None,
+                             help="bu koşuda işlenecek en fazla soru")
+    ayristirici.add_argument("--sadece-retrieval", action="store_true",
+                             help="yalnız hit@3/red ölç, model koşturma")
     args = ayristirici.parse_args()
 
     sorular = json.loads(TESTSET_YOLU.read_text(encoding="utf-8"))["sorular"]
     endpoint = foundry.endpoint_bul()
-    retriever = Retriever()
-    yuklu = foundry.yuklu_modeller(endpoint)
 
     leaderboard = {
         "olusturulma": datetime.now(timezone.utc).isoformat(),
         "testset": TESTSET_YOLU.name,
+        "retrieval": {},
         "modeller": {},
     }
-    # Önceki (kısmi) sonuçlar varsa üzerine ekle: kesintiden devam edilebilsin.
     if LEADERBOARD_YOLU.exists():
         try:
             eski = json.loads(LEADERBOARD_YOLU.read_text(encoding="utf-8"))
-            leaderboard["modeller"].update(eski.get("modeller", {}))
+            leaderboard["retrieval"] = eski.get("retrieval", {})
+            leaderboard["modeller"] = eski.get("modeller", {})
         except (OSError, json.JSONDecodeError):
             pass
 
-    for alias in args.modeller:
-        if alias not in yuklu:
-            print(f"[atla] {alias} indirilmemiş (foundry model download {alias})")
-            continue
-        if alias in leaderboard["modeller"]:
-            print(f"[atla] {alias} zaten skorlanmış (yeniden ölçmek için leaderboard.json'dan sil)")
-            continue
-        sonuc = modeli_skorla(alias, sorular, retriever, endpoint, limit=args.limit)
-        if sonuc is None:
-            continue  # kısmi koşu: model bitmedi, leaderboard'a yazma
-        leaderboard["modeller"][alias] = sonuc
-        # Her model bitince diske yaz: kesinti olursa emek boşa gitmesin.
-        LEADERBOARD_YOLU.write_text(
-            json.dumps(leaderboard, ensure_ascii=False, indent=2), encoding="utf-8"
-        )
-        # Sıradaki modele RAM açmak için bu modeli bellekten çıkar.
-        try:
-            foundry.model_bosalt(alias)
-        except Exception:
-            pass
+    print("[1] Retrieval ölçümü (duz vs hibrit)...")
+    leaderboard["retrieval"] = retrieval_olc(sorular, endpoint)
+    LEADERBOARD_YOLU.write_text(
+        json.dumps(leaderboard, ensure_ascii=False, indent=2), encoding="utf-8"
+    )
+
+    if not args.sadece_retrieval:
+        print("\n[2] Uçtan uca model ölçümü (hibrit mod)...")
+        retriever = Retriever(mod="hibrit")
+        yuklu = foundry.yuklu_modeller(endpoint)
+        for alias in args.modeller:
+            if alias not in yuklu:
+                print(f"[atla] {alias} indirilmemiş")
+                continue
+            if alias in leaderboard["modeller"]:
+                print(f"[atla] {alias} zaten skorlanmış")
+                continue
+            sonuc = modeli_skorla(alias, sorular, retriever, endpoint, limit=args.limit)
+            if sonuc is None:
+                continue
+            leaderboard["modeller"][alias] = sonuc
+            LEADERBOARD_YOLU.write_text(
+                json.dumps(leaderboard, ensure_ascii=False, indent=2), encoding="utf-8"
+            )
+            try:
+                foundry.model_bosalt(alias)
+            except Exception:
+                pass
 
     print(f"\nLeaderboard yazıldı: {LEADERBOARD_YOLU}")
     tablo_yazdir(leaderboard)

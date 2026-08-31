@@ -19,6 +19,7 @@ class RagCevabi:
     cevap: str
     model: str
     parcalar: list[Parca] = field(default_factory=list)
+    reddedildi: bool = False  # domain dışı: modele gidilmedi
 
 
 def baglam_kur(parcalar: list[Parca]) -> str:
@@ -39,6 +40,14 @@ def cevapla(
     endpoint = endpoint or foundry.endpoint_bul()
     retriever = retriever or Retriever()
     parcalar = retriever.ara(soru, k=k, endpoint=endpoint)
+
+    # Domain-dışı reddi: yeterli sinyal yoksa modele sorup uydurtma.
+    from core.retriever import RED_MESAJI
+    if retriever.reddedilmeli(parcalar):
+        return RagCevabi(
+            cevap=RED_MESAJI, model="(model çağrılmadı)",
+            parcalar=parcalar, reddedildi=True,
+        )
 
     kullanici_mesaji = (
         f"Bağlam:\n\n{baglam_kur(parcalar)}\n\n---\n\nSoru: {soru}"

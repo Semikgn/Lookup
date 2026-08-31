@@ -31,6 +31,10 @@ def main() -> int:
         "--rag", action="store_true",
         help="Cevabı data/ dokümanlarından RAG ile üret",
     )
+    ayristirici.add_argument(
+        "--mod", default="hibrit", choices=["duz", "hibrit"],
+        help="Retrieval modu: duz = yalnız kosinüs (v1), hibrit = +BM25+kapsama",
+    )
     args = ayristirici.parse_args()
 
     endpoint = foundry.endpoint_bul()
@@ -41,10 +45,15 @@ def main() -> int:
     baslangic = time.perf_counter()
     if args.rag:
         from core import rag
-        sonuc = rag.cevapla(args.soru, rol=args.rol, endpoint=endpoint)
+        from core.retriever import Retriever
+        retriever = Retriever(mod=args.mod)
+        sonuc = rag.cevapla(args.soru, retriever=retriever, rol=args.rol, endpoint=endpoint)
         cevap = sonuc.cevap
         for p in sonuc.parcalar:
-            print(f"[bağlam]   {p.kaynak} / parça {p.sira} (benzerlik {p.skor:.2f})")
+            print(f"[bağlam]   {p.kaynak} / parça {p.sira} "
+                  f"(skor {p.skor:.2f}, kosinüs {p.kosinus:.2f}, kapsama {p.kapsama:.2f})")
+        if sonuc.reddedildi:
+            print("[red]      domain dışı — model çağrılmadı")
     else:
         cevap = foundry.sohbet(
             args.soru, rol=args.rol, sistem=VARSAYILAN_SISTEM, endpoint=endpoint

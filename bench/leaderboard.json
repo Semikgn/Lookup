@@ -1,66 +1,25 @@
 {
-  "olusturulma": "2026-07-26T11:36:58.873875+00:00",
+  "olusturulma": "2026-08-31T07:20:59.848155+00:00",
   "testset": "testset.tr.json",
-  "modeller": {
-    "qwen2.5-0.5b": {
-      "kategoriler": {
-        "rag": {
-          "dogruluk": 0.25,
-          "ortalama_sure": 21.1,
-          "soru_sayisi": 12
-        },
-        "kod": {
-          "dogruluk": 0.75,
-          "ortalama_sure": 7.9,
-          "soru_sayisi": 12
-        },
-        "genel": {
-          "dogruluk": 0.083,
-          "ortalama_sure": 4.57,
-          "soru_sayisi": 12
-        }
-      },
-      "genel_dogruluk": 0.361
+  "retrieval": {
+    "duz": {
+      "hit1": 0.833,
+      "hit3": 0.967,
+      "isabet": "29/30",
+      "red_dogru": "5/5",
+      "kacanlar": [
+        "rag-28"
+      ],
+      "red_kacan": []
     },
-    "qwen2.5-coder-1.5b": {
-      "kategoriler": {
-        "rag": {
-          "dogruluk": 0.917,
-          "ortalama_sure": 21.1,
-          "soru_sayisi": 12
-        },
-        "kod": {
-          "dogruluk": 0.917,
-          "ortalama_sure": 12.75,
-          "soru_sayisi": 12
-        },
-        "genel": {
-          "dogruluk": 0.5,
-          "ortalama_sure": 2.25,
-          "soru_sayisi": 12
-        }
-      },
-      "genel_dogruluk": 0.778
-    },
-    "qwen3-1.7b": {
-      "kategoriler": {
-        "rag": {
-          "dogruluk": 0.583,
-          "ortalama_sure": 57.8,
-          "soru_sayisi": 12
-        },
-        "kod": {
-          "dogruluk": 0.917,
-          "ortalama_sure": 13.57,
-          "soru_sayisi": 12
-        },
-        "genel": {
-          "dogruluk": 0.583,
-          "ortalama_sure": 4.75,
-          "soru_sayisi": 12
-        }
-      },
-      "genel_dogruluk": 0.694
+    "hibrit": {
+      "hit1": 0.9,
+      "hit3": 1.0,
+      "isabet": "30/30",
+      "red_dogru": "5/5",
+      "kacanlar": [],
+      "red_kacan": []
     }
-  }
+  },
+  "modeller": {}
 }

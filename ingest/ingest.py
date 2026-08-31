@@ -69,6 +69,7 @@ def indeksle(sifirla: bool = False) -> int:
     dosyalar = sorted(
         d for d in VERI_KLASORU.iterdir()
         if d.suffix.lower() in {".txt", ".md", ".pdf"}
+        and d.name != "SOURCES.md"  # kaynak listesi metadata'dır, korpus değil
     )
     if not dosyalar:
         print(f"UYARI: {VERI_KLASORU} içinde .txt/.md/.pdf yok.")
