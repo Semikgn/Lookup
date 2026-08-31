@@ -167,6 +167,16 @@ class Retriever:
         # gibi genel fiil kökleriyle şişen alakasız parçalar redde engel oluyor.
         kosinus = max(p.kosinus for p in parcalar)
         kapsama = parcalar[0].kapsama
+
+        # Embedding yanlış-pozitif freni: "X kimdir/nedir" kalıbı ansiklopedi
+        # giriş parçalarına yüksek kosinüs verebiliyor (saha vakası: "fazıl say
+        # kimdir" -> alt-ağ girişine 0.565). Sinyaller AYNI parçada buluşmalı:
+        # top-k'de hem anlamsal (kosinüs >= 0.40) hem sözcüksel (kapsama >= 0.05)
+        # eşiği birlikte geçen tek parça yoksa benzerlik aldatıcıdır, reddet.
+        # (Yalnız-BM25 kaçağı da bunu geçemez: "say" kökü eşleşir ama kosinüsü düşüktür.)
+        if not any(p.kosinus >= 0.40 and p.kapsama >= 0.05 for p in parcalar):
+            return True
+
         return any(
             kosinus < kos_esik and kapsama < kap_esik
             for kos_esik, kap_esik in REDDET_KURALLARI

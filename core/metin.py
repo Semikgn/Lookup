@@ -44,5 +44,6 @@ def tokenle(metin: str, stopword_at: bool = True, stemle: bool = True) -> list[s
     if stopword_at:
         kelimeler = [k for k in kelimeler if k not in STOPWORDS and len(k) > 1]
     if stemle:
-        kelimeler = _STEMMER.stemWords(kelimeler)
+        # Stem sonrası tek harfe düşenler atılır (örn. snowball "kimdir" -> "k").
+        kelimeler = [k for k in _STEMMER.stemWords(kelimeler) if len(k) > 1]
     return kelimeler

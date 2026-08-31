@@ -46,11 +46,13 @@ tekrar tekrar süreç ölümüyle kesildi. Karar gereçleriyle birlikte
 ### Konu dışı soruların reddi
 
 Arama sinyalleri yeterince güçlü değilse soru modele hiç gitmez; kullanıcıya
-"Bu bilgi mevcut dokümanlarda bulunamadı." dönülür. Karar, ham kosinüs ve terim
-kapsaması üzerinde iki kademeli bir sınırla verilir (`core/retriever.py`
-içindeki `REDDET_KURALLARI`). Eşikler test setindeki 5 konu dışı soru ve gerçek
-kullanım vakalarıyla kalibre edildi; konu dışı reddi 5/5, konu içi 30 sorunun
-hiçbiri yanlışlıkla reddedilmiyor.
+"Bu bilgi mevcut dokümanlarda bulunamadı." dönülür. Karar ham kosinüs ve terim
+kapsaması üzerinden verilir (`core/retriever.py`): iki kademeli eşik sınırına
+ek olarak, anlamsal ve sözcüksel sinyalin aynı parçada buluşması şartı aranır.
+Bu son şart, embedding'in "X kimdir" tarzı soruları ansiklopedi girişlerine
+benzetmesinden doğan yanlış pozitifleri keser. Eşikler test setindeki 5 konu
+dışı soru ve gerçek kullanım vakalarıyla kalibre edildi; konu dışı reddi 5/5,
+konu içi 30 sorunun hiçbiri yanlışlıkla reddedilmiyor.
 
 ## Korpus
 
