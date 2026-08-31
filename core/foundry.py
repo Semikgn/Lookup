@@ -125,6 +125,18 @@ def model_bosalt(alias: str) -> None:
     _calistir([_foundry_cli(), "model", "unload", alias], timeout=120)
 
 
+def yabanci_karakter_temizle(metin: str) -> str:
+    """Küçük qwen modellerinin Türkçe cevaba sızdırdığı CJK karakterleri ayıklar.
+
+    (Saha vakası: 'internet 提供商 ile iletişime geçebilirsiniz'.)
+    """
+    # CJK noktalama+kana, CJK ideogramları, Hangul, tam genişlik formları.
+    temiz = re.sub(
+        r"[　-ヿ㐀-鿿가-힯＀-￯]+", "", metin
+    )
+    return re.sub(r"  +", " ", temiz)
+
+
 def tekrar_temizle(metin: str) -> str:
     """Küçük modellerin tekrarladığı cümleleri/maddeleri ayıklar.
 
@@ -236,7 +248,8 @@ def chat_tamamla(
         yanit = oai.chat.completions.create(
             model=model_id, messages=mesajlar, **secenekler
         )
-    return tekrar_temizle(dusunce_temizle(yanit.choices[0].message.content or ""))
+    ham = yanit.choices[0].message.content or ""
+    return tekrar_temizle(yabanci_karakter_temizle(dusunce_temizle(ham)))
 
 
 def sohbet(

@@ -32,12 +32,15 @@ AGIRLIKLAR = {"anlamsal": 0.70, "bm25": 0.22, "kapsama": 0.08}
 BM25_K1 = 1.5
 BM25_B = 0.75
 
-# Red eşikleri (ham sinyal üzerinden; bench red grubuyla kalibre edildi).
-# Ölçüm: domain-içi soruların en iyi kosinüsü >= 0.51, domain-dışılarınki <= 0.39.
-# 0.45 iki tarafa da marj bırakır. Kapsama eşiği 0.40: "yapılır" gibi genel
-# fiil kökleri tek başına 0.2-0.35 kapsama üretebiliyor.
-REDDET_KOSINUS = 0.45
-REDDET_KAPSAMA = 0.40
+# Red kararı: (kosinüs, kapsama) düzleminde iki kademeli sınır. Herhangi bir
+# (kos_esik, kap_esik) çifti için "en iyi kosinüs < kos_esik VE en iyi kapsama
+# < kap_esik" sağlanıyorsa soru domain dışı sayılır. Sinyaller top-k'nin HAM
+# maksimumudur (karışım sırasına değil). Kalibrasyon noktaları:
+#   - domain-içi zor soru (rag-25):        kos 0.449, kap 0.29 -> CEVAPLA
+#   - gri-bölge saha vakası (Chrome):      kos 0.469, kap 0.11 -> REDDET
+#   - domain-dışı genel fiilli (baklava):  kos 0.24,  kap 0.33 -> REDDET
+#   - domain-dışı tipik (Atatürk, dağ):    kos <= 0.39, kap <= 0.20 -> REDDET
+REDDET_KURALLARI = [(0.48, 0.25), (0.40, 0.45)]
 RED_MESAJI = "Bu bilgi mevcut dokümanlarda bulunamadı."
 
 
@@ -159,5 +162,12 @@ class Retriever:
         """Soru domain dışıysa True: modele hiç gitmeden 'bulunamadı' dönülür."""
         if not parcalar:
             return True
-        en_iyi = parcalar[0]
-        return en_iyi.kosinus < REDDET_KOSINUS and en_iyi.kapsama < REDDET_KAPSAMA
+        # Kosinüs: top-k maksimumu (sıralama karışımından bağımsız, gürbüz).
+        # Kapsama: en iyi sıradaki parçanın değeri — maksimum alınırsa "yapılır"
+        # gibi genel fiil kökleriyle şişen alakasız parçalar redde engel oluyor.
+        kosinus = max(p.kosinus for p in parcalar)
+        kapsama = parcalar[0].kapsama
+        return any(
+            kosinus < kos_esik and kapsama < kap_esik
+            for kos_esik, kap_esik in REDDET_KURALLARI
+        )
