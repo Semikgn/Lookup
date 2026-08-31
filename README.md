@@ -68,6 +68,8 @@ python -m ingest.ingest           # chunk -> embedding -> SQLite
 # Soru sor (CLI)
 python cli.py "DHCP kiralama süresi ne anlama gelir?"
 python cli.py --mod duz "..."     # v1 düz kosinüsle karşılaştır
+python cli.py --k 2 "..."         # hız düğmesi: ~%15 daha hızlı prefill
+                                  # (hit@2 %96.7, hit@3 %100 — varsayılan k=3)
 
 # Benchmark (before/after + model yarışı)
 python -m bench.run_bench --sadece-retrieval
@@ -96,6 +98,10 @@ Soru ─► hibrit retrieval ──► skor >= eşik ─► top-3 parça + Türk
 - **Foundry Local notları:** modeller API'de otomatik yüklenmez ("not loaded"
   yakala → `foundry model load` → tekrar dene); qwen3 ailesinde `/no_think`
   şart (yoksa düşünme tokenları CPU'da 40-90 sn yer).
+- **Üretim kalitesi/hızı:** küçük modellerin cümle-tekrar döngüsü çıktı
+  katmanında kırılır (Jaccard ≥ 0.7 tekrar ayıklama, `core/foundry.py`);
+  `frequency_penalty` denendi ve geri alındı — bu sunucu/model ikilisinde
+  döngüyü paraphrase'e çevirip kötüleştirdi. max_tokens 320, temperature 0.2.
 
 ## Proje yapısı
 

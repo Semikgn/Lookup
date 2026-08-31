@@ -125,6 +125,28 @@ def model_bosalt(alias: str) -> None:
     _calistir([_foundry_cli(), "model", "unload", alias], timeout=120)
 
 
+def tekrar_temizle(metin: str) -> str:
+    """Küçük modellerin tekrarladığı cümleleri/maddeleri ayıklar.
+
+    Birebir kopyaların yanında paraphrase'li döngüyü de yakalamak için
+    cümleler kelime kümesi benzerliğiyle (Jaccard >= 0.7) karşılaştırılır.
+    """
+    parcalar = re.split(r"(?<=[.!?:])\s+|\n", metin)
+    gorulen: list[set[str]] = []
+    tutulan: list[str] = []
+    for p in parcalar:
+        kelimeler = set(re.findall(r"\w+", p.casefold()))
+        if len(kelimeler) >= 5:
+            tekrar = any(
+                len(kelimeler & g) / len(kelimeler | g) >= 0.7 for g in gorulen
+            )
+            if tekrar:
+                continue
+            gorulen.append(kelimeler)
+        tutulan.append(p)
+    return "\n".join(t for t in tutulan if t.strip()) if "\n" in metin else " ".join(tutulan)
+
+
 def dusunce_temizle(metin: str) -> str:
     """qwen3 gibi modellerin <think>...</think> bloklarını cevaptan ayıklar."""
     temiz = re.sub(r"<think>.*?</think>", "", metin, flags=re.DOTALL)
@@ -182,8 +204,13 @@ def chat_tamamla(
     önce `foundry model load` gerekiyor.
     """
     endpoint = endpoint or endpoint_bul()
-    secenekler.setdefault("max_tokens", 512)
+    # 320 token: normal cevaplar ~80-150 token'da bitiyor; tavan yalnızca
+    # patolojik döngülerde devreye girip beklemeyi sınırlıyor.
+    secenekler.setdefault("max_tokens", 320)
     secenekler.setdefault("temperature", 0.2)
+    # NOT: frequency_penalty denendi ve GERİ ALINDI — bu sunucu/model ikilisinde
+    # cevabı kısaltmak yerine paraphrase'li döngüye itti. Tekrarlar çıktı
+    # katmanında tekrar_temizle ile ayıklanıyor.
 
     # qwen3 chat modelleri varsayılan olarak <think> bloğuyla düşünür; CPU'da bu,
     # token bütçesini ve süreyi yutuyor. Soft-switch ile kapat.
@@ -209,7 +236,7 @@ def chat_tamamla(
         yanit = oai.chat.completions.create(
             model=model_id, messages=mesajlar, **secenekler
         )
-    return dusunce_temizle(yanit.choices[0].message.content or "")
+    return tekrar_temizle(dusunce_temizle(yanit.choices[0].message.content or ""))
 
 
 def sohbet(
