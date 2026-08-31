@@ -33,7 +33,7 @@ def baglam_kur(parcalar: list[Parca]) -> str:
 def cevapla(
     soru: str,
     retriever: Retriever | None = None,
-    rol: str = "genel",
+    rol: str = "uretim",
     k: int = 3,
     endpoint: str | None = None,
 ) -> RagCevabi:

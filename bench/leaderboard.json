@@ -1,5 +1,5 @@
 {
-  "olusturulma": "2026-08-31T07:20:59.848155+00:00",
+  "olusturulma": "2026-08-31T09:24:09.361738+00:00",
   "testset": "testset.tr.json",
   "retrieval": {
     "duz": {
@@ -21,5 +21,38 @@
       "red_kacan": []
     }
   },
-  "modeller": {}
+  "modeller": {
+    "qwen2.5-coder-1.5b": {
+      "rag_dogruluk": 0.767,
+      "ortalama_sure": 59.08,
+      "medyan_sure": 42.34,
+      "red_dogru": "5/5",
+      "soru_sayisi": 30
+    },
+    "qwen3-1.7b": {
+      "rag_dogruluk": 0.733,
+      "ortalama_sure": 110.86,
+      "medyan_sure": 111.23,
+      "red_dogru": "5/5",
+      "soru_sayisi": 30
+    }
+  },
+  "kilitli_model": "qwen2.5-coder-1.5b",
+  "kilit_gerekcesi": "RAG doğrulukta (0.767 vs 0.733) ve medyan gecikmede (42.3 sn vs 111.2 sn) qwen3-1.7b'yi geçti; domain-dışı red her iki modelde de retrieval katmanında 5/5.",
+  "elenenler": {
+    "phi-4-mini": {
+      "durum": "elendi (donanım)",
+      "olculen": "5/35 soru, hepsi doğru",
+      "medyan_sure": 135.3,
+      "gerekce": "7.7 GB RAM'de swap + tekrarlayan süreç ölümü; RAG cevabı başına 68-179 sn."
+    },
+    "qwen3-4b": {
+      "durum": "elendi (donanım, v1 ölçümü)",
+      "gerekce": "2.7 GB model swap'e düşürdü; 6/6 doğru ama 83-144 sn/soru."
+    },
+    "qwen2.5-0.5b": {
+      "durum": "elendi (kalite, v1 ölçümü)",
+      "gerekce": "v1 leaderboard: genel Türkçe %8, RAG %25 — hiçbir kategoride kazanamadı."
+    }
+  }
 }

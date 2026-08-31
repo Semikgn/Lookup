@@ -17,12 +17,12 @@ import urllib.request
 from openai import OpenAI
 
 # Rol -> tercih sırası. Baştaki model yoksa listede geriye düşülür.
+# v2: runtime'da TEK model. Seçim bench/leaderboard.json'daki ölçümle
+# kilitlendi (RAG %76.7 @ 42 sn); qwen3-1.7b yalnızca kilitli model diskte
+# yoksa devreye giren yedektir. phi-4-mini ve qwen3-4b donanım yüzünden,
+# qwen2.5-0.5b kalite yüzünden elendi — gerekçeler leaderboard.json'da.
 MODEL_TERCIHLERI: dict[str, list[str]] = {
-    "hizli": ["qwen2.5-0.5b"],
-    # qwen3-4b bu donanımda (7.7 GB RAM) çalışıyor ama soru başına 80-140 sn
-    # sürüyor ve sistemi disk takasına sokuyor; o yüzden 1.7b önde.
-    "genel": ["qwen3-1.7b", "qwen3-4b", "qwen2.5-1.5b", "qwen2.5-0.5b"],
-    "kod": ["qwen2.5-coder-1.5b", "qwen2.5-coder-0.5b", "qwen2.5-0.5b"],
+    "uretim": ["qwen2.5-coder-1.5b", "qwen3-1.7b"],
     "embedding": ["qwen3-embedding-0.6b"],
 }
 
@@ -214,7 +214,7 @@ def chat_tamamla(
 
 def sohbet(
     soru: str,
-    rol: str = "genel",
+    rol: str = "uretim",
     sistem: str | None = None,
     endpoint: str | None = None,
     **secenekler,

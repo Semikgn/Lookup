@@ -1,84 +1,117 @@
-# 🧭 RAG Router TR
+# 🧭 RAG Router TR — v2
 
-Tamamen **çevrimdışı** çalışan, Türkçe odaklı bir RAG asistanı. Microsoft Azure
-Foundry Local yaz okulu projesi. Üç katmandan oluşur:
+Tamamen **çevrimdışı** çalışan, Türkçe'ye optimize edilmiş RAG asistanı.
+Microsoft Azure Foundry Local yaz okulu projesi.
 
-1. **Offline RAG** — `data/` içindeki dokümanlardan soru-cevap (internet yok).
-2. **Akıllı model router** — soru türüne göre (kod / doküman / genel) yerel
-   modeller arasında otomatik seçim.
-3. **Türkçe benchmark & leaderboard** — router'ın seçimi elle yazılmış kurallarla
-   değil, modelleri Türkçe görevlerde ölçen bir skor tablosuyla yönetilir.
+v2'de proje yeniden merkezlendi: runtime model router'ı kaldırıldı. Omurga artık
+**tek iyi model + Türkçe-özel hibrit retrieval + bunu sayıyla kanıtlayan
+değerlendirme**. Model seçimi çalışan bir katman değil, bir kereye mahsus ölçümle
+verilmiş ve belgelenmiş bir karar (aşağıda).
 
-Tüm inference [Foundry Local](https://github.com/microsoft/Foundry-Local)
-üzerinde, OpenAI-uyumlu **yerel** endpoint ile yapılır. İlk model indirme
-dışında hiçbir bulut/internet çağrısı yoktur.
+## Sonuçlar (asıl koz)
 
-## Kurulum
+### Retrieval: düz kosinüs → Türkçe hibrit (before/after)
+
+| Mod | hit@1 | hit@3 | Domain-dışı red |
+|---|---|---|---|
+| düz kosinüs (v1) | %83.3 | %96.7 (29/30) | 5/5 |
+| **hibrit (v2)** | **%90.0** | **%100 (30/30)** | **5/5** |
+
+Hibrit = anlamsal kosinüs (0.70) + BM25 (0.22) + terim kapsama (0.08), sinyaller
+sorgu başına min-max normalize. Türkçe tarafı: İ/ı-duyarlı küçültme, stopword
+ayıklama ve hafif stemming (snowballstemmer) — sondan eklemeli dilde
+"yönlendiricinin" ↔ "yönlendirici" eşleşmesini BM25'e kazandırıyor. Hibritin
+kurtardığı tipik vaka: Türkçe soruyla İngilizce dokümandaki `ip link` komutu —
+embedding diller arası köprüyü kuramadı, tam-terim eşleşmesi kurdu.
+
+### Model seçimi (bir kez, ölçümle — 30 RAG + 5 red Türkçe soru)
+
+| Model | RAG doğruluk | Medyan süre | Sonuç |
+|---|---|---|---|
+| **qwen2.5-coder-1.5b** | **%76.7** | **42 sn** | 🔒 **kilitli model** |
+| qwen3-1.7b (/no_think) | %73.3 | 111 sn | yedek (kilitli model diskte yoksa) |
+| phi-4-mini | 5/5 (kısmi) | 135 sn | elendi: 7.7 GB RAM'de swap + süreç ölümleri |
+| qwen3-4b | 6/6 (kısmi, v1) | ~100 sn | elendi: aynı donanım sorunu |
+| qwen2.5-0.5b | %25 (v1) | 21 sn | elendi: kalite (genel Türkçe %8) |
+
+phi-4-mini kalitede umut vericiydi (ölçülebilen her soruda doğru) ama bu
+donanımda (7.7 GB RAM, GPU yok) cevap başına 68-179 sn sürdü ve koşular
+tekrar tekrar süreç ölümüyle kesildi. Karar gereçleriyle birlikte
+`bench/leaderboard.json` içinde.
+
+### Domain-dışı reddi
+
+En iyi parçanın ham kosinüsü < 0.45 VE terim kapsaması < 0.40 ise soru modele
+hiç gitmez; "Bu bilgi mevcut dokümanlarda bulunamadı." dönülür. Eşikler ölçümle
+kalibre edildi: domain-içi soruların kosinüs tabanı 0.51, domain-dışıların
+tavanı 0.39. 5/5 red doğruluğu.
+
+## Korpus
+
+%100 açık lisanslı, ağırlıkla Türkçe: 18 Türkçe Wikipedia maddesi (CC BY-SA,
+ağ/sistem kavramları: DNS, DHCP, TCP/IP, RAID, SSH, OSI...) + 3 ArchWiki how-to
+(GFDL 1.3, İngilizce) + 3 proje dokümanı. Toplam 24 doküman, 354 parça.
+Kaynak ve lisans dökümü: [`data/SOURCES.md`](data/SOURCES.md). Korpus
+`python -m ingest.fetch_corpus` ile yeniden üretilebilir.
+
+## Kurulum ve kullanım
 
 ```powershell
 winget install Microsoft.FoundryLocal
 pip install -r requirements.txt
-
-# Modelleri indir (tek seferlik, internet gerektirir)
-foundry model download qwen2.5-0.5b
 foundry model download qwen2.5-coder-1.5b
-foundry model download qwen3-4b
 foundry model download qwen3-embedding-0.6b
-```
 
-> Endpoint portu sabit değildir; kod, `foundry server status` çıktısından
-> dinamik olarak okur. Elle sabitlemek istersen `.env.example`'a bak.
+python -m ingest.fetch_corpus     # korpusu çek (tek seferlik, internet)
+python -m ingest.ingest           # chunk -> embedding -> SQLite
 
-## Kullanım
+# Soru sor (CLI)
+python cli.py "DHCP kiralama süresi ne anlama gelir?"
+python cli.py --mod duz "..."     # v1 düz kosinüsle karşılaştır
 
-```powershell
-# 1) Dokümanları indeksle (data/ -> chunk -> embedding -> SQLite)
-python -m ingest.ingest
-
-# 2) Hızlı test (CLI)
-python cli.py "Türkiye'nin başkenti neresi?"
-python cli.py --rag "Bu projede neden vektör veritabanı yok?"
-python cli.py --rol kod "Faktöriyel hesaplayan fonksiyon yaz"
-
-# 3) Benchmark koş -> leaderboard.json üret
+# Benchmark (before/after + model yarışı)
+python -m bench.run_bench --sadece-retrieval
 python -m bench.run_bench
 
-# 4) Web arayüzü (Sohbet + Leaderboard sekmeleri)
+# Web arayüzü -> http://127.0.0.1:8000  (Sohbet + Ölçümler sekmeleri)
 uvicorn app.main:app --port 8000
 ```
 
-Arayüzde her cevabın altında **"bu soru şu modele gitti çünkü..."** rotası
-gösterilir: sınıflandırılan kategori, seçilen model ve leaderboard gerekçesi.
+Bundan sonrası tamamen çevrimdışıdır: WiFi kapalıyken tüm istekler
+`127.0.0.1`'e gider. Endpoint portu sabit değildir; kod `foundry server status`
+çıktısından dinamik okur.
 
 ## Mimari
 
 ```
-Soru ─► router.kategori_bul ──► kod?  ─► leaderboard[kod]  en iyi model
-              │                 rag?  ─► retriever (SQLite + NumPy cosine)
-              │                          └─► bağlam + prompt ─► model
-              └── benzerlik < eşik ───► genel ─► leaderboard[genel]
+Soru ─► hibrit retrieval ──► skor >= eşik ─► top-3 parça + Türkçe prompt ─► qwen2.5-coder-1.5b
+        (kosinüs+BM25+kapsama,│
+         Türkçe stemming)     └► skor < eşik ─► "Bu bilgi mevcut dokümanlarda bulunamadı."
 ```
 
-- **Vektör deposu:** SQLite (BLOB) + NumPy kaba kuvvet kosinüs benzerliği.
-  Bilinçli sadelik: bu ölçekte harici vektör DB gereksiz.
-- **Embedding:** `qwen3-embedding-0.6b` (1024 boyut).
-- **Benchmark:** `bench/testset.tr.json` — 36 Türkçe soru (12 RAG + 12 kod +
-  12 genel muhakeme). Doğruluk anahtar-ifade eşleşmesiyle, hız latency ile ölçülür.
-- **RAM dostu:** modeller kullanılırken yüklenir, model değişiminde öncekiler
-  bellekten çıkarılır (`foundry model unload`). Bir model inmemişse otomatik
-  olarak daha küçüğüne düşülür.
+- **Depo:** SQLite (BLOB vektörler) + NumPy; BM25 bellekte. Vektör DB bilinçli yok.
+- **Değerlendirme:** `bench/testset.tr.json` — 30 RAG (altın doküman etiketli,
+  hit@k) + 5 domain-dışı; `bench/run_bench.py` soru bazlı checkpoint + `--limit`
+  ile kesintiye dayanıklı.
+- **Foundry Local notları:** modeller API'de otomatik yüklenmez ("not loaded"
+  yakala → `foundry model load` → tekrar dene); qwen3 ailesinde `/no_think`
+  şart (yoksa düşünme tokenları CPU'da 40-90 sn yer).
 
 ## Proje yapısı
 
 ```
-├── data/              # dokümanlar (.txt/.md/.pdf) + indeks.db
-├── ingest/ingest.py   # doküman -> chunk -> embedding -> SQLite
+├── data/                  # korpus (.txt/.md) + SOURCES.md + indeks.db
+├── ingest/
+│   ├── fetch_corpus.py    # açık lisanslı korpusu çek (tekrar üretilebilir)
+│   └── ingest.py          # chunk -> embedding -> SQLite
 ├── core/
-│   ├── foundry.py     # dinamik endpoint, model çözme/yükleme, chat
-│   ├── retriever.py   # kosinüs benzerliği araması
-│   ├── router.py      # intent -> leaderboard'dan model seçimi
-│   └── rag.py         # retrieve + prompt + generate
-├── bench/             # testset.tr.json, run_bench.py, leaderboard.json
-├── app/main.py        # FastAPI + tek sayfa arayüz
-└── cli.py             # hızlı test
+│   ├── foundry.py         # dinamik endpoint, model çözme/yükleme
+│   ├── metin.py           # Türkçe tokenizasyon + stemming
+│   ├── retriever.py       # hibrit arama + domain-dışı reddi
+│   └── rag.py             # retrieve -> prompt -> generate
+├── bench/                 # testset, run_bench, leaderboard(.v1).json, sonda.py
+├── app/main.py            # FastAPI + arayüz
+└── cli.py                 # hızlı test
 ```
+
+<!-- WiFi kapalı demo ekran görüntüsü buraya: docs/demo.png -->

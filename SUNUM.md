@@ -1,50 +1,54 @@
-# RAG Router TR — Sunum Taslağı (5-7 dk)
+# RAG Router TR v2 — Sunum Taslağı (5-7 dk)
 
 ## 1. Problem (1 slayt)
-- Bulut LLM'leri her yerde ama: internet şart, veri dışarı çıkıyor, maliyetli.
-- Hedef: **tamamen çevrimdışı**, Türkçe çalışan, kendi dokümanlarını bilen asistan.
-- Bonus: tek model her işte iyi değil → soruya göre **doğru modeli** seçmek.
+- Bulut LLM'leri: internet şart, veri dışarıda, maliyetli.
+- Hedef: 7.7 GB RAM'li sıradan bir laptopta, tamamen çevrimdışı, Türkçe RAG asistanı.
+- İddia: kaliteyi büyük modelden değil, **daha iyi retrieval'dan** çıkarmak.
 
-## 2. Çözüm mimarisi (1 slayt)
-- Foundry Local: OpenAI-uyumlu yerel endpoint, ONNX Runtime, CPU'da çalışıyor.
-- Üç katman: Offline RAG → Akıllı Router → Türkçe Benchmark/Leaderboard.
-- Demo makinesi: 7.7 GB RAM'li sıradan bir laptop — her şey küçük modellerle.
+## 2. v1 → v2 hikâyesi (1 slayt)
+- v1: 3 model + runtime router + leaderboard. Çalıştı; ama router'ın gerekçesi
+  zayıftı (coder neredeyse her kategoride kazanıyordu).
+- v2 kararı: router'ı KALDIR. Tek iyi model + Türkçe'ye optimize hibrit retrieval.
+- "Hangi model" sorusu çalışan bir katman değil, ölçümle verilen belgeli bir karar.
 
-## 3. Offline RAG (1 slayt)
-- data/ → paragraf bazlı chunk (~800 karakter) → qwen3-embedding-0.6b (1024d)
-  → SQLite BLOB.
-- Arama: NumPy kaba kuvvet kosinüs benzerliği. Vektör DB YOK — bu ölçekte
-  gereksiz karmaşıklık (bilinçli mühendislik kararı).
+## 3. Türkçe hibrit retrieval (1 slayt — teknik omurga)
+- 3 sinyal: anlamsal kosinüs (0.70) + BM25 (0.22) + terim kapsama (0.08);
+  sorgu başına min-max normalizasyon (yoksa BM25 her şeyi ezer).
+- Türkçe farkı: İ/ı-duyarlı küçültme + stopword + hafif stemming
+  ("yönlendiricinin" ↔ "yönlendirici" — sondan eklemeli dilde BM25 recall'u).
+- Domain-dışı reddi: ham kosinüs < 0.45 VE kapsama < 0.40 → modele gitmeden
+  "dokümanlarda bulunamadı" (eşikler ölçümle kalibre: domain-içi taban 0.51,
+  domain-dışı tavan 0.39).
 
-## 4. Benchmark ve Leaderboard (1 slayt — leaderboard tablosunu göster)
-- 36 Türkçe soru: 12 RAG + 12 kod + 12 genel muhakeme.
-- Ölçüm: anahtar-ifade doğruluğu + latency. Çıktı: leaderboard.json.
-- Kilit fikir: **router kuralla değil, ölçümle karar veriyor.**
-  (0.5B model Türkçe'de saçmalıyor — tabloda görülüyor; 4B model doğru ama yavaş.)
+## 4. Before/after — ASIL KOZ (1 slayt, tabloyu göster)
+| | hit@1 | hit@3 | red |
+|---|---|---|---|
+| düz kosinüs | %83.3 | %96.7 | 5/5 |
+| hibrit | **%90.0** | **%100** | 5/5 |
+- Kurtarılan vaka: Türkçe soru → İngilizce dokümandaki `ip link` komutu.
+  Embedding diller arası köprüyü kuramadı, tam-terim eşleşmesi kurdu.
+- Korpus: 24 açık lisanslı doküman / 354 parça (SOURCES.md ile lisans dökümü).
 
-## 5. Router (1 slayt)
-- Intent sınıflandırma: kod desenleri + retrieval benzerlik eşiği.
-- Model seçimi: leaderboard'da o kategorinin en iyisi (eşitlikte en hızlısı).
-- Model inmemişse/yüklenemezse fallback zinciri.
-- Arayüzde şeffaflık: "bu soru şu modele gitti çünkü..."
+## 5. Model seçimi: ölçümle kilit (1 slayt)
+- Yarış: coder-1.5b %76.7 @ 42 sn 🔒 | qwen3-1.7b %73.3 @ 111 sn | phi-4-mini
+  5/5 doğru ama 135 sn medyan + süreç ölümleri → ELENDİ.
+- Ders: "en iyi model" donanım bağlamında tanımlanır. phi-4-mini kaliteliydi;
+  bu makinede kullanılamazdı. Ölçüm olmasa yanlış model kilitlenirdi.
 
-## 6. Canlı demo (2-3 dk)
-1. WiFi'ı KAPAT.
-2. `uvicorn app.main:app --port 8000`
-3. Doküman sorusu: "Bu projede neden vektör veritabanı yok?" → RAG rotası + kaynaklar.
-4. Kod sorusu: "Fibonacci fonksiyonu yaz" → coder modeline rota.
-5. Genel soru: "Yarısı 8 olan sayı?" → genel model.
-6. Leaderboard sekmesi: skorların nereden geldiğini göster.
+## 6. Canlı demo (2 dk)
+1. WiFi'ı KAPAT. `uvicorn app.main:app --port 8000`
+2. "RAID 1 verileri nasıl korur?" → kaynaklar + skorlarla cevap.
+3. "Mona Lisa'yı kim yaptı?" → ⛔ 6 saniyede modelsiz red.
+4. Ölçümler sekmesi: before/after + model yarışı + elenenler.
 
-## 7. Öğrenilenler / zorluklar (1 slayt)
-- Foundry Local preview: CLI komutları sürümle değişiyor (`service` → `server`),
-  varsaymak yerine `--help` ile doğrulamak şart.
-- Modeller API'de otomatik yüklenmiyor → "not loaded" yakala, yükle, tekrar dene.
-- 7.7 GB RAM'de model rotasyonu: kullanmadan yükle, bitince boşalt.
-- Küçük modellerde tekrar döngüsü → max_tokens + düşük temperature.
-- Windows konsolunda Türkçe karakter: UTF-8'i her katmanda zorlamak gerekti.
+## 7. Mühendislik dersleri (1 slayt)
+- Foundry Local preview: komutlar sürümle değişiyor; `--help` ile doğrula.
+  Modeller API'de otomatik yüklenmiyor; qwen3'te `/no_think` şart.
+- 7.7 GB RAM'de uzun benchmark koşuları kesiliyor → soru bazlı checkpoint +
+  dilimli koşu (`--limit`), kesinti maliyeti sıfıra indi.
+- Ölçmeden karar verme: probe (5 soruluk sonda) ucuz, yanlış model kilidi pahalı.
 
-## 8. Gelecek işler (kapanış)
-- Daha büyük Türkçe test seti + LLM-hakem puanlaması.
-- Streaming cevaplar, çoklu doküman koleksiyonları.
-- NPU/GPU'lu donanımda aynı mimariyle daha büyük modeller.
+## 8. Gelecek (kapanış)
+- LLM-hakem puanlaması (anahtar-kelime eşleşmesinin ötesi).
+- Streaming cevap; korpus genişletme (fetch_corpus.py hazır).
+- NPU/GPU donanımda phi-4-mini'yi kadroya geri almak — mimari hazır.

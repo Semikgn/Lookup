@@ -1,66 +1,50 @@
-"""Hızlı test CLI'ı.
+"""Hızlı test CLI'ı: dokümanlardan Türkçe RAG cevabı.
 
 Kullanım:
-    python cli.py "Sorunuz buraya"            # varsayılan rol: genel
-    python cli.py --rol kod "Python'da ..."   # kod modeline yönlendir
+    python cli.py "DHCP kiralama süresi nedir?"
+    python cli.py --mod duz "..."   # v1 düz kosinüs (karşılaştırma için)
+    python cli.py --k 5 "..."       # daha fazla bağlam parçası
 """
 
 import argparse
 import sys
 import time
 
-from core import foundry
+from core import foundry, rag
+from core.retriever import Retriever
 
 # Windows konsolunda Türkçe karakterlerin bozulmaması için.
 if sys.stdout.encoding and sys.stdout.encoding.lower() != "utf-8":
     sys.stdout.reconfigure(encoding="utf-8")
 
-VARSAYILAN_SISTEM = (
-    "Sen Türkçe konuşan yardımcı bir asistansın. Kısa, doğru ve akıcı Türkçe cevap ver."
-)
-
 
 def main() -> int:
-    ayristirici = argparse.ArgumentParser(description="Foundry Local hızlı test CLI'ı")
-    ayristirici.add_argument("soru", help="Modele sorulacak soru")
-    ayristirici.add_argument(
-        "--rol", default="genel", choices=["hizli", "genel", "kod"],
-        help="Model rolü (varsayılan: genel)",
-    )
-    ayristirici.add_argument(
-        "--rag", action="store_true",
-        help="Cevabı data/ dokümanlarından RAG ile üret",
-    )
+    ayristirici = argparse.ArgumentParser(description="Türkçe offline RAG asistanı")
+    ayristirici.add_argument("soru", help="Dokümanlara sorulacak soru")
     ayristirici.add_argument(
         "--mod", default="hibrit", choices=["duz", "hibrit"],
         help="Retrieval modu: duz = yalnız kosinüs (v1), hibrit = +BM25+kapsama",
     )
+    ayristirici.add_argument("--k", type=int, default=3, help="Bağlam parça sayısı")
     args = ayristirici.parse_args()
 
     endpoint = foundry.endpoint_bul()
-    model = foundry.model_coz(args.rol, endpoint)
+    model = foundry.model_coz("uretim", endpoint)
     print(f"[endpoint] {endpoint}")
-    print(f"[model]    {model} (rol: {args.rol}{', RAG' if args.rag else ''})")
+    print(f"[model]    {model} (retrieval: {args.mod})")
 
+    retriever = Retriever(mod=args.mod)
     baslangic = time.perf_counter()
-    if args.rag:
-        from core import rag
-        from core.retriever import Retriever
-        retriever = Retriever(mod=args.mod)
-        sonuc = rag.cevapla(args.soru, retriever=retriever, rol=args.rol, endpoint=endpoint)
-        cevap = sonuc.cevap
-        for p in sonuc.parcalar:
-            print(f"[bağlam]   {p.kaynak} / parça {p.sira} "
-                  f"(skor {p.skor:.2f}, kosinüs {p.kosinus:.2f}, kapsama {p.kapsama:.2f})")
-        if sonuc.reddedildi:
-            print("[red]      domain dışı — model çağrılmadı")
-    else:
-        cevap = foundry.sohbet(
-            args.soru, rol=args.rol, sistem=VARSAYILAN_SISTEM, endpoint=endpoint
-        )
+    sonuc = rag.cevapla(args.soru, retriever=retriever, k=args.k, endpoint=endpoint)
     sure = time.perf_counter() - baslangic
 
-    print(f"\n{cevap.strip()}\n")
+    for p in sonuc.parcalar:
+        print(f"[bağlam]   {p.kaynak} / parça {p.sira} "
+              f"(skor {p.skor:.2f}, kosinüs {p.kosinus:.2f}, kapsama {p.kapsama:.2f})")
+    if sonuc.reddedildi:
+        print("[red]      domain dışı — model çağrılmadı")
+
+    print(f"\n{sonuc.cevap}\n")
     print(f"[süre]     {sure:.1f} sn")
     return 0
 
